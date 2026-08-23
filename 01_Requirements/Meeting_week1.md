@@ -27,7 +27,7 @@
 | 1. Tạo Git Organization/Repo & thêm 6 thành viên | Nguyễn Thị Hồng Ngọc | Tối Thứ 5 | Done |
 | 2. Khởi tạo README.md & thư mục `01_Requirements/` | Cao Yến Khoa | Tối Thứ 5 | Done |
 | 3. Đọc quy chế & chốt file API Contract sơ bộ | Nguyễn Trần Thùy Lam, Lê Thị Kim Liên, Dương Tuấn Kiệt, Nguyễn Thị Cẩm Tú | Tối Thứ 6 | Done |
-| 4. Tổng hợp User Stories & tài liệu Mô tả hệ thống | Dư Thị Trúc Hòa | Tối Thứ 7 | To-do |
-| 5. Review toàn bộ tài liệu & Nộp bài lên hệ thống | Cao Yến Khoa | Sáng Chủ Nhật | To-do |
+| 4. Tổng hợp User Stories & tài liệu Mô tả hệ thống | Dư Thị Trúc Hòa | Tối Thứ 7 | Done |
+| 5. Review toàn bộ tài liệu & Nộp bài lên Drive | Cao Yến Khoa | Sáng Chủ Nhật | Done |
 
 *Cuộc họp kết thúc lúc [11:45] cùng ngày.*
