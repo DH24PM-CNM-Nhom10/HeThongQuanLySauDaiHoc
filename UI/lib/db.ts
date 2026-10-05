@@ -18,7 +18,6 @@ export const DB = {
     localStorage.setItem("qldt_" + key, JSON.stringify(data));
   },
 
-<<<<<<< HEAD
   async syncFromApi(key: string) {
   if (typeof window === "undefined") return [];
   try {
@@ -48,8 +47,6 @@ export const DB = {
     localStorage.removeItem("qldt_" + key);
   },
 
-=======
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
   clearAll() {
     if (typeof window === "undefined") return;
     Object.keys(ENTITY_SCHEMAS).forEach((k) =>
@@ -62,8 +59,4 @@ export const DB = {
   count(key: string): number {
     return this.get(key).length;
   },
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
