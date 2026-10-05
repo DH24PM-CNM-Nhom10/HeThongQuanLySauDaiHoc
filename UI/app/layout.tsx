@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-<<<<<<< HEAD
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-=======
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
 
 export const metadata: Metadata = {
   title: "Hệ thống Quản lý Đào tạo Thạc sĩ | AGU",
@@ -33,8 +27,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
