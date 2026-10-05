@@ -1,10 +1,6 @@
 "use client";
 
-<<<<<<< HEAD
 import DataTable from "../../components/DataTable";
-=======
-import DataTable from "@/components/DataTable";
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
 
 export default function SchedulePage() {
   return (
@@ -15,8 +11,4 @@ export default function SchedulePage() {
       <DataTable entityKey="schedule" />
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d

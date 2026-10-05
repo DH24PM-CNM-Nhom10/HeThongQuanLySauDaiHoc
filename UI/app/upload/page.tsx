@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // app/upload/page.tsx
 "use client";
 
@@ -19,26 +18,12 @@ export default function UploadPage() {
     }
   };
 
-=======
-"use client";
-
-import UploadMapping from "@/components/UploadMapping";
-
-export default function UploadPage() {
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 20 }}>
         Upload & Mapping dữ liệu
       </h1>
-<<<<<<< HEAD
       <UploadMapping onSuccess={handleSuccess} />
     </div>
   );
 }
-=======
-      <UploadMapping />
-    </div>
-  );
-}
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d

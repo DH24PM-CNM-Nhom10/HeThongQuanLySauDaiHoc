@@ -1,6 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
 import ThesisProgressTable from "../../components/ThesisProgressTable";
 import OverdueAlertSection from "../../components/OverdueAlertSection";
 
@@ -19,17 +18,3 @@ export default function ThesisPage() {
     </div>
   );
 }
-=======
-import DataTable from "@/components/DataTable";
-
-export default function ThesisPage() {
-  return (
-    <div>
-      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 20 }}>
-        Tiến độ Luận văn
-      </h1>
-      <DataTable entityKey="thesis" />
-    </div>
-  );
-}
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
