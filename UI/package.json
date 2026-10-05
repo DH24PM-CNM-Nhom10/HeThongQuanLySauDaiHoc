@@ -4,12 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+<<<<<<< HEAD
+    "reset": "node -e \"require('fs').writeFileSync('./db.json', JSON.stringify({students:[],teachers:[],thesis:[],schedule:[],assignments:[],grades:[]}, null, 2))\" && echo '✅ Đã reset toàn bộ db.json!'",
+=======
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
+<<<<<<< HEAD
+    "lucide-react": "^1.48.0",
+=======
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
     "next": "16.3.6",
     "react": "19.2.8",
     "react-chartjs-2": "^5.3.1",
@@ -26,4 +34,8 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
