@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // schemas.ts
+=======
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
 export const ENTITY_SCHEMAS: Record<
   string,
   { label: string; key: string; fields: { key: string; label: string }[] }
@@ -20,6 +23,7 @@ export const ENTITY_SCHEMAS: Record<
       { key: "ngaySinh", label: "Ngày sinh" },
       { key: "gioiTinh", label: "Giới tính" },
       { key: "email", label: "Email" },
+<<<<<<< HEAD
       { key: "tenLuanVan", label: "Tên luận văn / Đề tài" },
       { key: "gvHuongDan1", label: "GV hướng dẫn 1" },
       { key: "gvHuongDan2", label: "GV hướng dẫn 2" },
@@ -44,12 +48,17 @@ export const ENTITY_SCHEMAS: Record<
       { key: "ngayTotNghiep", label: "Ngày tốt nghiệp" },
       { key: "tenNganh", label: "Chuyên ngành" },
       { key: "namXuatBan", label: "Năm xuất bản" },
+=======
+      { key: "tenLuanVan", label: "Tên luận văn" },
+      { key: "gvHuongDan", label: "GV hướng dẫn" },
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
     ],
   },
   teachers: {
     label: "Giảng viên",
     key: "teachers",
     fields: [
+<<<<<<< HEAD
       { key: "shcc", label: "Mã giảng viên / SHCC" },
       { key: "hoten", label: "Họ và tên" },
       { key: "gioitinh", label: "Giới tính" },
@@ -58,6 +67,17 @@ export const ENTITY_SCHEMAS: Record<
       { key: "t_hham", label: "Học hàm" },
       { key: "t_cmdtao", label: "Chuyên môn" },
       { key: "email", label: "Email" },
+=======
+      { key: "maGV", label: "Mã giảng viên / SHCC" },
+      { key: "hoTen", label: "Họ và tên" },
+      { key: "gioiTinh", label: "Giới tính" },
+      { key: "donVi", label: "Đơn vị / Bộ môn" },
+      { key: "hocVi", label: "Học vị" },
+      { key: "hocHam", label: "Học hàm" },
+      { key: "chuyenMon", label: "Chuyên môn" },
+      { key: "email", label: "Email" },
+      { key: "sdt", label: "Số điện thoại" },
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
     ],
   },
   assignments: {
@@ -91,6 +111,24 @@ export const ENTITY_SCHEMAS: Record<
       { key: "hocKy", label: "Học kỳ" },
     ],
   },
+<<<<<<< HEAD
+=======
+  thesis: {
+    label: "Luận văn",
+    key: "thesis",
+    fields: [
+      { key: "maHocVien", label: "Mã học viên" },
+      { key: "hoTen", label: "Họ tên học viên" },
+      { key: "tenLuanVan", label: "Tên luận văn / Đề án" },
+      { key: "gvHuongDan1", label: "GV hướng dẫn 1" },
+      { key: "gvHuongDan2", label: "GV hướng dẫn 2" },
+      { key: "ngayQD", label: "Ngày QĐ đề cương" },
+      { key: "trangThai", label: "Trạng thái LV" },
+      { key: "ngayBaoVe", label: "Ngày bảo vệ" },
+      { key: "ngayTotNghiep", label: "Ngày tốt nghiệp" },
+    ],
+  },
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
   schedule: {
     label: "Thời khóa biểu",
     key: "schedule",
@@ -106,4 +144,8 @@ export const ENTITY_SCHEMAS: Record<
       { key: "nganh", label: "Ngành" },
     ],
   },
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d
