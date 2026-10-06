@@ -27,9 +27,15 @@ export default function Dashboard() {
       // 2. Nếu trống mới gọi API
       try {
         const res = await fetch("/api/students?limit=2000");
-        const result = await res.json();
-        const data = Array.isArray(result) ? result : result.data || result.records || [];
-        setStudents(data);
+        const text = await res.text();
+        let result: any = null;
+        try {
+          result = text ? JSON.parse(text) : null;
+        } catch {
+          result = null;
+        }
+        const data = Array.isArray(result) ? result : result?.data || result?.records || [];
+        setStudents(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       } finally {

@@ -19,21 +19,27 @@ export const DB = {
   },
 
   async syncFromApi(key: string) {
-  if (typeof window === "undefined") return [];
-  try {
-    const res = await fetch(`/api/${key}?limit=10000`);
-    const json = await res.json();
-    
-    // 🛑 CHỈ đè dữ liệu vào LocalStorage nếu API trả về mảng CÓ DỮ LIỆU (> 0 bản ghi)
-    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-      this.set(key, json.data);
-      return json.data;
+    if (typeof window === "undefined") return [];
+    try {
+      const res = await fetch(`/api/${key}?limit=10000`);
+      const text = await res.text();
+      let json: any = null;
+      try {
+        json = text ? JSON.parse(text) : null;
+      } catch {
+        return this.get(key);
+      }
+
+      // CHỈ đè dữ liệu vào LocalStorage nếu API trả về mảng CÓ DỮ LIỆU (> 0 bản ghi)
+      if (json?.success && Array.isArray(json.data) && json.data.length > 0) {
+        this.set(key, json.data);
+        return json.data;
+      }
+    } catch (e) {
+      console.error(`Lỗi đồng bộ ${key} từ API:`, e);
     }
-  } catch (e) {
-    console.error(`Lỗi đồng bộ ${key} từ API:`, e);
-  }
-  return this.get(key);
-},
+    return this.get(key);
+  },
 
   // TỰ ĐỘNG ĐỒNG BỘ TOÀN BỘ DANH MỤC TỪ SERVER VỀ LOCALSTORAGE
   async syncAllFromApi() {
