@@ -1,50 +1,77 @@
+// UI/components/Navbar.tsx
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Navbar() {
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Kiểm tra phiên đăng nhập từ localStorage
+    const savedUser = localStorage.getItem("currentUser");
+    if (savedUser) {
+      try {
+        setCurrentUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Lỗi đọc thông tin đăng nhập:", e);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    setCurrentUser(null);
+    router.push("/login");
+  };
+
   return (
-    <nav className="navbar navbar-expand navbar-light navbar-bg">
-      <a className="sidebar-toggle js-sidebar-toggle">
+    <nav className="navbar navbar-expand navbar-light navbar-bg" style={{ display: "flex", justifyContent: "space-between", padding: "12px 24px", backgroundColor: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
+      <a className="sidebar-toggle js-sidebar-toggle" style={{ cursor: "pointer" }}>
         <i className="hamburger align-self-center"></i>
       </a>
 
-      <div className="navbar-collapse collapse">
-        <ul className="navbar-nav navbar-align">
-          <li className="nav-item dropdown">
-            <a
-              className="nav-link dropdown-toggle d-none d-sm-inline-block"
-              href="#"
-              data-bs-toggle="dropdown"
+      <div className="navbar-collapse collapse" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+        {currentUser ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontSize: "14px", fontWeight: 600, color: "#0f172a" }}>
+              👤 {currentUser.role === "admin" ? "Admin" : `Học viên: ${currentUser.maHocVien}`}
+            </span>
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "#dc2626",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
             >
-              <img
-                src="/img/avatars/avatar.jpg"
-                className="avatar img-fluid rounded me-1"
-                alt="Charles Hall"
-              />
-              <span className="text-dark">Charles Hall</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-end">
-              <a className="dropdown-item" href="#">
-                Hệ Thống
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="#">
-                Settings & Privacy
-              </a>
-              <a className="dropdown-item" href="#">
-                Help Center
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="#">
-                Log out
-              </a>
-            </div>
-          </li>
-        </ul>
+              Đăng xuất
+            </button>
+          </div>
+        ) : (
+          <a
+            href="/login"
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#2563eb",
+              color: "#ffffff",
+              borderRadius: "6px",
+              textDecoration: "none",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "inline-block",
+            }}
+          >
+            🔑 Đăng nhập
+          </a>
+        )}
       </div>
     </nav>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 10511a5b95d46554e53b0758e41ce6996e024e6d

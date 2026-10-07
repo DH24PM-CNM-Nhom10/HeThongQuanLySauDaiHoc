@@ -1,7 +1,8 @@
-// components/StudentProfile.tsx
+// UI/components/StudentProfile.tsx
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { DB } from "../lib/db";
 
 interface StudentProfileProps {
@@ -13,7 +14,6 @@ function parseExcelOrVNDate(dateInput: any): Date | null {
   if (!dateInput || dateInput === "-" || dateInput === "null" || dateInput === "undefined") return null;
   if (dateInput instanceof Date) return isNaN(dateInput.getTime()) ? null : dateInput;
 
-  // Trường hợp là Excel Serial Number (vd: 45000)
   const num = Number(dateInput);
   if (!isNaN(num) && num > 30000 && num < 60000) {
     return new Date((num - (25567 + 2)) * 86400 * 1000);
@@ -21,7 +21,6 @@ function parseExcelOrVNDate(dateInput: any): Date | null {
 
   const str = String(dateInput).trim();
 
-  // Dạng DD/MM/YYYY
   if (str.includes("/")) {
     const parts = str.split("/");
     if (parts.length === 3) {
@@ -34,7 +33,6 @@ function parseExcelOrVNDate(dateInput: any): Date | null {
     }
   }
 
-  // Dạng YYYY-MM-DD hoặc DD-MM-YYYY
   if (str.includes("-")) {
     const parts = str.split("-");
     if (parts.length === 3) {
@@ -76,13 +74,11 @@ function calculateProgress(student: any) {
     };
   }
 
-  // Lấy trạng thái chính thức từ dữ liệu
   const trangThai = String(
     student.trangThai || student.trang_thai || student.TRANG_THAI || ""
   ).toLowerCase().trim();
 
   const isGraduated = trangThai.includes("tốt nghiệp");
-  // Cảnh báo đỏ CHỈ dành riêng cho học viên có trạng thái chính thức "Quá hạn"
   const isOverdue = trangThai.includes("quá hạn");
 
   const ngayGiaHanVal = student.ngayGiaHan || student.ngay_gia_han || student.NGAY_GIA_HAN;
@@ -141,23 +137,42 @@ function calculateProgress(student: any) {
   };
 }
 
-export default function StudentProfile({ studentId }: StudentProfileProps) {
-  const [role, setRole] = useState<"admin" | "student">("admin");
-  const [searchQuery, setSearchQuery] = useState(studentId || "");
+export default function StudentProfile({ studentId: propStudentId }: StudentProfileProps) {
+  const searchParams = useSearchParams();
+  const urlStudentId = searchParams.get("id");
+
+  const [role, setRole] = useState<"admin" | "student">("student");
+  const [searchQuery, setSearchQuery] = useState("");
   const [student, setStudent] = useState<any | null>(null);
   const [allStudents, setAllStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadStudents = () => {
+    const loadProfileData = () => {
       setLoading(true);
       try {
+        const savedUserStr = localStorage.getItem("currentUser");
+        const currentUser = savedUserStr ? JSON.parse(savedUserStr) : null;
+        
+        const userRole = currentUser?.role === "admin" ? "admin" : "student";
+        setRole(userRole);
+
         const data = DB.get("students") || [];
         setAllStudents(data);
 
         if (data.length > 0) {
-          const found = searchQuery ? findStudent(data, searchQuery) : data[0];
-          setStudent(found || data[0]);
+          if (userRole === "admin") {
+            const targetId = urlStudentId || propStudentId || data[0]?.maHocVien;
+            setSearchQuery(targetId || "");
+            const found = findStudent(data, targetId || "");
+            setStudent(found || data[0]);
+          } else {
+            // Học viên: Chỉ hiển thị đúng học viên khớp mã, nếu không tìm thấy thì gán null
+            const targetId = currentUser?.maHocVien || "";
+            setSearchQuery(targetId);
+            const found = findStudent(data, targetId);
+            setStudent(found || null); 
+          }
         }
       } catch (err) {
         console.error("Lỗi khi tải hồ sơ:", err);
@@ -166,11 +181,11 @@ export default function StudentProfile({ studentId }: StudentProfileProps) {
       }
     };
 
-    loadStudents();
-  }, [studentId]);
+    loadProfileData();
+  }, [propStudentId, urlStudentId]);
 
   const findStudent = (list: any[], query: string) => {
-    if (!query.trim()) return null;
+    if (!query || !query.trim()) return null;
     const q = query.trim().toLowerCase();
     return list.find((s) => {
       const maHV = String(s.maHocVien || s.ma_hoc_vien || s.masv || s.mahv || "").toLowerCase();
@@ -181,7 +196,7 @@ export default function StudentProfile({ studentId }: StudentProfileProps) {
   };
 
   const handleSearch = () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim() || role !== "admin") return;
     const match = findStudent(allStudents, searchQuery);
     setStudent(match || null);
   };
@@ -206,62 +221,7 @@ export default function StudentProfile({ studentId }: StudentProfileProps) {
   return (
     <div style={{ maxWidth: "1050px", margin: "0 auto", fontFamily: fontSans, color: "#1e293b" }}>
       
-      {/* 🧪 THANH CHUYỂN PHÂN QUYỀN TEST */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "#1e293b",
-          color: "#fff",
-          padding: "10px 18px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        }}
-      >
-        <div style={{ fontSize: "13px", fontWeight: 500, display: "flex", alignItems: "center", gap: "8px" }}>
-          <span>🧪 <strong>Chế độ Test Phân quyền:</strong></span>
-          <span style={{ color: "#94a3b8" }}>
-            {role === "admin" ? "(Góc nhìn Admin: Có thanh tra cứu học viên)" : "(Góc nhìn Học viên: Chỉ xem thông tin cá nhân)"}
-          </span>
-        </div>
-
-        <div style={{ display: "flex", gap: "6px" }}>
-          <button
-            onClick={() => setRole("admin")}
-            style={{
-              padding: "6px 14px",
-              borderRadius: "6px",
-              border: "none",
-              fontSize: "12px",
-              fontWeight: 600,
-              cursor: "pointer",
-              backgroundColor: role === "admin" ? "#2563eb" : "#334155",
-              color: "#fff",
-            }}
-          >
-            👑 Admin
-          </button>
-          <button
-            onClick={() => setRole("student")}
-            style={{
-              padding: "6px 14px",
-              borderRadius: "6px",
-              border: "none",
-              fontSize: "12px",
-              fontWeight: 600,
-              cursor: "pointer",
-              backgroundColor: role === "student" ? "#16a34a" : "#334155",
-              color: "#fff",
-            }}
-          >
-            🎓 Học viên
-          </button>
-        </div>
-      </div>
-
-      {/* 🔍 THANH TÌM KIẾM (ADMIN) */}
+      {/* 🔍 THANH TÌM KIẾM (CHỈ HIỂN THỊ DÀNH CHO ADMIN, HỌC VIÊN SẼ BỊ ẨN) */}
       {role === "admin" && (
         <div
           style={{
@@ -276,7 +236,7 @@ export default function StudentProfile({ studentId }: StudentProfileProps) {
         >
           <input
             type="text"
-            placeholder="🔍 Tra cứu học viên theo Mã HV, CCCD hoặc Họ tên..."
+            placeholder="🔍 Admin tra cứu học viên theo Mã HV, CCCD hoặc Họ tên..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}

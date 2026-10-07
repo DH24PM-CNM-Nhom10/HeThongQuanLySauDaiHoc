@@ -1,3 +1,4 @@
+// UI/components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -25,12 +26,17 @@ const menuAdmin = [
     icon: "📋",
     page: "assignment",
   },
+  {
+    href: "/thesis",
+    label: "Tiến độ Luận văn",
+    icon: "📄",
+    page: "thesis",
+  },
 ];
 
 const menuStudent = [
   { href: "/profile", label: "Hồ sơ học viên", icon: "👤", page: "profile" },
   { href: "/grades", label: "Kết quả học tập", icon: "📝", page: "grades" },
-  { href: "/thesis", label: "Tiến độ Luận văn", icon: "📄", page: "thesis" },
   { href: "/schedule", label: "Thời khóa biểu", icon: "🗓️", page: "schedule" },
 ];
 
@@ -58,7 +64,6 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
   };
 
   useEffect(() => {
-    // Đóng menu khi chuyển trang trên mobile
     closeSidebar();
   }, [pathname]);
 
@@ -110,7 +115,6 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
         </nav>
       </aside>
 
-      {/* Nút mũi tên mở menu — hiện khi sidebar đóng (mobile) */}
       <button
         type="button"
         className={`sidebar-toggle-fab ${isOpen ? "hidden" : ""}`}
@@ -121,7 +125,6 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
         ›
       </button>
 
-      {/* Overlay tối khi menu mở trên mobile */}
       {isOpen && (
         <div className="sidebar-overlay" onClick={closeSidebar} />
       )}
