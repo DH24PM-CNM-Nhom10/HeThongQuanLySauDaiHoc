@@ -37,6 +37,17 @@ export class EntitiesController {
       }
     }
 
+    // 🟢 BỔ SUNG: Tự động tạo Email cho Học viên nếu thiếu
+    if (itemsToSave && (entity === 'students' || entity === 'hoc_vien')) {
+      itemsToSave = itemsToSave.map((item) => {
+        const maHv = item.maHocVien || item.ma_hoc_vien || item.mahv || item.id || Date.now();
+        return {
+          ...item,
+          email: item.email || item.Email || `${maHv}@student.agu.edu.vn`,
+        };
+      });
+    }
+
     // Nếu là thao tác lưu danh sách (Import Excel)
     if (itemsToSave) {
       const savedList = this.entitiesService.saveAll(entity, itemsToSave);
@@ -48,6 +59,12 @@ export class EntitiesController {
         length: len,
         data: savedList,
       };
+    }
+
+    // 🟢 BỔ SUNG: Dành cho trường hợp tạo 1 học viên lẻ
+    if (entity === 'students' || entity === 'hoc_vien') {
+      const maHv = body.maHocVien || body.ma_hoc_vien || body.mahv || body.id || Date.now();
+      body.email = body.email || body.Email || `${maHv}@student.agu.edu.vn`;
     }
 
     // Nếu là tạo 1 bản ghi lẻ

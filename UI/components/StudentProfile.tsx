@@ -211,6 +211,26 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
     return "—";
   };
 
+  // 🟢 TỰ ĐỘNG XỬ LÝ EMAIL DÀNH RIÊNG CHO HỌC VIÊN ĐANG XEM
+  const getEmailVal = () => {
+    if (!student) return "—";
+
+    const maHV = String(student.maHocVien || student.ma_hoc_vien || student.masv || student.mahv || "").trim();
+    let rawEmail = student.email || student.Email;
+
+    // Nếu học viên có email đuôi @agu.edu.vn -> chuẩn hóa về @student.agu.edu.vn
+    if (rawEmail && rawEmail.includes("@agu.edu.vn") && !rawEmail.includes("@student.agu.edu.vn")) {
+      rawEmail = rawEmail.replace("@agu.edu.vn", "@student.agu.edu.vn");
+    }
+
+    // Nếu dữ liệu học viên chưa có email, tự tạo theo đúng Mã học viên của họ (bỏ qua nếu là admin)
+    if (!rawEmail && maHV && maHV.toLowerCase() !== "admin") {
+      rawEmail = `${maHV}@student.agu.edu.vn`;
+    }
+
+    return rawEmail || "—";
+  };
+
   if (loading) {
     return <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Đang tải hồ sơ...</div>;
   }
@@ -514,7 +534,7 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
                 <DetailRow label="CCCD" value={getVal(["cccd", "cmnd"])} isMasked />
                 <DetailRow label="Ngày sinh" value={formatExcelDate(getVal(["ngaySinh", "ngaysinh"]))} />
                 <DetailRow label="Giới tính" value={getVal(["gioiTinh", "gioitinh"])} />
-                <DetailRow label="Email" value={getVal(["email"])} />
+                <DetailRow label="Email" value={getEmailVal()} />
               </div>
             </div>
 

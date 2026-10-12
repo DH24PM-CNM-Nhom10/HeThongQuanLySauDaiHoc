@@ -71,7 +71,16 @@ export default function StudentManagementTable() {
         id: hv.maHocVien || hv.ma_hoc_vien || hv.mahv || hv.id || "-",
         name: hv.hoTen || hv.ho_ten || hv.name || "Chưa có tên",
         gender: hv.gioiTinh || hv.gioi_tinh || hv.gender || "-",
-        email: hv.email || hv.Email || "-",
+        email: (() => {
+          const maHv = hv.maHocVien || hv.ma_hoc_vien || hv.mahv || hv.id;
+          let rawEmail = hv.email || hv.Email;
+
+          if (rawEmail && rawEmail.includes("@agu.edu.vn") && !rawEmail.includes("@student.agu.edu.vn")) {
+            rawEmail = rawEmail.replace("@agu.edu.vn", "@student.agu.edu.vn");
+          }
+
+          return rawEmail || (maHv ? `${maHv}@student.agu.edu.vn` : "-");
+        })(),
         class: hv.lop || hv.LOP || hv.class || "-",
         major: hv.tenNganh || hv.ten_nganh || hv.major || "-",
         thesisTitle: hv.tenLuanVan || hv.ten_luan_van || hv.tenDeAn || "-",

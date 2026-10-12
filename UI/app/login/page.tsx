@@ -8,54 +8,118 @@ import { DB } from "../../lib/db";
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const inputUser = username.trim();
+    const inputUser = username.trim().toLowerCase();
 
     if (!inputUser) {
-      setErrorMsg("Vui lòng nhập Tên đăng nhập hoặc Mã học viên.");
+      setErrorMsg("Vui lòng nhập Email trường (@student.agu.edu.vn).");
       return;
     }
 
-    const isAdmin = inputUser.toLowerCase() === "admin";
+    setLoading(true);
+    setErrorMsg("");
 
-    if (!isAdmin) {
-      const students = DB.get("students") || [];
+    // 1. Xử lý tài khoản Admin
+    const isAdmin =
+      inputUser === "admin" ||
+      inputUser === "admin@agu.edu.vn" ||
+      inputUser === "admin@student.agu.edu.vn";
+
+    if (isAdmin) {
+      const loggedInUser = {
+        role: "admin",
+        maHocVien: "admin",
+        hoTen: "Admin Phòng Đào tạo",
+        email: "admin@agu.edu.vn",
+      };
+
+      localStorage.setItem("currentUser", JSON.stringify(loggedInUser));
+      setLoading(false);
+      router.push("/");
+      return;
+    }
+
+    // 2. Xử lý tài khoản Học viên (Kiểm tra Email chính xác)
+    try {
+      let students = DB.get("students") || [];
+
+      // Nếu LocalStorage chưa có dữ liệu, tự động fetch từ API
+      if (!Array.isArray(students) || students.length === 0) {
+        const res = await fetch("/api/students?limit=2000");
+        if (res.ok) {
+          const text = await res.text();
+          const result = text ? JSON.parse(text) : null;
+          students = Array.isArray(result)
+            ? result
+            : result?.data || result?.records || [];
+        }
+      }
+
+      // Đối soát Email nhập vào với dữ liệu học viên
       const foundStudent = students.find((s: any) => {
-        const maHV = String(s.maHocVien || s.ma_hoc_vien || s.masv || s.mahv || "").toLowerCase();
-        const cccd = String(s.cccd || s.cmnd || "").toLowerCase();
-        return maHV === inputUser.toLowerCase() || cccd === inputUser.toLowerCase();
+        const emailInDb = String(s.email || s.Email || "").toLowerCase().trim();
+        const maHV = String(
+          s.maHocVien || s.ma_hoc_vien || s.mahv || s.id || ""
+        )
+          .toLowerCase()
+          .trim();
+
+        // Các dạng email hợp lệ dựa trên Mã học viên
+        const validEmail = maHV ? `${maHV}@student.agu.edu.vn` : "";
+        const oldEmail = maHV ? `${maHV}@agu.edu.vn` : "";
+
+        return (
+          inputUser === emailInDb ||
+          (validEmail && inputUser === validEmail) ||
+          (oldEmail && inputUser === oldEmail)
+        );
       });
 
       if (!foundStudent) {
-        setErrorMsg("Mã học viên không tồn tại trong hệ thống. Vui lòng kiểm tra lại!");
+        setErrorMsg(
+          "Email không tồn tại trong hệ thống học viên. Vui lòng kiểm tra lại!"
+        );
+        setLoading(false);
         return;
       }
 
-      const fullName = foundStudent.hoTen || foundStudent.ho_ten || foundStudent.HO_TEN || foundStudent.hoten || "Học viên";
-      const studentCode = foundStudent.maHocVien || foundStudent.ma_hoc_vien || inputUser;
+      // Thông tin học viên đăng nhập thành công
+      const studentCode =
+        foundStudent.maHocVien ||
+        foundStudent.ma_hoc_vien ||
+        foundStudent.id ||
+        inputUser;
+      const fullName =
+        foundStudent.hoTen ||
+        foundStudent.ho_ten ||
+        foundStudent.HO_TEN ||
+        foundStudent.hoten ||
+        "Học viên";
+      
+      // Đảm bảo đuôi email chuẩn @student.agu.edu.vn
+      let cleanEmail = foundStudent.email || `${studentCode}@student.agu.edu.vn`;
+      if (cleanEmail.includes("@agu.edu.vn") && !cleanEmail.includes("@student.agu.edu.vn")) {
+        cleanEmail = cleanEmail.replace("@agu.edu.vn", "@student.agu.edu.vn");
+      }
 
       const loggedInUser = {
         role: "student",
         maHocVien: studentCode,
         hoTen: fullName,
+        email: cleanEmail,
       };
 
       localStorage.setItem("currentUser", JSON.stringify(loggedInUser));
+      setLoading(false);
       router.push("/profile");
-    } else {
-      const loggedInUser = {
-        role: "admin",
-        maHocVien: "admin",
-        hoTen: "Admin Phòng Đào tạo",
-      };
-
-      localStorage.setItem("currentUser", JSON.stringify(loggedInUser));
-      router.push("/");
+    } catch (err) {
+      console.error("Lỗi đăng nhập:", err);
+      setErrorMsg("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại!");
+      setLoading(false);
     }
   };
 
@@ -86,10 +150,10 @@ export default function LoginPage() {
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <div style={{ fontSize: "44px", marginBottom: "8px" }}>🎓</div>
           <h2 style={{ margin: 0, fontSize: "22px", fontWeight: 700, color: "#0f172a" }}>
-            Đăng Nhập Hệ Thống
+            Đăng Nhập Tài Khoản
           </h2>
           <p style={{ margin: "6px 0 0 0", fontSize: "13px", color: "#64748b" }}>
-            Quản lý Đào tạo Sau Đại học
+            Hệ thống Quản lý Đào tạo Sau Đại học
           </p>
         </div>
 
@@ -112,7 +176,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           <div>
             <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>
-              Tên đăng nhập / Mã học viên
+              Email trường
             </label>
             <input
               type="text"
@@ -133,72 +197,24 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>
-              Mật khẩu
-            </label>
-            <div style={{ position: "relative", width: "100%" }}>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "11px 40px 11px 14px",
-                  borderRadius: "8px",
-                  border: "1px solid #cbd5e1",
-                  fontSize: "14px",
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  color: "#64748b",
-                  padding: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  userSelect: "none",
-                }}
-              >
-                {showPassword ? "👁️" : "🙈"}
-              </button>
-            </div>
-          </div>
-
           <button
             type="submit"
+            disabled={loading}
             style={{
               marginTop: "8px",
               padding: "12px",
-              backgroundColor: "#2563eb",
+              backgroundColor: loading ? "#94a3b8" : "#2563eb",
               color: "#ffffff",
               border: "none",
               borderRadius: "8px",
               fontSize: "14px",
               fontWeight: 600,
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
             }}
           >
-            Đăng nhập
+            {loading ? "Đang xác thực..." : "Đăng nhập"}
           </button>
         </form>
-
-        <div style={{ marginTop: "20px", textAlign: "center", fontSize: "12px", color: "#94a3b8" }}>
-        </div>
       </div>
     </div>
   );
