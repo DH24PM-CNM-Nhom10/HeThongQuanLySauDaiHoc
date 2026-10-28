@@ -10,9 +10,25 @@ interface DataTableProps {
   title?: string;
 }
 
-function formatExcelDate(value: any): string {
+interface DataRecord {
+  id?: string | number;
+  [key: string]: unknown;
+}
+
+function isDataRecord(value: unknown): value is DataRecord {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function getDataRecords(value: unknown): DataRecord[] {
+  return Array.isArray(value) ? value.filter(isDataRecord) : [];
+}
+
+function formatExcelDate(value: unknown): string {
   if (!value) return "-";
-  const num = Number(value);
+  const num =
+    typeof value === "number" || typeof value === "string"
+      ? Number(value)
+      : Number.NaN;
   if (!isNaN(num) && num > 30000 && num < 60000) {
     const date = new Date((num - (25567 + 2)) * 86400 * 1000);
     return date.toLocaleDateString("vi-VN", {
@@ -25,7 +41,7 @@ function formatExcelDate(value: any): string {
 }
 
 export default function DataTable({ entityKey, title }: DataTableProps) {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<DataRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,26 +53,30 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      let localData = DB.get(entityKey) || [];
+      let localData = getDataRecords(DB.get(entityKey));
 
       if (!localData || localData.length === 0) {
         const res = await fetch(`/api/${entityKey}`);
         if (res.ok) {
           const text = await res.text();
           try {
-            const json = text ? JSON.parse(text) : null;
-            localData = Array.isArray(json) ? json : json?.data || json?.records || [];
+            const json: unknown = text ? JSON.parse(text) : null;
+            if (Array.isArray(json)) {
+              localData = getDataRecords(json);
+            } else if (isDataRecord(json)) {
+              localData = getDataRecords(json.data ?? json.records);
+            }
           } catch {
             localData = [];
           }
         }
       }
 
-      setData(Array.isArray(localData) ? localData : []);
+      setData(localData);
     } catch (err) {
       console.error(`Lỗi khi tải dữ liệu ${entityKey}:`, err);
       try {
-        setData(DB.get(entityKey) || []);
+        setData(getDataRecords(DB.get(entityKey)));
       } catch {
         setData([]);
       }
@@ -66,21 +86,24 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
   }, [entityKey]);
 
   useEffect(() => {
-    loadData();
-
     const handleStorageChange = () => loadData();
     const handleFocus = () => loadData();
+
+    const initialLoad = window.setTimeout(() => {
+      void loadData();
+    }, 0);
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("focus", handleFocus);
 
     return () => {
+      window.clearTimeout(initialLoad);
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("focus", handleFocus);
     };
   }, [loadData]);
 
-  const getFieldValue = (item: any, fieldKey: string) => {
+  const getFieldValue = (item: DataRecord, fieldKey: string) => {
     if (!item) return "-";
 
     let rawVal = item[fieldKey];
