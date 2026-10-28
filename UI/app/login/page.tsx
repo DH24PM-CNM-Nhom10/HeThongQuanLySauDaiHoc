@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DB } from "../../lib/db";
+import { DB, type StoredRecord } from "../../lib/db";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,7 +45,7 @@ export default function LoginPage() {
 
     // 2. Xử lý tài khoản Học viên (Kiểm tra Email chính xác)
     try {
-      let students = DB.get("students") || [];
+      let students: StoredRecord[] = DB.get("students");
 
       // Nếu LocalStorage chưa có dữ liệu, tự động fetch từ API
       if (!Array.isArray(students) || students.length === 0) {
@@ -60,7 +60,7 @@ export default function LoginPage() {
       }
 
       // Đối soát Email nhập vào với dữ liệu học viên
-      const foundStudent = students.find((s: any) => {
+      const foundStudent = students.find((s: StoredRecord) => {
         const emailInDb = String(s.email || s.Email || "").toLowerCase().trim();
         const maHV = String(
           s.maHocVien || s.ma_hoc_vien || s.mahv || s.id || ""
@@ -101,7 +101,7 @@ export default function LoginPage() {
         "Học viên";
       
       // Đảm bảo đuôi email chuẩn @student.agu.edu.vn
-      let cleanEmail = foundStudent.email || `${studentCode}@student.agu.edu.vn`;
+      let cleanEmail = String(foundStudent.email || `${studentCode}@student.agu.edu.vn`);
       if (cleanEmail.includes("@agu.edu.vn") && !cleanEmail.includes("@student.agu.edu.vn")) {
         cleanEmail = cleanEmail.replace("@agu.edu.vn", "@student.agu.edu.vn");
       }

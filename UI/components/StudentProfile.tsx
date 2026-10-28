@@ -3,14 +3,14 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { DB } from "../lib/db";
+import { DB, type StoredRecord } from "../lib/db";
 
 interface StudentProfileProps {
   studentId?: string;
 }
 
 // Helper bóc tách ngày từ Excel Serial Number, DD/MM/YYYY, hoặc ISO String
-function parseExcelOrVNDate(dateInput: any): Date | null {
+function parseExcelOrVNDate(dateInput: unknown): Date | null {
   if (!dateInput || dateInput === "-" || dateInput === "null" || dateInput === "undefined") return null;
   if (dateInput instanceof Date) return isNaN(dateInput.getTime()) ? null : dateInput;
 
@@ -49,7 +49,7 @@ function parseExcelOrVNDate(dateInput: any): Date | null {
 }
 
 // Helper định dạng hiển thị ngày DD/MM/YYYY
-function formatExcelDate(value: any): string {
+function formatExcelDate(value: unknown): string {
   if (!value || value === "-" || value === "null" || value === "undefined") return "—";
   const dateObj = parseExcelOrVNDate(value);
   if (!dateObj) return String(value);
@@ -61,7 +61,7 @@ function formatExcelDate(value: any): string {
 }
 
 // Tính toán ngày hết hạn và số ngày còn lại / quá hạn
-function calculateProgress(student: any) {
+function calculateProgress(student: StoredRecord | null) {
   if (!student) {
     return {
       startDateFormatted: "—",
@@ -137,14 +137,32 @@ function calculateProgress(student: any) {
   };
 }
 
+function findStudent(list: StoredRecord[], query: string): StoredRecord | null {
+  if (!query || !query.trim()) return null;
+  const normalizedQuery = query.trim().toLowerCase();
+
+  return list.find((record) => {
+    const studentCode = String(
+      record.maHocVien || record.ma_hoc_vien || record.masv || record.mahv || ""
+    ).toLowerCase();
+    const identityNumber = String(record.cccd || record.cmnd || "").toLowerCase();
+    const fullName = String(record.hoTen || record.ho_ten || record.hoten || "").toLowerCase();
+    return (
+      studentCode === normalizedQuery ||
+      identityNumber === normalizedQuery ||
+      fullName.includes(normalizedQuery)
+    );
+  }) ?? null;
+}
+
 export default function StudentProfile({ studentId: propStudentId }: StudentProfileProps) {
   const searchParams = useSearchParams();
   const urlStudentId = searchParams.get("id");
 
   const [role, setRole] = useState<"admin" | "student">("student");
   const [searchQuery, setSearchQuery] = useState("");
-  const [student, setStudent] = useState<any | null>(null);
-  const [allStudents, setAllStudents] = useState<any[]>([]);
+  const [student, setStudent] = useState<StoredRecord | null>(null);
+  const [allStudents, setAllStudents] = useState<StoredRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -162,7 +180,7 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
 
         if (data.length > 0) {
           if (userRole === "admin") {
-            const targetId = urlStudentId || propStudentId || data[0]?.maHocVien;
+            const targetId = urlStudentId || propStudentId || String(data[0]?.maHocVien || "");
             setSearchQuery(targetId || "");
             const found = findStudent(data, targetId || "");
             setStudent(found || data[0]);
@@ -184,17 +202,6 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
     loadProfileData();
   }, [propStudentId, urlStudentId]);
 
-  const findStudent = (list: any[], query: string) => {
-    if (!query || !query.trim()) return null;
-    const q = query.trim().toLowerCase();
-    return list.find((s) => {
-      const maHV = String(s.maHocVien || s.ma_hoc_vien || s.masv || s.mahv || "").toLowerCase();
-      const cccd = String(s.cccd || s.cmnd || "").toLowerCase();
-      const hoTen = String(s.hoTen || s.ho_ten || s.hoten || "").toLowerCase();
-      return maHV === q || cccd === q || hoTen.includes(q);
-    });
-  };
-
   const handleSearch = () => {
     if (!searchQuery.trim() || role !== "admin") return;
     const match = findStudent(allStudents, searchQuery);
@@ -205,7 +212,7 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
     if (!student) return "—";
     for (const key of fieldKeys) {
       if (student[key] !== undefined && student[key] !== null && student[key] !== "") {
-        return student[key];
+        return String(student[key]);
       }
     }
     return "—";
@@ -216,7 +223,7 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
     if (!student) return "—";
 
     const maHV = String(student.maHocVien || student.ma_hoc_vien || student.masv || student.mahv || "").trim();
-    let rawEmail = student.email || student.Email;
+    let rawEmail = String(student.email || student.Email || "");
 
     // Nếu học viên có email đuôi @agu.edu.vn -> chuẩn hóa về @student.agu.edu.vn
     if (rawEmail && rawEmail.includes("@agu.edu.vn") && !rawEmail.includes("@student.agu.edu.vn")) {
