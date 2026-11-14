@@ -45,7 +45,20 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [userRole, setUserRole] = useState<string>("admin");
   const pageSize = 10;
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("currentUser");
+      if (saved) {
+        const user = JSON.parse(saved);
+        if (user?.role) setUserRole(user.role);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const schema = ENTITY_SCHEMAS[entityKey];
   const fields = schema?.fields || [];
@@ -136,7 +149,10 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
     }
 
     const isDateField = /ngay|date|birth/i.test(fieldKey);
-    if (isDateField || (typeof rawVal === "number" && rawVal > 30000 && rawVal < 60000)) {
+    if (
+      isDateField ||
+      (typeof rawVal === "number" && rawVal > 30000 && rawVal < 60000)
+    ) {
       return formatExcelDate(rawVal);
     }
 
@@ -151,11 +167,18 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
       let color = "#475569";
 
       if (val.includes("Đang học") || val.includes("Đang làm")) {
-        bg = "#dcfce7"; color = "#15803d";
+        bg = "#dcfce7";
+        color = "#15803d";
       } else if (val.includes("Tốt nghiệp") || val.includes("Bảo vệ")) {
-        bg = "#dbeafe"; color = "#1e40af";
-      } else if (val.includes("Quá hạn") || val.includes("Nghỉ") || val.includes("Thôi")) {
-        bg = "#fee2e2"; color = "#b91c1c";
+        bg = "#dbeafe";
+        color = "#1e40af";
+      } else if (
+        val.includes("Quá hạn") ||
+        val.includes("Nghỉ") ||
+        val.includes("Thôi")
+      ) {
+        bg = "#fee2e2";
+        color = "#b91c1c";
       }
 
       return (
@@ -183,12 +206,17 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
     if (!searchTerm.trim()) return true;
     const term = searchTerm.toLowerCase();
     return Object.values(item).some((val) =>
-      String(val || "").toLowerCase().includes(term)
+      String(val || "")
+        .toLowerCase()
+        .includes(term)
     );
   });
 
   const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
-  const pagedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const pagedData = filteredData.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const btnNavStyle = (disabled: boolean) => ({
     padding: "6px 12px",
@@ -245,7 +273,9 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
         <div style={{ display: "flex", gap: 4 }}>
           <button
             disabled={currentPage === totalPages || totalPages === 0}
-            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
             title="Trang sau"
             style={btnNavStyle(currentPage === totalPages || totalPages === 0)}
           >
@@ -265,7 +295,8 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
       {/* KHỐI PHẢI: Số trang */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <span style={{ fontSize: "13px", fontWeight: 600, color: "#334155" }}>
-          Trang <strong style={{ color: "#2563eb" }}>{currentPage}</strong> / {totalPages} (Tổng {filteredData.length} bản ghi)
+          Trang <strong style={{ color: "#2563eb" }}>{currentPage}</strong> /{" "}
+          {totalPages} (Tổng {filteredData.length} bản ghi)
         </span>
       </div>
     </div>
@@ -285,9 +316,7 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
         }}
       >
         {title && (
-          <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>
-            {title}
-          </h1>
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>{title}</h1>
         )}
         <input
           type="text"
@@ -326,7 +355,9 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
           }}
         >
           {data.length === 0
-            ? `Chưa có dữ liệu cho mục này. Vui lòng vào trang Upload để nhập dữ liệu!`
+            ? userRole === "student"
+              ? "Chưa có dữ liệu cho mục này. Vui lòng liên hệ quản trị viên hoặc đợi dữ liệu được cung cấp."
+              : "Chưa có dữ liệu cho mục này. Vui lòng vào trang Upload để nhập dữ liệu!"
             : "Không tìm thấy bản ghi nào khớp với từ khóa."}
         </div>
       ) : (
@@ -395,8 +426,12 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
                     style={{
                       transition: "background-color 0.1s",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8fafc")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#f8fafc")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "transparent")
+                    }
                   >
                     {/* Ô STT Cố định Sticky trái */}
                     <td
@@ -442,7 +477,6 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
               </tbody>
             </table>
           </div>
-
         </>
       )}
     </div>

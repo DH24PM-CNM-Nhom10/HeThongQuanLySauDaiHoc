@@ -1,9 +1,10 @@
-// UI/components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const MOBILE_BREAKPOINT = 900;
 
 const menuAdmin = [
   { href: "/", label: "Bảng điều khiển", icon: "📊", page: "dashboard" },
@@ -40,6 +41,11 @@ const menuStudent = [
   { href: "/schedule", label: "Thời khóa biểu", icon: "🗓️", page: "schedule" },
 ];
 
+function isMobileViewport() {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth <= MOBILE_BREAKPOINT;
+}
+
 export default function Sidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
   const items =
@@ -63,8 +69,12 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
     setIsOpen(false);
   };
 
+  // Chỉ tự đóng sidebar khi chuyển trang trên mobile.
+  // Desktop: giữ trạng thái mở (không thêm class collapsed).
   useEffect(() => {
-    closeSidebar();
+    if (isMobileViewport()) {
+      closeSidebar();
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -79,6 +89,13 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
     window.addEventListener("sidebar-toggle", onToggle);
     return () => window.removeEventListener("sidebar-toggle", onToggle);
   }, []);
+
+  const handleNavClick = () => {
+    // Overlay + auto-close chỉ cần trên mobile
+    if (isMobileViewport()) {
+      closeSidebar();
+    }
+  };
 
   return (
     <>
@@ -106,7 +123,7 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
               key={item.href}
               href={item.href}
               className={`nav-item ${pathname === item.href ? "active" : ""}`}
-              onClick={closeSidebar}
+              onClick={handleNavClick}
             >
               <span className="nav-icon">{item.icon}</span>
               <span>{item.label}</span>
@@ -125,9 +142,7 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
         ›
       </button>
 
-      {isOpen && (
-        <div className="sidebar-overlay" onClick={closeSidebar} />
-      )}
+      {isOpen && <div className="sidebar-overlay" onClick={closeSidebar} />}
     </>
   );
 }
