@@ -1,11 +1,8 @@
 "use client";
 
 import DataTable from "../../components/DataTable";
+import StudentPageSwitch from "../../components/StudentPageSwitch";
 
 export default function SchedulePage() {
-  return (
-    <div>
-      <DataTable entityKey="schedule" title="Thời khóa biểu" />
-    </div>
-  );
+  return <StudentPageSwitch section="schedule" adminView={<DataTable entityKey="schedule" title="Thời khóa biểu" />}/>;
 }

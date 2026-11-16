@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 const MOBILE_BREAKPOINT = 900;
 
 const menuAdmin = [
-  { href: "/", label: "Bảng điều khiển", icon: "📊", page: "dashboard" },
+  { href: "/", label: "Cổng thông tin", icon: "🌐", page: "website" },
+  { href: "/admin", label: "Bảng điều khiển", icon: "📊", page: "dashboard" },
   { href: "/upload", label: "Upload & Mapping", icon: "📤", page: "upload" },
   {
     href: "/students",
@@ -36,9 +37,11 @@ const menuAdmin = [
 ];
 
 const menuStudent = [
+  { href: "/home", label: "Trang chủ thông báo", icon: "🏠", page: "home" },
   { href: "/profile", label: "Hồ sơ học viên", icon: "👤", page: "profile" },
   { href: "/grades", label: "Kết quả học tập", icon: "📝", page: "grades" },
   { href: "/schedule", label: "Thời khóa biểu", icon: "🗓️", page: "schedule" },
+  { href: "/tien-do-hoc-tap", label: "Tiến độ học tập", icon: "📈", page: "progress" },
 ];
 
 function isMobileViewport() {

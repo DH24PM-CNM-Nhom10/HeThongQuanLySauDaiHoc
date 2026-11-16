@@ -1,4 +1,3 @@
-// UI/components/AuthGuard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,78 +6,64 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
 
+type User = { role?: string; hoTen?: string; maHocVien?: string };
+
+// Trang cong khai khong dung layout quan tri va khong yeu cau dang nhap.
+const publicRoutes = ["/", "/home", "/login", "/thong-bao", "/chuong-trinh-dao-tao", "/lien-he", "/gioi-thieu"];
+const adminRoutes = ["/admin", "/upload", "/students", "/teachers", "/assignment", "/thesis"];
+const studentRoutes = ["/profile", "/grades", "/schedule", "/tien-do-hoc-tap"];
+
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const savedUserStr = localStorage.getItem("currentUser");
-      const user = savedUserStr ? JSON.parse(savedUserStr) : null;
+    let user: User | null = null;
+    try {
+      const saved = localStorage.getItem("currentUser");
+      user = saved ? JSON.parse(saved) as User : null;
+    } catch {
+      localStorage.removeItem("currentUser");
+    }
+    setCurrentUser(user);
+    setLoading(false);
 
-      // 1. Chưa đăng nhập mà truy cập bất kỳ trang nào (trừ /login) -> Đẩy về /login ngay
-      if (!user && pathname !== "/login") {
-        router.replace("/login");
-        setLoading(false);
-        return;
-      }
-
-      // 2. Đã đăng nhập rồi mà cố gõ /login -> Đẩy về trang tương ứng với quyền
-      if (user && pathname === "/login") {
-        router.replace(user.role === "student" ? "/profile" : "/");
-        setLoading(false);
-        return;
-      }
-
-      // 3. Học viên không được phép truy cập các trang Quản trị Admin
-      if (user && user.role === "student") {
-        const adminRoutes = ["/", "/upload", "/students", "/teachers", "/assignment"];
-        if (adminRoutes.includes(pathname)) {
-          router.replace("/profile");
-          setLoading(false);
-          return;
-        }
-      }
-
-      setCurrentUser(user);
-      setLoading(false);
-    };
-
-    checkAuth();
+    if (user && pathname === "/login") {
+      router.replace("/");
+      return;
+    }
+    if (!user && !publicRoutes.includes(pathname)) {
+      router.replace("/");
+      return;
+    }
+    if (user?.role === "student" && adminRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
+      router.replace("/home");
+    }
   }, [pathname, router]);
 
-  // Nếu là trang Đăng nhập: Hiển thị giao diện màn hình tràn (không có Header/Sidebar/Footer)
-  if (pathname === "/login") {
+  if (publicRoutes.includes(pathname)) {
     return <>{children}</>;
   }
 
-  // Đang kiểm tra quyền
-  if (loading || (!currentUser && pathname !== "/login")) {
+  const blocked = !currentUser || (currentUser.role === "student" && adminRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`)));
+  if (loading || blocked) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f8fafc",
-          color: "#64748b",
-          fontFamily: "sans-serif",
-          fontSize: "14px",
-          fontWeight: 600,
-        }}
-      >
-        🔒 Đang kiểm tra quyền truy cập hệ thống...
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", color: "#64748b", background: "#f8fafc" }}>
+        Đang kiểm tra quyền truy cập hệ thống...
       </div>
     );
   }
 
-  // Đã đăng nhập: Cho phép hiển thị đầy đủ giao diện ứng dụng
+  // Học viên dùng trang giao diện riêng; Admin vẫn giữ Sidebar và Dashboard cũ.
+  if ((currentUser?.role === "student" && studentRoutes.includes(pathname)) || pathname === "/tien-do-hoc-tap") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="app-layout">
-      <Sidebar role={currentUser?.role || "student"} />
+      <Sidebar role={currentUser.role || "student"} />
       <div className="main-wrapper">
         <Header />
         <main className="main-content">{children}</main>
