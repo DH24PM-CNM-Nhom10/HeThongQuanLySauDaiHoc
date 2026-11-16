@@ -82,7 +82,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       const value = localStorage.getItem("currentUser");
       const parsed: unknown = value ? JSON.parse(value) : null;
       if (parsed && typeof parsed === "object" && "role" in parsed &&
-          (parsed.role === "student" || parsed.role === "admin")) {
+        (parsed.role === "student" || parsed.role === "admin")) {
         setUser(parsed as SessionUser);
       } else {
         setUser(null);
@@ -129,7 +129,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const ketQua = useMemo(() => [...danhSach]
     .sort((a, b) => b.ngay_dang.localeCompare(a.ngay_dang) || b.ma_thong_bao - a.ma_thong_bao)
     .filter((item) => page !== "notices" || item.tieu_de.toLocaleLowerCase("vi").includes(timKiem.trim().toLocaleLowerCase("vi"))),
-  [danhSach, timKiem, page]);
+    [danhSach, timKiem, page]);
 
   const hienThi = page === "home" ? ketQua.slice(0, SO_THONG_BAO_TRANG_CHU) : ketQua;
   const isNoticePage = page === "home" || page === "notices";
@@ -256,7 +256,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
             onClick={() => setMenuMo((prev) => !prev)}
             aria-expanded={menuMo} aria-controls="agu-navigation"
             aria-label={menuMo ? "Đóng menu" : "Mở menu"}>
-            {menuMo ? <X size={22}/> : <Menu size={22}/>}
+            {menuMo ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </header>
@@ -330,7 +330,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
               </div>
               <div className={styles.noticeFooter}>
                 {page === "home" ? (
-                  <Link href="/thong-bao">Xem tất cả {danhSach.length} thông báo</Link>
+                  <Link href="/thong-bao">Xem tất cả thông báo</Link>
                 ) : (
                   <span>Đang hiển thị {ketQua.length} thông báo{timKiem ? ` phù hợp trong tổng số ${danhSach.length}` : ""}.</span>
                 )}
