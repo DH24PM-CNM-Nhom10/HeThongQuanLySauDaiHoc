@@ -19,6 +19,18 @@
 CREATE DATABASE IF NOT EXISTS `quan_ly_dao_tao_sdh` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `quan_ly_dao_tao_sdh`;
 
+-- Dumping structure for table quan_ly_dao_tao_sdh.thong_bao
+CREATE TABLE IF NOT EXISTS `thong_bao` (
+	`ma_thong_bao` bigint unsigned NOT NULL AUTO_INCREMENT,
+	`tieu_de` varchar(255) NOT NULL,
+	`ten_file` varchar(255) NOT NULL,
+	`duong_dan_file` varchar(500) NOT NULL,
+	`ngay_dang` datetime NOT NULL,
+	`nguoi_dang` varchar(100) DEFAULT NULL,
+	`trang_thai` tinyint(1) NOT NULL DEFAULT 1,
+	PRIMARY KEY (`ma_thong_bao`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Dumping structure for table quan_ly_dao_tao_sdh.danh_muc_tt74
 CREATE TABLE IF NOT EXISTS `danh_muc_tt74` (
   `ma_so` varchar(20) NOT NULL,
