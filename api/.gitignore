@@ -57,3 +57,16 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Training office private account, assignments and secrets
+.training-office-account.local.json
+.training-office-auth-secret
+.training-assignments.local.json
+.training-assignments.local.json.tmp
+training-office-credentials.local.txt
+
+# Teacher authentication - local private data
+.teacher-accounts.local.json
+.teacher-auth-backups/
+.teacher-auth-secret
+teacher-credentials.local.csv

@@ -36,6 +36,11 @@ const menuAdmin = [
   },
 ];
 
+const menuTeacher = [
+  { href: "/", label: "Cổng thông tin", icon: "🌐", page: "website" },
+  { href: "/giang-vien", label: "Trang giảng viên", icon: "👨‍🏫", page: "teacher-home" },
+];
+
 const menuStudent = [
   { href: "/home", label: "Trang chủ thông báo", icon: "🏠", page: "home" },
   { href: "/profile", label: "Hồ sơ học viên", icon: "👤", page: "profile" },
@@ -52,7 +57,7 @@ function isMobileViewport() {
 export default function Sidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
   const items =
-    role === "student" ? menuStudent : [...menuAdmin, ...menuStudent];
+    role === "student" ? menuStudent : role === "teacher" ? menuTeacher : [...menuAdmin, ...menuStudent];
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {

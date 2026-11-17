@@ -31,13 +31,19 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (currentUser?.role === "teacher") {
+      try { await fetch("/api/teacher-auth/logout", { method: "POST", credentials: "same-origin" }); }
+      catch { /* Xóa trạng thái UI ngay cả khi Backend tạm thời không kết nối. */ }
+    }
     localStorage.removeItem("currentUser");
     setIsDropdownOpen(false);
-    router.push("/login");
+    router.push("/");
   };
 
   const isAdmin = currentUser?.role === "admin";
+  const isTeacher = currentUser?.role === "teacher";
+  const teacherCode = String(currentUser?.shcc || currentUser?.teacherId || "Chưa cập nhật");
   const displayName = currentUser?.hoTen || (isAdmin ? "Admin Phòng Đào tạo" : currentUser?.maHocVien || "Học viên");
   const avatarChar = displayName.trim().charAt(0).toUpperCase() || "U";
 
@@ -103,7 +109,7 @@ export default function Header() {
                   {displayName}
                 </span>
                 <span style={{ fontSize: "11px", color: "#64748b" }}>
-                  {isAdmin ? "Quản trị viên" : `Mã HV: ${currentUser.maHocVien}`}
+                  {isAdmin ? "Quản trị viên" : isTeacher ? `Mã GV: ${teacherCode}` : `Mã HV: ${currentUser.maHocVien || "Chưa cập nhật"}`}
                 </span>
               </div>
 
@@ -134,7 +140,7 @@ export default function Header() {
                     {displayName}
                   </div>
                   <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>
-                    {isAdmin ? "Phòng Đào tạo Sau Đại học" : `MSHV: ${currentUser.maHocVien}`}
+                    {isAdmin ? "Phòng Đào tạo Sau Đại học" : isTeacher ? `Mã GV: ${teacherCode}` : `MSHV: ${currentUser.maHocVien || "Chưa cập nhật"}`}
                   </div>
                 </div>
 
