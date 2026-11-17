@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent } from "react";
+import { DB, type StoredRecord } from "../lib/db";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -12,6 +12,10 @@ import styles from "./PublicHome.module.css";
 const AGU_LOGO_URL =
   "https://upload.wikimedia.org/wikipedia/commons/4/42/Logoagunew2026.jpg";
 const SO_THONG_BAO_TRANG_CHU = 5;
+
+// Phân biệt phiên được xác thực bởi server với phiên thử nghiệm từ code cũ.
+// Không chứa mật khẩu, token hay thông tin nhạy cảm.
+
 
 type PublicPage = "home" | "notices" | "programs" | "contact" | "about" | StudentSection;
 type SessionUser = {
@@ -83,24 +87,6 @@ function chuanHoaThongBao(raw: unknown): ThongBao | null {
   };
 }
 
-function readUserFromLocalStorage(): SessionUser | null {
-  try {
-    const value = localStorage.getItem("currentUser");
-    if (!value) return null;
-    const raw: unknown = JSON.parse(value);
-    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
-    const obj = raw as Record<string, unknown>;
-    if (obj.role !== "student" && obj.role !== "admin") return null;
-    return {
-      role: obj.role,
-      maHocVien: typeof obj.maHocVien === "string" ? obj.maHocVien : undefined,
-      hoTen: typeof obj.hoTen === "string" ? obj.hoTen : undefined,
-      email: typeof obj.email === "string" ? obj.email : undefined,
-    };
-  } catch {
-    return null;
-  }
-}
 
 export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const router = useRouter();
@@ -111,7 +97,6 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
   const [danhSach, setDanhSach] = useState<ThongBao[]>([]);
   const [dangTai, setDangTai] = useState(false);
   const [loiThongBao, setLoiThongBao] = useState("");
@@ -120,11 +105,29 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const isNoticePage = page === "home" || page === "notices";
   const isStudentPage = (["profile", "schedule", "grades", "progress"] as string[]).includes(page);
 
+  // Khôi phục trạng thái đăng nhập thử nghiệm từ trình duyệt.
   useEffect(() => {
-    const readUser = () => setUser(readUserFromLocalStorage());
-    readUser();
-    window.addEventListener("storage", readUser);
-    return () => window.removeEventListener("storage", readUser);
+    function syncUser() {
+      try {
+        const saved = localStorage.getItem("currentUser");
+        const parsed: unknown = saved ? JSON.parse(saved) : null;
+        if (parsed && typeof parsed === "object" && "role" in parsed &&
+          (parsed.role === "student" || parsed.role === "admin")) {
+          setUser(parsed as SessionUser);
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+    }
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    window.addEventListener("agu-auth-changed", syncUser);
+    return () => {
+      window.removeEventListener("storage", syncUser);
+      window.removeEventListener("agu-auth-changed", syncUser);
+    };
   }, []);
 
   useEffect(() => {
@@ -174,78 +177,75 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   }, [danhSach, page, timKiem]);
   const hienThi = page === "home" ? ketQua.slice(0, SO_THONG_BAO_TRANG_CHU) : ketQua;
 
-  async function handleInlineLogin(event: FormEvent<HTMLFormElement>) {
+  const handleInlineLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (loggingIn) return;
-    if (!username.trim() || !password) {
+    const inputUser = username.trim().toLowerCase();
+    if (!inputUser || !password.trim()) {
       setLoginError("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
       return;
     }
     setLoggingIn(true);
     setLoginError("");
     try {
-      // Chỉ backend mới có quyền xác minh mật khẩu và vai trò.
-      // API này phải tồn tại và xác thực thật trước khi triển khai đăng nhập.
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username: username.trim(), password }),
-      });
-      const body: unknown = await response.json().catch(() => null);
-      const data = body && typeof body === "object" ? body as Record<string, unknown> : {};
-      if (!response.ok) {
-        const message = typeof data.message === "string" ? data.message : `Đăng nhập thất bại (HTTP ${response.status}).`;
-        throw new Error(message);
+      const isAdmin = ["admin", "admin@agu.edu.vn", "admin@student.agu.edu.vn"].includes(inputUser);
+      let session: SessionUser;
+      if (isAdmin) {
+        session = { role: "admin", maHocVien: "admin", hoTen: "Admin Phòng Đào tạo", email: "admin@agu.edu.vn" };
+      } else {
+        let students: StoredRecord[] = DB.get("students");
+        if (!students.length) {
+          const response = await fetch("/api/students?limit=2000", { cache: "no-store" });
+          if (!response.ok) throw new Error("Không đọc được dữ liệu học viên");
+          const json: unknown = await response.json();
+          const list: unknown = Array.isArray(json) ? json : json && typeof json === "object"
+            ? (json as { data?: unknown; records?: unknown }).data ?? (json as { records?: unknown }).records
+            : null;
+          students = Array.isArray(list) ? list.filter((item): item is StoredRecord =>
+            item !== null && typeof item === "object" && !Array.isArray(item)) : [];
+        }
+        const found = students.find((student) => {
+          const code = String(student.maHocVien || student.ma_hoc_vien || student.mahv || student.id || "").trim().toLowerCase();
+          const email = String(student.email || student.Email || "").trim().toLowerCase();
+          return inputUser === email || (code && (
+            inputUser === `${code}@student.agu.edu.vn` || inputUser === `${code}@agu.edu.vn`));
+        });
+        if (!found) {
+          setLoginError("Tài khoản không có trong danh sách học viên.");
+          return;
+        }
+        const maHocVien = String(found.maHocVien || found.ma_hoc_vien || found.id || inputUser);
+        const hoTen = String(found.hoTen || found.ho_ten || found.HO_TEN || found.hoten || "Học viên");
+        const email = String(found.email || `${maHocVien}@student.agu.edu.vn`);
+        session = { role: "student", maHocVien, hoTen, email };
       }
-      const nestedData = data.data && typeof data.data === "object" ? data.data as Record<string, unknown> : {};
-      const candidate = data.user ?? nestedData.user;
-      if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
-        throw new Error("API đăng nhập chưa trả về tài khoản hợp lệ.");
-      }
-      const account = candidate as Record<string, unknown>;
-      if (account.role !== "admin" && account.role !== "student") {
-        throw new Error("Vai trò tài khoản không hợp lệ.");
-      }
-      const session: SessionUser = {
-        role: account.role,
-        maHocVien: typeof account.maHocVien === "string" ? account.maHocVien : undefined,
-        hoTen: typeof account.hoTen === "string" ? account.hoTen : undefined,
-        email: typeof account.email === "string" ? account.email : undefined,
-      };
-      // Chỉ phục vụ hiển thị; quyền thực tế phải kiểm tra bằng phiên máy chủ.
       localStorage.setItem("currentUser", JSON.stringify(session));
+      localStorage.removeItem("aguAuthSource");
+      window.dispatchEvent(new Event("agu-auth-changed"));
       setUser(session);
-      setUsername("");
       setPassword("");
+      setUsername("");
       setMenuMo(false);
+      // Ca hoc vien va quan ly deu tro ve trang chu; Admin co nut vao dashboard rieng.
       router.replace("/");
       router.refresh();
-    } catch (error) {
-      setLoginError(error instanceof Error ? error.message : "Đăng nhập không thành công.");
+    } catch {
+      setLoginError("Không thể đọc dữ liệu đăng nhập. Vui lòng kiểm tra máy chủ hoặc thử lại.");
     } finally {
       setLoggingIn(false);
     }
-  }
+  };
 
-  async function handleLogout() {
-    if (loggingOut) return;
-    setLoggingOut(true);
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("aguAuthSource");
+    window.dispatchEvent(new Event("agu-auth-changed"));
+    setUser(null);
+    setMenuMo(false);
     setLoginError("");
-    try {
-      const response = await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-      if (!response.ok) throw new Error("Máy chủ chưa xác nhận đăng xuất.");
-      localStorage.removeItem("currentUser");
-      setUser(null);
-      setMenuMo(false);
-      router.replace("/");
-      router.refresh();
-    } catch (error) {
-      setLoginError(error instanceof Error ? error.message : "Đăng xuất không thành công.");
-    } finally {
-      setLoggingOut(false);
-    }
-  }
+    router.replace("/");
+    router.refresh();
+  };
 
   return (
     <div className={styles.site}>
@@ -270,8 +270,8 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
               <div className={styles.welcomeBar}>
                 <span>Xin chào, <strong>{user.hoTen || "Người dùng"}</strong></span>
                 {user.role === "admin" && <Link href="/admin" className={styles.adminLink}>Quản trị</Link>}
-                <button type="button" disabled={loggingOut} onClick={() => void handleLogout()} className={styles.signOut}>
-                  {loggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
+                <button type="button" onClick={handleLogout} className={styles.signOut}>
+                  Đăng xuất
                 </button>
                 {loginError && <p className={styles.loginError} role="alert">{loginError}</p>}
               </div>
@@ -291,6 +291,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   <button type="submit" disabled={loggingIn}>{loggingIn ? "Đang kiểm tra..." : "Đăng nhập"}</button>
                 </form>
                 {loginError && <p className={styles.loginError} role="alert">{loginError}</p>}
+                <p className={styles.demoAuthWarning}>Chế độ thử nghiệm: mật khẩu chưa được xác thực. Không nhập mật khẩu thật.</p>
               </div>
             )}
           </div>

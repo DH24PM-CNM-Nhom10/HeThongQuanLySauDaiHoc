@@ -4,8 +4,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/:path*",
-        destination: "http://localhost:3001/api/:path*", // Chuyển toàn bộ request /api sang NestJS
+        // Khong proxy API xac thuc va thong bao do Next.js tu xu ly.
+        // Cac endpoint nghiep vu khac giu backend NestJS o cong 3001.
+        source: "/api/:path((?!auth(?:/|$)|thong-bao(?:/|$)).*)",
+        destination: "http://localhost:3001/api/:path",
       },
     ];
   },

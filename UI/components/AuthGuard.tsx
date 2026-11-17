@@ -47,7 +47,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  const blocked = !currentUser || (currentUser.role === "student" && adminRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`)));
+  const blocked = !currentUser ||
+    (currentUser.role === "student" && adminRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`))) ||
+    (currentUser.role === "admin" && studentRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`)));
   if (loading || blocked) {
     return (
       <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", color: "#64748b", background: "#f8fafc" }}>
