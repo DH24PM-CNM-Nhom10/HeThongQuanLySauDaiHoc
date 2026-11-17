@@ -60,7 +60,7 @@ export default function Header() {
         >
           ☰
         </button>
-        <h1 className="page-title">Hệ thống Quản lý Đào tạo</h1>
+        <h1 className="page-title">Quản lý đào tạo sau đại học</h1>
       </div>
 
       <div className="header-right">

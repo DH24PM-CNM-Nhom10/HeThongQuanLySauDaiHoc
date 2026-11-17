@@ -3,37 +3,33 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { GraduationCap } from "lucide-react";
 
 const MOBILE_BREAKPOINT = 900;
 
+const menuOverview = [
+  { href: "/admin", label: "Bảng điều khiển" },
+  { href: "/", label: "Cổng thông tin" },
+];
+
 const menuAdmin = [
-  { href: "/", label: "Cổng thông tin", icon: "🌐", page: "website" },
-  { href: "/admin", label: "Bảng điều khiển", icon: "📊", page: "dashboard" },
-  { href: "/upload", label: "Upload & Mapping", icon: "📤", page: "upload" },
   {
     href: "/students",
-    label: "Quản lý Học viên",
-    icon: "👨‍🎓",
-    page: "students",
+    label: "Quản lý học viên",
   },
   {
     href: "/teachers",
-    label: "Quản lý Giảng viên",
-    icon: "👨‍🏫",
-    page: "teachers",
+    label: "Quản lý giảng viên",
   },
   {
     href: "/assignment",
     label: "Phân công giảng dạy",
-    icon: "📋",
-    page: "assignment",
   },
   {
     href: "/thesis",
-    label: "Tiến độ Luận văn",
-    icon: "📄",
-    page: "thesis",
+    label: "Tiến độ luận văn",
   },
+  { href: "/upload", label: "Upload & mapping" },
 ];
 
 const menuStudent = [
@@ -51,8 +47,13 @@ function isMobileViewport() {
 
 export default function Sidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
-  const items =
-    role === "student" ? menuStudent : [...menuAdmin, ...menuStudent];
+  const isStudent = role === "student";
+  const groups = isStudent
+    ? [{ label: "", items: menuStudent }]
+    : [
+      { label: "Tổng quan", items: menuOverview },
+      { label: "Quản lý đào tạo", items: menuAdmin },
+    ];
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -102,12 +103,14 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
 
   return (
     <>
-      <aside id="sidebar" className="sidebar">
+      <aside id="sidebar" className={isStudent ? "sidebar" : "sidebar sidebar-admin"}>
         <div className="sidebar-brand">
-          <div className="brand-icon">🎓</div>
+          <div className="brand-icon" aria-hidden="true">
+            {isStudent ? "🎓" : <GraduationCap size={24} />}
+          </div>
           <div className="brand-text">
-            <strong>QLĐT Thạc sĩ</strong>
-            <span>AGU SĐH</span>
+            <strong>Đại học An Giang</strong>
+            <span>{isStudent ? "AGU SĐH" : "Quản lý đào tạo sau đại học"}</span>
           </div>
           <button
             type="button"
@@ -120,17 +123,25 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
           </button>
         </div>
 
-        <nav className="sidebar-nav">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`nav-item ${pathname === item.href ? "active" : ""}`}
-              onClick={handleNavClick}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
+        <nav className="sidebar-nav" aria-label="Điều hướng chính">
+          {groups.map(({ label, items }) => (
+            <div key={label} className="sidebar-group">
+              {label && <h2 className="sidebar-group-title">{label}</h2>}
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-item ${pathname === item.href ? "active" : ""}`}
+                  aria-current={pathname === item.href ? "page" : undefined}
+                  onClick={handleNavClick}
+                >
+                  {"icon" in item && typeof item.icon === "string" && (
+                    <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+                  )}
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
       </aside>

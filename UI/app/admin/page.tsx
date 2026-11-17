@@ -11,7 +11,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadDashboardData() {
       setLoading(true);
-      
+
       // 1. Đọc dữ liệu thực tế từ LocalStorage
       try {
         const localData = DB.get("students");
@@ -99,7 +99,7 @@ export default function Dashboard() {
   // --- THỐNG KÊ PHÂN BỔ THEO LỚP & NGÀNH ---
   const classMajorDistribution = useMemo(() => {
     const map: { [key: string]: number } = {};
-    
+
     stats.overdueList.forEach((s) => {
       const lop = s.lop || s.LOP || s.class || "";
       const nganh = s.tenNganh || s.ten_nganh || s.major || "Chưa phân ngành";
@@ -121,16 +121,13 @@ export default function Dashboard() {
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       color: "#0f172a"
     }}>
-      
+
       {/* 1. HEADER */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "22px", fontWeight: "800", color: "#0f172a", margin: 0, letterSpacing: "-0.02em" }}>
-            📊 Bảng Điều Khiển & Tổng Quan Đào Tạo
+            Bảng điều khiển & tổng quan
           </h1>
-          <p style={{ margin: "4px 0 0", fontSize: "13.5px", color: "#64748b" }}>
-            Hệ thống Quản lý Đào tạo Thạc sĩ — Cập nhật dữ liệu thời gian thực
-          </p>
         </div>
 
         <div style={{ display: "flex", gap: "10px" }}>
@@ -138,14 +135,14 @@ export default function Dashboard() {
             onClick={() => alert("Đã xuất báo cáo thành công!")}
             style={{ padding: "9px 16px", backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: "8px", fontWeight: 600, fontSize: "13px", color: "#334155", cursor: "pointer", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
           >
-            📑 Xuất Báo Cáo
+            Xuất Báo Cáo
           </button>
-          
+
           <Link
             href="/thesis"
             style={{ padding: "9px 16px", backgroundColor: "#6366f1", border: "none", borderRadius: "8px", fontWeight: 600, fontSize: "13px", color: "#fff", textDecoration: "none", boxShadow: "0 1px 2px rgba(99, 102, 241, 0.3)" }}
           >
-            📩 Gửi Nhắc Nhở Hàng Loạt
+            Gửi Nhắc Nhở Hàng Loạt
           </Link>
         </div>
       </div>
@@ -156,54 +153,46 @@ export default function Dashboard() {
         <>
           {/* 2. CARDS KPI */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "16px", marginBottom: "24px" }}>
-            
+
             <div style={kpiCardStyle("#3b82f6", "#eff6ff")}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em" }}>TỔNG HỌC VIÊN</span>
-                <span style={{ fontSize: "18px" }}>🎓</span>
               </div>
               <div style={{ fontSize: "32px", fontWeight: 800, color: "#1e3a8a", marginTop: "6px" }}>{stats.total}</div>
-              <div style={{ fontSize: "12px", color: "#3b82f6", marginTop: "2px" }}>Toàn bộ hồ sơ trong hệ thống</div>
             </div>
 
             <div style={kpiCardStyle("#ef4444", "#fef2f2")}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "#991b1b", textTransform: "uppercase", letterSpacing: "0.05em" }}>CẢNH BÁO QUÁ HẠN</span>
-                <span style={{ fontSize: "18px" }}>⚠️</span>
               </div>
               <div style={{ fontSize: "32px", fontWeight: 800, color: "#991b1b", marginTop: "6px" }}>{stats.overdueCount}</div>
-              <div style={{ fontSize: "12px", color: "#ef4444", marginTop: "2px" }}>Quá thời hạn đào tạo chưa bảo vệ</div>
             </div>
 
             <div style={kpiCardStyle("#f59e0b", "#fffbeb")}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "12px", fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐANG HỌC / LÀM LUẬN VĂN</span>
+                  <span style={{ fontSize: "12px", fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐANG HỌC</span>
                 </span>
-                <span style={{ fontSize: "18px" }}>📝</span>
               </div>
               <div style={{ fontSize: "32px", fontWeight: 800, color: "#78350f", marginTop: "6px" }}>{stats.doingThesisCount}</div>
-              <div style={{ fontSize: "12px", color: "#d97706", marginTop: "2px" }}>Trong thời hạn đào tạo cho phép</div>
             </div>
 
             <div style={kpiCardStyle("#10b981", "#ecfdf5")}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "#065f46", textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐÃ TỐT NGHIỆP / BẢO VỆ</span>
-                <span style={{ fontSize: "18px" }}>✅</span>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "#065f46", textTransform: "uppercase", letterSpacing: "0.05em" }}>ĐÃ TỐT NGHIỆP</span>
               </div>
               <div style={{ fontSize: "32px", fontWeight: 800, color: "#064e3b", marginTop: "6px" }}>{stats.defendedCount}</div>
-              <div style={{ fontSize: "12px", color: "#10b981", marginTop: "2px" }}>Đã hoàn thành chương trình</div>
             </div>
 
           </div>
 
           {/* 3. BIỂU ĐỒ & PHÂN BỔ */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px", marginBottom: "24px" }}>
-            
+
             <div style={boxStyle}>
-              <h3 style={boxTitleStyle}>📊 Tỷ lệ Tiến độ Học viên</h3>
+              <h3 style={boxTitleStyle}>Tỷ lệ tiến độ học viên</h3>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", marginTop: "20px", flexWrap: "wrap", gap: "16px" }}>
-                
+
                 <div style={{
                   position: "relative",
                   width: "130px",
@@ -237,11 +226,11 @@ export default function Dashboard() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ width: "12px", height: "12px", backgroundColor: "#ef4444", borderRadius: "3px" }}></span>
-                    <span>Cảnh báo quá hạn: <strong>{stats.overdueCount} HV ({stats.overduePercent}%)</strong></span>
+                    <span>Quá hạn: <strong>{stats.overdueCount} HV ({stats.overduePercent}%)</strong></span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ width: "12px", height: "12px", backgroundColor: "#f59e0b", borderRadius: "3px" }}></span>
-                    <span>Đang học (trong hạn): <strong>{stats.doingThesisCount} HV ({stats.doingPercent}%)</strong></span>
+                    <span>Đang học: <strong>{stats.doingThesisCount} HV ({stats.doingPercent}%)</strong></span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ width: "12px", height: "12px", backgroundColor: "#10b981", borderRadius: "3px" }}></span>
@@ -253,7 +242,7 @@ export default function Dashboard() {
             </div>
 
             <div style={boxStyle}>
-              <h3 style={boxTitleStyle}>🏫 Phân bổ Cảnh báo theo Lớp & Ngành</h3>
+              <h3 style={boxTitleStyle}>Phân bổ Cảnh báo theo Lớp & Ngành</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "18px" }}>
                 {classMajorDistribution.length === 0 ? (
                   <div style={{ fontSize: "13px", color: "#94a3b8", textAlign: "center", padding: "20px" }}>Không có dữ liệu cảnh báo</div>
@@ -284,11 +273,11 @@ export default function Dashboard() {
 
           {/* 4. BẢNG DỮ LIỆU & TIMELINE */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px" }}>
-            
+
             <div style={{ ...boxStyle, gridColumn: "span 2" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h3 style={boxTitleStyle}>🚨 Danh sách Cảnh báo Quá hạn Đào tạo ({stats.overdueCount})</h3>
-                
+                <h3 style={boxTitleStyle}>Danh sách cảnh báo quá hạn đào tạo ({stats.overdueCount})</h3>
+
                 <Link href="/thesis" style={{ fontSize: "13px", color: "#2563eb", fontWeight: 700, textDecoration: "none" }}>
                   Xem tất cả ({stats.overdueCount}) →
                 </Link>
@@ -318,7 +307,7 @@ export default function Dashboard() {
                         const maHV = item.maHocVien || item.ma_hoc_vien || item.mahv || item.id || "-";
                         const lopNganh = item.tenNganh || item.ten_nganh || item.lop || item.LOP || "-";
                         const namNH = item.namNhapHoc || item.nam_nhap_hoc || "-";
-                        
+
                         return (
                           <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
                             <td style={{ padding: "12px", fontWeight: 700, color: "#0f172a" }}>
@@ -329,12 +318,12 @@ export default function Dashboard() {
                             <td style={{ padding: "12px", color: "#475569" }}>{namNH}</td>
                             <td style={{ padding: "12px" }}>
                               <span style={{ padding: "4px 8px", backgroundColor: "#fee2e2", color: "#dc2626", borderRadius: "12px", fontSize: "11.5px", fontWeight: 700 }}>
-                                ⚠️ Quá thời hạn đào tạo
+                                Quá thời hạn đào tạo
                               </span>
                             </td>
                             <td style={{ padding: "12px", textAlign: "center" }}>
                               <Link href="/thesis" style={{ padding: "5px 12px", backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "12px", color: "#334155", textDecoration: "none", fontWeight: 500 }}>
-                                📩 Gửi Mail
+                                Gửi Mail
                               </Link>
                             </td>
                           </tr>
@@ -347,7 +336,7 @@ export default function Dashboard() {
             </div>
 
             <div style={boxStyle}>
-              <h3 style={boxTitleStyle}>📅 Lịch Công Tác Đào Tạo</h3>
+              <h3 style={boxTitleStyle}>Lịch công tác</h3>
               <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ borderLeft: "3px solid #ef4444", paddingLeft: "12px" }}>
                   <div style={{ fontSize: "12px", color: "#ef4444", fontWeight: 700 }}>HẠN CHÓT NỘP ĐỀ TÀI</div>

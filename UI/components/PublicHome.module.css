@@ -1,9 +1,9 @@
 /* Cổng thông tin công khai: menu ngang và thanh đăng nhập theo bố cục Regis AGU,
    nhưng phối màu/xử lý khoảng cách riêng, độc lập hoàn toàn layout Admin. */
 .site {
-  --ink: #153c59;
+  --ink: var(--portal-ink);
   --border: #dce5ec;
-  --accent: #d8a34a;
+  --accent: var(--portal-accent);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -128,9 +128,9 @@
 
 /* Menu ngang gọn, không có icon, không dùng các khối màu nặng. */
 .nav {
-  background: #f2f5f7;
+  background: var(--portal-nav-bg);
   border-top: 3px solid var(--accent);
-  border-bottom: 1px solid #d2dde5;
+  border-bottom: 1px solid var(--portal-nav-border);
   box-shadow: 0 2px 5px #294d6310;
 }
 
@@ -147,7 +147,7 @@
   display: inline-flex;
   align-items: center;
   border-bottom: 3px solid transparent;
-  color: #244b67;
+  color: var(--portal-nav-text);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -157,14 +157,14 @@
 }
 
 .navInner a:hover {
-  background: #e4ecf1;
-  color: #0f3f61;
+  background: var(--portal-nav-hover);
+  color: var(--portal-nav-hover-text);
 }
 
 .navInner a.active {
-  color: #0f4267;
-  background: #e7eef3;
-  border-bottom-color: #24688a;
+  color: var(--portal-nav-active-text);
+  background: var(--portal-nav-active);
+  border-bottom-color: var(--portal-nav-indicator);
 }
 
 .navInner a:focus-visible,
