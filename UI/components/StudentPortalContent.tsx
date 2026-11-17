@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { DB, type StoredRecord } from "../lib/db";
 import styles from "./StudentPortalContent.module.css";
+import StudentCertificates from "./student-certificates/StudentCertificates";
 
 export type StudentSection = "profile" | "schedule" | "grades" | "progress";
 type User = { role?: string; maHocVien?: string; hoTen?: string; email?: string };
@@ -169,6 +170,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           </ol>
           <p className={styles.infoBanner}>Chưa thể tính phần trăm hoàn thành hoặc tín chỉ còn thiếu vì dữ liệu hiện tại chưa có kế hoạch học tập và tổng số tín chỉ yêu cầu cho từng học viên.</p>
           <div className={styles.links}><Link href="/grades">Xem bảng điểm</Link><Link href="/schedule">Xem thời khóa biểu</Link></div>
+          <StudentCertificates key={code} student={student} studentCode={code} studentName={user.hoTen || ""} />
         </>}
       </>
     }
