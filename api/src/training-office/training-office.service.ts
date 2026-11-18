@@ -1,0 +1,358 @@
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException, ServiceUnavailableException, NotFoundException } from '@nestjs/common';
+import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import type { Request } from 'express';
+
+type OfficeAccount = { username: string; displayName: string; role: 'training_office'; passwordHash: string; active: boolean };
+type Payload = { sub: string; exp: number };
+export type OfficeIdentity = { role: 'training_office'; username: string; hoTen: string };
+type Teacher = { id?: string; shcc?: string; hoten?: string; t_dvi?: string; t_tdcmon?: string; t_cmdtao?: string };
+type Student = { lop?: string; loaiChuongTrinh?: string; maNganh?: string; tenNganh?: string; ngayNhapHoc?: string | number };
+export type TeachingAssignment = {
+  id: string; teacherId: string; teacherName: string; department: string;
+  classCode: string; courseCode: string; courseName: string;
+  schoolYear: string; semester: string; createdAt: string; createdBy: string;
+  trainingTrack?: 'nghien_cuu' | 'ung_dung'; admissionYear?: number;
+  programSemester?: number; majorCode?: string; majorName?: string;
+  openingConfirmedAt?: string; // Phòng đào tạo xác nhận lớp đã mở theo kế hoạch
+};
+
+type CourseReference = {
+  code: string; name: string; majorName: string;
+  track: 'nghien_cuu' | 'ung_dung'; semesters: number[];
+  validFromAdmissionYear: number | null; needsReview: boolean;
+};
+
+// Mã ngành lấy từ hồ sơ học viên (UI/db.json), tên ngành từ danh mục CTĐT.
+const MAJOR_TO_CURRICULUM: Record<string, string> = {
+  '8480201': 'Công nghệ thông tin', '8620110': 'Khoa học cây trồng',
+  '8620105': 'Chăn nuôi', '8420201': 'Công nghệ sinh học',
+  '8540101': 'Công nghệ thực phẩm', '8850101': 'Quản lý tài nguyên và môi trường',
+  '8140114': 'Quản lý giáo dục', '8140110': 'Lí luận và Phương pháp dạy học',
+  '8440103': 'Vật lý lý thuyết và Vật lý toán',
+  '8140111': 'Lý luận và Phương pháp dạy học bộ môn tiếng Anh',
+};
+// Chuẩn hóa ngày nhập học: dữ liệu nguồn có cả năm 2025 và số serial Excel.
+function admissionYearFromRaw(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const text = String(value).trim();
+  if (/^20\d{2}$/.test(text)) return Number(text);
+  const numeric = Number(text);
+  if (Number.isFinite(numeric) && numeric >= 35000 && numeric <= 85000) {
+    const date = new Date(Date.UTC(1899, 11, 30) + Math.floor(numeric) * 86_400_000);
+    return date.getUTCFullYear();
+  }
+  const match = text.match(/(?:19|20)\d{2}/g);
+  const y = match ? Number(match[match.length - 1]) : NaN;
+  return y >= 2000 && y <= 2100 ? y : null;
+}
+function trackFromRaw(value: unknown): 'nghien_cuu' | 'ung_dung' | null {
+  const text = String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+  if (text.includes('nghien cuu')) return 'nghien_cuu';
+  if (text.includes('ung dung')) return 'ung_dung';
+  return null;
+}
+
+const COOKIE = 'agu_training_office_session';
+const MAX_AGE = 8 * 60 * 60;
+
+@Injectable()
+export class TrainingOfficeService {
+  private readonly accountPath = path.join(process.cwd(), '.training-office-account.local.json');
+  private readonly secretPath = path.join(process.cwd(), '.training-office-auth-secret');
+  private readonly assignmentPath = path.join(process.cwd(), '.training-assignments.local.json');
+  private secret: Buffer | null = null;
+  private readonly attempts = new Map<string, { count: number; deadline: number }>();
+
+  private account(): OfficeAccount {
+    if (!fs.existsSync(this.accountPath)) throw new ServiceUnavailableException('Chưa tạo tài khoản Phòng đào tạo; chạy lệnh seed trước');
+    try {
+      const raw: unknown = JSON.parse(fs.readFileSync(this.accountPath, 'utf8'));
+      if (!raw || typeof raw !== 'object' || !('username' in raw) || !('passwordHash' in raw)) throw new Error('Invalid account');
+      return raw as OfficeAccount;
+    } catch { throw new ServiceUnavailableException('Không đọc được tài khoản Phòng đào tạo'); }
+  }
+
+  private secretKey() {
+    if (this.secret) return this.secret;
+    const envSecret = process.env.TRAINING_OFFICE_AUTH_SECRET;
+    if (envSecret) {
+      if (envSecret.length < 32) throw new ServiceUnavailableException('TRAINING_OFFICE_AUTH_SECRET quá ngắn');
+      this.secret = Buffer.from(envSecret);
+      return this.secret;
+    }
+    if (!fs.existsSync(this.secretPath)) {
+      try { fs.writeFileSync(this.secretPath, crypto.randomBytes(32).toString('hex'), { flag: 'wx', mode: 0o600 }); }
+      catch (e) { if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e; }
+    }
+    this.secret = Buffer.from(fs.readFileSync(this.secretPath, 'utf8').trim());
+    return this.secret;
+  }
+
+  private matchesPassword(password: string, encoded: string) {
+    const parts = encoded.split('$');
+    if (parts.length !== 3 || parts[0] !== 'scrypt' || !/^[a-f\d]{32}$/.test(parts[1]) || !/^[a-f\d]{128}$/.test(parts[2])) return false;
+    const digest = crypto.scryptSync(password, Buffer.from(parts[1], 'hex'), 64);
+    return crypto.timingSafeEqual(digest, Buffer.from(parts[2], 'hex'));
+  }
+
+  login(username: unknown, password: unknown, ip: string) {
+    if (typeof username !== 'string' || typeof password !== 'string' || username.length > 200 || password.length > 200 || !username.trim() || !password) throw new UnauthorizedException('Thông tin đăng nhập không hợp lệ');
+    const user = username.trim().toLowerCase();
+    const key = `${ip}:${user}`;
+    const now = Date.now();
+    const old = this.attempts.get(key);
+    if (old && old.deadline > now && old.count >= 5) throw new UnauthorizedException('Tạm khóa đăng nhập 15 phút');
+    const a = this.account();
+    if (!a.active || a.username !== user || !this.matchesPassword(password, a.passwordHash)) {
+      const count = old && old.deadline > now ? old.count + 1 : 1;
+      this.attempts.set(key, { count, deadline: now + 15 * 60_000 });
+      throw new UnauthorizedException('Sai tên đăng nhập hoặc mật khẩu');
+    }
+    this.attempts.delete(key);
+    const identity: OfficeIdentity = { role: 'training_office', username: a.username, hoTen: a.displayName };
+    const body = Buffer.from(JSON.stringify({ sub: a.username, exp: Math.floor(now / 1000) + MAX_AGE }), 'utf8').toString('base64url');
+    const mac = crypto.createHmac('sha256', this.secretKey()).update(body).digest('base64url');
+    return { identity, session: `${body}.${mac}` };
+  }
+
+  fromRequest(req: Request): OfficeIdentity {
+    const token = (req.headers.cookie || '').split(';').map(x => x.trim()).find(x => x.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
+    if (!token) throw new UnauthorizedException('Phòng đào tạo chưa đăng nhập');
+    const [body, signature, extra] = token.split('.');
+    if (!body || !signature || extra || !/^[\w-]+$/.test(body) || !/^[\w-]+$/.test(signature)) throw new UnauthorizedException('Phiên không hợp lệ');
+    const expect = crypto.createHmac('sha256', this.secretKey()).update(body).digest();
+    const received = Buffer.from(signature, 'base64url');
+    if (received.length !== expect.length || !crypto.timingSafeEqual(expect, received)) throw new UnauthorizedException('Phiên không hợp lệ');
+    let payload: Payload;
+    try { payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')); } catch { throw new UnauthorizedException('Phiên không hợp lệ'); }
+    const a = this.account();
+    if (!payload || payload.exp <= Date.now() / 1000 || payload.sub !== a.username || !a.active) throw new UnauthorizedException('Phiên hết hạn hoặc bị khóa');
+    return { role: 'training_office', username: a.username, hoTen: a.displayName };
+  }
+
+  private source() {
+    const p = path.resolve(process.cwd(), '../UI/db.json');
+    if (!fs.existsSync(p)) throw new ServiceUnavailableException('Thiếu UI/db.json – chưa có dữ liệu bộ môn và lớp');
+    let raw: unknown;
+    try { raw = JSON.parse(fs.readFileSync(p, 'utf8')); } catch { throw new ServiceUnavailableException('Không đọc được UI/db.json'); }
+    if (!raw || typeof raw !== 'object') throw new ServiceUnavailableException('Dữ liệu nguồn không hợp lệ');
+    const obj = raw as { teachers?: unknown; students?: unknown };
+    return { teachers: (Array.isArray(obj.teachers) ? obj.teachers : []) as Teacher[], students: (Array.isArray(obj.students) ? obj.students : []) as Student[] };
+  }
+
+  catalog(req: Request) {
+    this.fromRequest(req);
+    const { teachers, students } = this.source();
+    const list = teachers.filter(t => t.hoten && (t.shcc || t.id)).map(t => ({
+      id: String(t.shcc || t.id), name: String(t.hoten), department: String(t.t_dvi || 'Chưa cập nhật bộ môn'),
+      qualification: String(t.t_tdcmon || ''), expertise: String(t.t_cmdtao || ''),
+    }));
+    const departments = [...new Set(list.map(t => t.department))].sort((a, b) => a.localeCompare(b, 'vi'));
+    // Lấy mã lớp, mã ngành và số học viên từ UI/db.json thật.
+    // Một số lớp có bản ghi gắn sai ngành. Phân loại theo ngành chiếm đa số
+    // và đánh dấu không cho phân công đến khi nhóm rà soát dữ liệu.
+    const classIndex = new Map<string, {
+      code: string;
+      studentCount: number;
+      majors: Map<string, { code: string; name: string; count: number }>;
+      admissionYears: Map<number, number>;
+      tracks: Map<string, number>;
+    }>();
+    const majorIndex = new Map<string, { code: string; name: string }>();
+    for (const s of students) {
+      const code = String(s.lop || '').trim();
+      if (!code || String(s.loaiChuongTrinh || '').toLowerCase().includes('tiến sĩ')) continue;
+      const majorCode = String(s.maNganh || '').trim();
+      const majorName = String(s.tenNganh || '').trim();
+      if (majorCode && majorName) majorIndex.set(majorCode, { code: majorCode, name: majorName });
+      let row = classIndex.get(code);
+      if (!row) {
+        row = { code, studentCount: 0, majors: new Map(), admissionYears: new Map(), tracks: new Map() };
+        classIndex.set(code, row);
+      }
+      row.studentCount++;
+      const admissionYear = admissionYearFromRaw(s.ngayNhapHoc);
+      if (admissionYear !== null) row.admissionYears.set(admissionYear, (row.admissionYears.get(admissionYear) || 0) + 1);
+      const track = trackFromRaw(s.loaiChuongTrinh);
+      if (track) row.tracks.set(track, (row.tracks.get(track) || 0) + 1);
+      if (majorCode) {
+        const current = row.majors.get(majorCode);
+        if (current) current.count++;
+        else row.majors.set(majorCode, { code: majorCode, name: majorName, count: 1 });
+      }
+    }
+    const dataWarnings: string[] = [];
+    const classes = [...classIndex.values()].map(row => {
+      const candidates = [...row.majors.values()].sort((a, b) => b.count - a.count || a.code.localeCompare(b.code));
+      const years = [...row.admissionYears.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0]);
+      const tracks = [...row.tracks.entries()].sort((a, b) => b[1] - a[1]);
+      if (candidates.length > 1) dataWarnings.push(`Mã lớp ${row.code} có học viên mang nhiều mã ngành; cần kiểm tra hồ sơ trước khi phân công.`);
+      if (years.length > 1) dataWarnings.push(`Lớp ${row.code} có nhiều năm nhập học khác nhau; cần kiểm tra trước khi phân công.`);
+      if (tracks.length > 1) dataWarnings.push(`Lớp ${row.code} gồm nhiều định hướng đào tạo; cần xác định nhóm học viên cụ thể.`);
+      return {
+        code: row.code,
+        studentCount: row.studentCount,
+        majorCode: candidates[0]?.code ?? '',
+        majorName: candidates[0]?.name ?? '',
+        inconsistentMajor: candidates.length > 1,
+        admissionYear: years.length === 1 ? years[0][0] : null,
+        trainingTrack: tracks.length === 1 ? tracks[0][0] : null,
+        inconsistentAdmissionYear: years.length > 1,
+        inconsistentTrack: tracks.length > 1,
+      };
+    }).sort((a, b) => a.code.localeCompare(b.code, 'vi'));
+    const majors = [...majorIndex.values()].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+    return { success: true, departments, teachers: list, classes, majors, dataWarnings };
+  }
+
+  private readAssignments(): TeachingAssignment[] {
+    if (!fs.existsSync(this.assignmentPath)) return [];
+    try { const raw: unknown = JSON.parse(fs.readFileSync(this.assignmentPath, 'utf8')); return Array.isArray(raw) ? raw as TeachingAssignment[] : []; }
+    catch { throw new ServiceUnavailableException('Không đọc được dữ liệu phân công'); }
+  }
+
+  assignments(req: Request) {
+    this.fromRequest(req);
+    return { success: true, data: this.readAssignments() };
+  }
+
+  // Trả dữ liệu đã LƯU từ Backend, giới hạn theo teacherId lấy từ cookie đã xác thực.
+  // Không nhận mã giảng viên từ query string hoặc client khi truy xuất dữ liệu.
+  // Chỉ service nội bộ gọi: phân công chính thức dùng để ghép bảng điểm học viên.
+  allSavedAssignments(): TeachingAssignment[] {
+    return this.readAssignments();
+  }
+
+  assignmentsForTeacher(teacherId: string) {
+    return this.readAssignments()
+      .filter(row => row.teacherId === teacherId)
+      .sort((a, b) => b.schoolYear.localeCompare(a.schoolYear) ||
+        b.semester.localeCompare(a.semester) || a.courseCode.localeCompare(b.courseCode));
+  }
+
+  private curriculum(): CourseReference[] {
+    const filename = path.resolve(process.cwd(), '../UI/data/agu_masters_curriculum.json');
+    if (!fs.existsSync(filename)) throw new ServiceUnavailableException('Thiếu danh mục học phần UI/data/agu_masters_curriculum.json');
+    try {
+      const parsed: unknown = JSON.parse(fs.readFileSync(filename, 'utf8'));
+      if (!Array.isArray(parsed)) throw new Error('Wrong curriculum format');
+      return parsed as CourseReference[];
+    } catch { throw new ServiceUnavailableException('Không đọc được danh mục chương trình đào tạo'); }
+  }
+
+  // Lưu toàn bộ các bản nháp đang hiển thị trong MỘT giao dịch ghi file.
+  // Hệ thống hiện sử dụng kho JSON của Backend, chưa kết nối SQL/MySQL.
+  publishAssignments(req: Request, input: unknown) {
+    const office = this.fromRequest(req);
+    if (!input || typeof input !== 'object') throw new BadRequestException('Thiếu dữ liệu phân công');
+    const payload = input as Record<string, unknown>;
+    if (payload.confirmedOpen !== true) {
+      throw new BadRequestException('Phòng đào tạo phải xác nhận đã kiểm tra kế hoạch mở lớp trước khi lưu');
+    }
+    if (!Array.isArray(payload.assignments) || !payload.assignments.length || payload.assignments.length > 60) {
+      throw new BadRequestException('Phải chọn từ 1 đến 60 phân công để lưu mỗi lần');
+    }
+
+    const { teachers, classes } = this.catalog(req);
+    const teacherIndex = new Map(teachers.map(t => [t.id, t]));
+    const classIndex = new Map(classes.map(c => [c.code, c]));
+    const courses = this.curriculum();
+    const existing = this.readAssignments();
+    const keys = new Set(existing.map(r => `${r.schoolYear}|${r.semester}|${r.classCode}|${r.courseCode.toUpperCase()}`));
+    const stamp = new Date().toISOString();
+    const additions: TeachingAssignment[] = [];
+
+    for (const item of payload.assignments) {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) throw new BadRequestException('Bản ghi phân công không hợp lệ');
+      const r = item as Record<string, unknown>;
+      const text = (name: string) => typeof r[name] === 'string' ? (r[name] as string).trim() : '';
+      const teacherId = text('teacherId');
+      const classCode = text('classCode');
+      const courseCode = text('courseCode').toUpperCase();
+      const schoolYear = text('schoolYear');
+      const semester = text('semester');
+      const track = text('trainingTrack');
+      const teacher = teacherIndex.get(teacherId);
+      const cls = classIndex.get(classCode);
+      if (!teacher || !cls) throw new BadRequestException(`Không tồn tại giảng viên hoặc lớp: ${classCode}`);
+      if (cls.inconsistentMajor || cls.inconsistentTrack || cls.inconsistentAdmissionYear || !cls.admissionYear || !cls.trainingTrack) {
+        throw new BadRequestException(`Lớp ${classCode} có dữ liệu ngành/khóa/định hướng không đủ tin cậy`);
+      }
+      const match = schoolYear.match(/^(20\d{2})-(20\d{2})$/);
+      if (!match || Number(match[2]) !== Number(match[1]) + 1 || !['1', '2'].includes(semester)) {
+        throw new BadRequestException('Năm học hoặc học kỳ không hợp lệ');
+      }
+      const programSemester = (Number(match[1]) - cls.admissionYear) * 2 + Number(semester);
+      if (programSemester < 1 || programSemester > 4 || track !== cls.trainingTrack) {
+        throw new BadRequestException(`Lớp ${classCode} không phù hợp khóa hoặc định hướng đã chọn`);
+      }
+      const majorName = MAJOR_TO_CURRICULUM[cls.majorCode];
+      const course = courses.find(c => c.code.toUpperCase() === courseCode && c.majorName === majorName &&
+        c.track === track && !c.needsReview && Array.isArray(c.semesters) && c.semesters.includes(programSemester) &&
+        (c.validFromAdmissionYear == null || (cls.admissionYear != null && cls.admissionYear >= c.validFromAdmissionYear)));
+      if (!course) throw new BadRequestException(`Học phần ${courseCode} không phù hợp CTĐT/lớp ${classCode} hoặc chưa được xác minh`);
+      const key = `${schoolYear}|${semester}|${classCode}|${courseCode}`;
+      if (keys.has(key)) throw new ConflictException(`Đã có phân công môn ${courseCode} cho lớp ${classCode} trong ${schoolYear} học kỳ ${semester}`);
+      keys.add(key);
+      additions.push({
+        id: crypto.randomUUID(), teacherId, teacherName: teacher.name, department: teacher.department,
+        classCode, courseCode: course.code, courseName: course.name, schoolYear, semester,
+        trainingTrack: cls.trainingTrack === 'nghien_cuu' || cls.trainingTrack === 'ung_dung' ? cls.trainingTrack : undefined, admissionYear: cls.admissionYear ?? undefined, programSemester,
+        majorCode: cls.majorCode, majorName: cls.majorName,
+        createdAt: stamp, createdBy: office.username, openingConfirmedAt: stamp,
+      });
+    }
+
+    const temp = `${this.assignmentPath}.tmp`;
+    try {
+      fs.writeFileSync(temp, JSON.stringify([...existing, ...additions], null, 2), { mode: 0o600 });
+      fs.renameSync(temp, this.assignmentPath);
+    } catch {
+      throw new ServiceUnavailableException('Không ghi được phân công vào kho dữ liệu Backend');
+    }
+    return { success: true, count: additions.length, data: additions };
+  }
+
+  // Phòng đào tạo được thu hồi phân công, sẽ giải phóng học phần ở danh sách chọn.
+  // Khi triển khai bảng điểm thật cần khóa việc thu hồi nếu đã có điểm liên quan.
+  deleteAssignment(req: Request, id: string) {
+    this.fromRequest(req);
+    if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id)) throw new BadRequestException('Mã phân công không hợp lệ');
+    const rows = this.readAssignments();
+    if (!rows.some(row => row.id === id)) throw new NotFoundException('Không tìm thấy phân công');
+    // Không cho thu hồi lớp đã nhập điểm để tránh bảng điểm mồ côi.
+    const gradesPath = path.join(process.cwd(), '.teacher-grades.local.json');
+    if (fs.existsSync(gradesPath)) {
+      let gradeRows: unknown;
+      try { gradeRows = JSON.parse(fs.readFileSync(gradesPath, 'utf8')); }
+      catch { throw new ServiceUnavailableException('Không đọc được dữ liệu điểm số để kiểm tra thu hồi'); }
+      if (!Array.isArray(gradeRows)) throw new ServiceUnavailableException('Dữ liệu điểm số không hợp lệ');
+      if (gradeRows.some((grade: unknown) => grade && typeof grade === 'object' &&
+        (grade as { assignmentId?: unknown }).assignmentId === id)) {
+        throw new ConflictException('Không thể hủy phân công đã có điểm. Cần xử lý bảng điểm trước.');
+      }
+    }
+    const temp = `${this.assignmentPath}.tmp`;
+    try {
+      fs.writeFileSync(temp, JSON.stringify(rows.filter(row => row.id !== id), null, 2), { mode: 0o600 });
+      fs.renameSync(temp, this.assignmentPath);
+    } catch { throw new ServiceUnavailableException('Không hủy được phân công'); }
+    return { success: true, deletedId: id };
+  }
+
+  // Giữ endpoint cũ cho tương thích, nhưng cũng buộc xác nhận và kiểm tra CTĐT.
+  saveAssignments(req: Request, input: unknown) {
+    const item = input && typeof input === 'object' ? input as Record<string, unknown> : {};
+    const raw = item.classCodes;
+    const codes = Array.isArray(raw) ? raw : [];
+    return this.publishAssignments(req, {
+      confirmedOpen: item.confirmedOpen,
+      assignments: codes.map(code => ({ ...item, classCode: code })),
+    });
+  }
+
+  cookieName() { return COOKIE; }
+  cookieMaxAgeMs() { return MAX_AGE * 1000; }
+}

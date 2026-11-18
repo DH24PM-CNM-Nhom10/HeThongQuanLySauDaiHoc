@@ -31,13 +31,24 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (currentUser?.role === "teacher" || currentUser?.role === "training_office") {
+      const endpoint = currentUser.role === "teacher" ? "/api/teacher-auth/logout" : "/api/training-office/logout";
+      try { await fetch(endpoint, { method: "POST", credentials: "same-origin" }); }
+      catch { /* Xóa trạng thái UI ngay cả khi Backend tạm thời không kết nối. */ }
+    }
+    if (currentUser?.role === "student") {
+      try { await fetch("/api/student-records/logout", { method: "POST", credentials: "same-origin" }); }
+      catch { /* Đăng xuất giao diện kể cả khi Backend tạm ngắt. */ }
+    }
     localStorage.removeItem("currentUser");
     setIsDropdownOpen(false);
-    router.push("/login");
+    router.push("/");
   };
 
   const isAdmin = currentUser?.role === "admin";
+  const isTeacher = currentUser?.role === "teacher";
+  const isOffice = currentUser?.role === "training_office";
   const displayName = currentUser?.hoTen || (isAdmin ? "Admin Phòng Đào tạo" : currentUser?.maHocVien || "Học viên");
   const avatarChar = displayName.trim().charAt(0).toUpperCase() || "U";
 
@@ -103,7 +114,7 @@ export default function Header() {
                   {displayName}
                 </span>
                 <span style={{ fontSize: "11px", color: "#64748b" }}>
-                  {isAdmin ? "Quản trị viên" : `Mã HV: ${currentUser.maHocVien}`}
+                  {isAdmin ? "Quản trị viên" : isOffice ? "Phòng đào tạo" : isTeacher ? `Mã GV: ${currentUser.shcc || currentUser.teacherId || "Chưa cập nhật"}` : `Mã HV: ${currentUser.maHocVien}` }
                 </span>
               </div>
 
@@ -134,7 +145,7 @@ export default function Header() {
                     {displayName}
                   </div>
                   <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>
-                    {isAdmin ? "Phòng Đào tạo Sau Đại học" : `MSHV: ${currentUser.maHocVien}`}
+                    {isAdmin ? "Phòng Đào tạo Sau Đại học" : isOffice ? (currentUser.username || "Phòng đào tạo") : isTeacher ? (currentUser.username || "Tài khoản giảng viên") : `MSHV: ${currentUser.maHocVien}` }
                   </div>
                 </div>
 
@@ -149,16 +160,16 @@ export default function Header() {
                       gap: "10px",
                       padding: "8px 10px",
                       fontSize: "13px",
-                      color: "#dc2626",
-                      backgroundColor: "transparent",
+                      color: "#a43b13",
+                      backgroundColor: "#fbe1d5",
                       border: "none",
                       borderRadius: "6px",
                       cursor: "pointer",
                       fontWeight: 600,
                       textAlign: "left",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f6c7b3")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fbe1d5")}
                   >
                     <span>🚪</span>
                     <span>Đăng xuất</span>

@@ -9,6 +9,16 @@ import StudentCertificates from "./student-certificates/StudentCertificates";
 export type StudentSection = "profile" | "schedule" | "grades" | "progress";
 type User = { role?: string; maHocVien?: string; hoTen?: string; email?: string };
 type Result<T> = { data: T[]; ready: boolean };
+type CourseGrade = {
+  assignmentId: string; courseCode: string; courseName: string;
+  classCode: string; schoolYear: string; semester: string; teacherName: string;
+  processScore: number | null; examScore: number | null;
+  totalScore: number | null; letterGrade: string | null;
+  status: "da_co_diem" | "dang_nhap_diem" | "chua_co_diem";
+};
+const scoreCell = (score: number | null) => score == null ? "—" : String(score);
+const gradeStatus = (status: CourseGrade["status"]) =>
+  status === "da_co_diem" ? "Đã có điểm" : status === "dang_nhap_diem" ? "Đang nhập điểm" : "Chưa có điểm";
 
 function textVal(row: StoredRecord | null, ...keys: string[]): string {
   if (!row) return "";
@@ -76,6 +86,10 @@ export default function StudentPortalContent({ section }: { section: StudentSect
   const [grades, setGrades] = useState<Result<StoredRecord>>({ data: [], ready: false });
   const [ready, setReady] = useState(false);
   const [semester, setSemester] = useState("all");
+  const [assignedCourses, setAssignedCourses] = useState<CourseGrade[]>([]);
+  const [assignedLoading, setAssignedLoading] = useState(false);
+  const [assignedError, setAssignedError] = useState("");
+  const [assignedTerm, setAssignedTerm] = useState("all");
 
   useEffect(() => {
     let active = true;
@@ -86,7 +100,11 @@ export default function StudentPortalContent({ section }: { section: StudentSect
       setUser(session);
       const code = String(session?.maHocVien || "");
       // Chỉ tìm chính xác mã học viên; không hiển thị hồ sơ học viên khác.
-      const [students, classes, marks] = await Promise.all([collection("students"), collection("schedule"), collection("grades")]);
+      const [students, classes, marks] = await Promise.all([
+        collection("students"),
+        section === "schedule" ? collection("schedule") : Promise.resolve([]),
+        section === "progress" ? collection("grades") : Promise.resolve([]),
+      ]);
       if (!active) return;
       const mine = students.find(row => ownRecord(row, code)) || null;
       setStudent(mine);
@@ -97,6 +115,36 @@ export default function StudentPortalContent({ section }: { section: StudentSect
     void load();
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    if (section !== "grades" || !ready || user?.role !== "student") return;
+    const controller = new AbortController();
+    setAssignedLoading(true);
+    setAssignedError("");
+    setAssignedCourses([]);
+    void (async () => {
+      try {
+        const response = await fetch("/api/student-records/grades", {
+          cache: "no-store", credentials: "same-origin", signal: controller.signal,
+        });
+        if (!response.ok) throw new Error(response.status === 401
+          ? "Phiên đăng nhập học viên đã hết hạn. Vui lòng đăng xuất rồi đăng nhập lại."
+          : "Không thể tải bảng điểm. Vui lòng kiểm tra Backend.");
+        const result: { data?: CourseGrade[] } = await response.json();
+        if (!controller.signal.aborted) setAssignedCourses(Array.isArray(result.data) ? result.data : []);
+      } catch (error) {
+        if (!controller.signal.aborted) setAssignedError(error instanceof Error ? error.message : "Không thể tải bảng điểm");
+      } finally {
+        if (!controller.signal.aborted) setAssignedLoading(false);
+      }
+    })();
+    return () => controller.abort();
+  }, [ready, section, user?.role, user?.maHocVien]);
+
+  const availableTerms = useMemo(() => [...new Set(assignedCourses.map(row => `${row.schoolYear}|${row.semester}`))]
+    .sort((a, b) => b.split("|")[0].localeCompare(a.split("|")[0]) || Number(a.split("|")[1]) - Number(b.split("|")[1])), [assignedCourses]);
+  const visibleAssigned = assignedTerm === "all" ? assignedCourses : assignedCourses.filter(
+    row => `${row.schoolYear}|${row.semester}` === assignedTerm);
 
   const code = String(user?.maHocVien || "");
   const myClass = textVal(student, "lop", "maLop", "lopHoc");
@@ -130,7 +178,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
     {!ready ? <div className={styles.loading}>Đang tải dữ liệu học viên...</div> : !user || user.role !== "student" ?
       <Empty title="Chức năng dành cho học viên" description="Vui lòng đăng nhập bằng tài khoản học viên để xem thông tin học tập."/> :
       <>
-        <div className={styles.studentBar}><span><strong>{textVal(student,"hoTen","ho_ten") || user.hoTen || "Học viên"}</strong><small>Mã học viên: {code || "Chưa xác định"}</small></span></div>
+        {section !== "grades" && <div className={styles.studentBar}><span><strong>{textVal(student,"hoTen","ho_ten") || user.hoTen || "Học viên"}</strong><small>Mã học viên: {code || "Chưa xác định"}</small></span></div>}
         {section === "profile" && (student ? <div className={styles.gridFields}>
           <Field label="Họ và tên" value={textVal(student,"hoTen","ho_ten")}/>
           <Field label="Mã học viên" value={code}/>
@@ -151,11 +199,41 @@ export default function StudentPortalContent({ section }: { section: StudentSect
             <Table rows={displayRows} columns={[{label:"Học kỳ",keys:["hocKy"]},{label:"Môn học",keys:["tenMon"]},{label:"Giảng viên",keys:["tenGV"]},{label:"Thời gian",keys:["thoiGian"]},{label:"Phòng",keys:["phong"]}]} />
           </> : <Empty title="Chưa có thời khóa biểu" description="Hiện chưa có lịch học liên kết với mã học viên, lớp hoặc ngành của bạn. Khi dữ liệu lịch được cập nhật, thông tin sẽ xuất hiện tại đây."/>}
         </>}
-        {section === "grades" && (grades.data.length ? <>
-          <div className={styles.toolbar}><label htmlFor="semesterGrade">Học kỳ</label><select id="semesterGrade" value={semester} onChange={e=>setSemester(e.target.value)}><option value="all">Tất cả học kỳ</option>{semesters.map(s=><option key={s} value={s}>{s}</option>)}</select></div>
-          <Table rows={displayRows} columns={[{label:"Học kỳ",keys:["hocKy"]},{label:"Học phần",keys:["tenMon"]},{label:"Điểm quá trình",keys:["diemQT"]},{label:"Điểm thi",keys:["diemThi"]},{label:"Tổng kết",keys:["diemTK"]},{label:"Xếp loại",keys:["xepLoai"]}]}/>
-          <p className={styles.note}>Chỉ hiển thị các bản ghi gắn đúng mã học viên; việc công nhận kết quả và tín chỉ căn cứ quy định chính thức của nhà trường.</p>
-        </> : <Empty title="Chưa có bảng điểm" description="Chưa tìm thấy kết quả học phần được liên kết với mã học viên của bạn."/>)}
+        {section === "grades" && <div className={styles.assignedGradeSection}>
+          <div className={styles.assignedGradeToolbar}>
+            <label htmlFor="assignedTerm">Năm học / Học kỳ</label>
+            <select id="assignedTerm" value={assignedTerm} onChange={e => setAssignedTerm(e.target.value)}>
+              <option value="all">Tất cả học kỳ</option>
+              {availableTerms.map(term => {
+                const [schoolYear, semester] = term.split("|");
+                return <option key={term} value={term}>{schoolYear} · Học kỳ {semester}</option>;
+              })}
+            </select>
+            <span className={styles.assignedCount}>{visibleAssigned.length} học phần</span>
+          </div>
+          {assignedLoading ? <div className={styles.loading}>Đang tải bảng điểm...</div> :
+          assignedError ? <p className={styles.gradeError} role="alert">{assignedError}</p> :
+          assignedCourses.length === 0 ? <Empty title="Chưa có học phần được phân công" description="Chưa có phân công giảng dạy nào được lưu cho lớp của bạn."/> :
+          <div className={styles.assignedGradeScroll}>
+            <table className={styles.assignedGradeTable}>
+              <thead><tr>
+                <th>STT</th><th>Học phần</th><th>Lớp / Học kỳ</th><th>Giảng viên</th>
+                <th>Quá trình</th><th>Thi kết thúc</th><th>Tổng kết</th><th>Điểm chữ</th><th>Trạng thái</th>
+              </tr></thead>
+              <tbody>{visibleAssigned.map((row, index) => <tr key={row.assignmentId}>
+                <td>{index + 1}</td>
+                <td><strong>{row.courseName}</strong><small>{row.courseCode}</small></td>
+                <td><strong>{row.classCode}</strong><small>{row.schoolYear} · Học kỳ {row.semester}</small></td>
+                <td>{row.teacherName}</td>
+                <td>{scoreCell(row.processScore)}</td>
+                <td>{scoreCell(row.examScore)}</td>
+                <td><strong>{row.totalScore == null ? "—" : row.totalScore.toFixed(2)}</strong></td>
+                <td><strong>{row.letterGrade || "—"}</strong></td>
+                <td><span className={row.status === "da_co_diem" ? styles.gradeCompleted : styles.gradePending}>{gradeStatus(row.status)}</span></td>
+              </tr>)}</tbody>
+            </table>
+          </div>}
+        </div>}
         {section === "progress" && <>
           <div className={styles.stats}>
             <div><span>Học phần đã có điểm</span><strong>{scoreRows.length}</strong><small>Không đồng nghĩa đã tích lũy tín chỉ</small></div>

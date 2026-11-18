@@ -52,7 +52,17 @@ function isMobileViewport() {
 export default function Sidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
   const isStudent = role === "student";
-  const groups = isStudent ? [{ label: "", items: menuStudent }] : adminGroups;
+  const groups = role === "teacher"
+    ? [{ label: "Giảng dạy", items: [
+        { href: "/", label: "Cổng thông tin" },
+        { href: "/grades", label: "Quản lý điểm số" },
+      ] }]
+    : role === "training_office"
+      ? [{ label: "Phòng đào tạo", items: [
+          { href: "/", label: "Cổng thông tin" },
+          { href: "/assignment", label: "Phân công giảng dạy" },
+        ] }]
+      : isStudent ? [{ label: "", items: menuStudent }] : adminGroups;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
