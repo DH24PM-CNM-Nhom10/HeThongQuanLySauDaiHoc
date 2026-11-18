@@ -16,7 +16,7 @@ function studentError(error: string, status: number) {
 // 1. GET: Lấy danh sách trực tiếp từ db.json
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ entity: string }> | { entity: string } }
+  { params }: { params: Promise<{ entity: string }> }
 ) {
   try {
     // Giải quyết params để tương thích cả Next.js 14 & 15
@@ -63,7 +63,7 @@ export async function GET(
 // 2. POST: Thêm / Ghi đè danh sách
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ entity: string }> | { entity: string } }
+  { params }: { params: Promise<{ entity: string }> }
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
@@ -106,7 +106,7 @@ export async function POST(
 // 3. PUT: Cập nhật bản ghi
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ entity: string }> | { entity: string } }
+  { params }: { params: Promise<{ entity: string }> }
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
@@ -163,7 +163,7 @@ export async function PUT(
 // 4. DELETE: Xóa bản ghi
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ entity: string }> | { entity: string } }
+  { params }: { params: Promise<{ entity: string }> }
 ) {
   try {
     const resolvedParams = await Promise.resolve(params);
