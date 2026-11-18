@@ -34,6 +34,65 @@ function DongHoSo({ label, value }: { label: string; value?: string }) {
   );
 }
 
+type AssignedCourse = {
+  id: string; teacherId: string; teacherName: string;
+  classCode: string; courseCode: string; courseName: string;
+  schoolYear: string; semester: string; trainingTrack?: string;
+  programSemester?: number; createdAt?: string;
+};
+
+function AssignedCoursesForTeacher() {
+  const [rows, setRows] = useState<AssignedCourse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    void (async () => {
+      try {
+        const response = await fetch("/api/teacher-auth/assignments", {
+          credentials: "same-origin", cache: "no-store", signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("Không thể tải phân công. Hãy đăng nhập lại hoặc kiểm tra Backend.");
+        const data: { data?: AssignedCourse[] } = await response.json();
+        if (!controller.signal.aborted) setRows(Array.isArray(data.data) ? data.data : []);
+      } catch (e) {
+        if (!controller.signal.aborted) setError(e instanceof Error ? e.message : "Lỗi tải dữ liệu");
+      } finally { if (!controller.signal.aborted) setLoading(false); }
+    })();
+    return () => controller.abort();
+  }, []);
+  return (
+    <section className={styles.profilePage} aria-labelledby="teacher-assignments-title">
+      <div className={styles.profileCard}>
+        <div className={styles.profileHeader}>
+          <h1 id="teacher-assignments-title">Học phần được phân công giảng dạy</h1>
+          <span className={styles.rolePill}>{rows.length} lớp học phần</span>
+        </div>
+        {loading && <p className={styles.teacherAssignmentHint}>Đang tải danh sách phân công...</p>}
+        {error && <p role="alert" className={styles.profileWarning}>{error}</p>}
+        {!loading && !error && rows.length === 0 &&
+          <p className={styles.teacherAssignmentEmpty}>Chưa có học phần nào được Phòng đào tạo lưu phân công cho tài khoản này.</p>}
+        {!loading && !error && rows.length > 0 && (
+          <div className={styles.teacherAssignmentScroll}>
+            <table className={styles.teacherAssignmentTable}>
+              <thead><tr><th>Học phần</th><th>Lớp</th><th>Năm học / Học kỳ</th><th>Định hướng</th><th>Nhập điểm</th></tr></thead>
+              <tbody>{rows.map(row => (
+                <tr key={row.id}>
+                  <td><strong>{row.courseName}</strong><small>{row.courseCode}</small></td>
+                  <td><strong>{row.classCode}</strong></td>
+                  <td>{row.schoolYear}<small>Học kỳ {row.semester}</small></td>
+                  <td>{row.trainingTrack === "nghien_cuu" ? "Nghiên cứu" : row.trainingTrack === "ung_dung" ? "Ứng dụng" : "Chưa cập nhật"}</td>
+                  <td><span className={styles.teacherAssignmentPending}>Chưa triển khai</span></td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function TeacherPortalContent({ user, section }: {
   user: TeacherUser;
   section: "profile" | "grades";
@@ -69,19 +128,16 @@ export default function TeacherPortalContent({ user, section }: {
     return () => controller.abort();
   }, [section, user.teacherId]);
 
-  // Phần Nhập điểm học phần vẫn để trống theo yêu cầu.
-  if (section === "grades") return null;
+  // Giai đoạn đầu: giảng viên chỉ XEM các lớp học phần đã được giao,
+  // chưa sửa hoặc lưu điểm, tránh giả định nghiệp vụ điểm chưa chốt.
+  if (section === "grades") return <AssignedCoursesForTeacher />;
 
   const current = profile ?? user;
   const full = profile;
 
   return (
     <div className={styles.profilePage}>
-      <section className={styles.profileCard} aria-labelledby="teacher-profile-title">
-        <div className={styles.profileHeader}>
-          <h1 id="teacher-profile-title">Hồ sơ giảng viên</h1>
-          <span className={styles.rolePill}>Giảng viên</span>
-        </div>
+      <section className={styles.profileCard} aria-label="Thông tin giảng viên">
         {profileError && (
           <p role="status" className={styles.profileWarning}>
             Chưa tải được thông tin chuyên môn từ máy chủ. Đang hiển thị thông tin tài khoản đã xác thực.
@@ -108,9 +164,6 @@ export default function TeacherPortalContent({ user, section }: {
             </dl>
           </div>
         </div>
-        <p className={styles.profileHint}>
-          Thông tin được lấy từ hồ sơ giảng viên hiện có của hệ thống. Những mục chưa có dữ liệu được ghi rõ “Chưa cập nhật”.
-        </p>
       </section>
     </div>
   );

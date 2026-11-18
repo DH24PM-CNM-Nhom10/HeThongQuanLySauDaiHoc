@@ -1,0 +1,58 @@
+/* Chỉ áp dụng cho khu vực tài khoản tại Cổng thông tin; không tác động Header quản trị. */
+.headerActions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: 0; }
+.managementButton {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 42px;
+  padding: 9px 16px; white-space: nowrap; text-decoration: none;
+  border: 1px solid #b7cee3; border-radius: 8px;
+  background: #eaf2fa; color: #194e7b; font-size: 13px; font-weight: 750;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.managementButton:hover { background: #dcecf8; border-color: #8eb6d7; color: #123e63; text-decoration: none; }
+.managementButton:focus-visible, .accountTrigger:focus-visible, .logoutButton:focus-visible { outline: 3px solid #83b7e8; outline-offset: 2px; }
+.account { position: relative; min-width: 0; }
+.accountTrigger {
+  display: flex; align-items: center; gap: 11px; min-height: 50px;
+  border: 1px solid transparent; border-radius: 10px;
+  background: transparent; padding: 6px 10px; color: #142d50; cursor: pointer;
+  font: inherit; text-align: left; user-select: none;
+  transition: background-color .15s, border-color .15s;
+}
+.accountTrigger:hover, .accountTriggerOpen { background: #f1f5fb; border-color: #e2e8f2; }
+.avatar {
+  display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px;
+  border-radius: 50%; background: #7526e9; color: #fff; font-size: 16px; font-weight: 750;
+}
+.accountText { display: flex; flex-direction: column; gap: 2px; min-width: 0; max-width: 190px; }
+.accountText strong { font-size: 13px; font-weight: 750; line-height: 1.35; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.accountText small { color: #6c80a0; font-size: 11px; line-height: 1.35; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.arrow { color: #647694; margin-left: 3px; font-size: 15px; }
+.dropdown {
+  position: absolute; z-index: 100; top: calc(100% + 8px); right: 0;
+  width: min(285px, 90vw); padding: 10px; border-radius: 12px;
+  border: 1px solid #e3e8f0; background: #fff;
+  box-shadow: 0 12px 28px rgba(20, 40, 75, .15);
+}
+.dropdownProfile { display: flex; flex-direction: column; gap: 5px; padding: 9px 10px 12px; }
+.dropdownProfile strong { font-size: 13.5px; color: #173153; font-weight: 750; overflow-wrap: anywhere; }
+.dropdownProfile span { font-size: 12px; color: #7186a2; overflow-wrap: anywhere; }
+.menuDivider { height: 1px; background: #e9edf3; margin: 1px 0 8px; }
+.logoutButton {
+  width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 7px; border: 1px solid #e4ac96;
+  background: #fbe1d5; color: #a83c19; font-size: 13px; font-weight: 750;
+  text-align: left; cursor: pointer; transition: background-color .15s;
+}
+.logoutButton:hover { background: #f5cdbd; color: #923313; }
+.logoutButton:active { background: #edbba7; }
+@media (max-width: 690px) {
+  .headerActions { gap: 7px; }
+  .managementButton { padding: 8px 10px; font-size: 11px; }
+  .accountTrigger { padding: 5px; gap: 5px; }
+  .accountText { max-width: 118px; }
+  .avatar { width: 33px; height: 33px; flex-basis: 33px; font-size: 13px; }
+  .dropdown { right: 0; }
+}
+@media (max-width: 420px) {
+  .accountText small { display: none; }
+  .accountText { max-width: 95px; }
+}

@@ -15,3 +15,21 @@
 .timeline { list-style:none; margin:0 30px; padding:12px 0; }.timeline li { display:flex; gap:15px; padding:18px 0; border-bottom:1px solid #e8eef3; }.timeline li svg { color:#227492; flex-shrink:0; }.timeline li strong { color:#214866; }.timeline p { margin:5px 0 0; font-size:13px; color:#657d90; }
 .links { padding:0 30px 26px; display:flex; gap:16px; flex-wrap:wrap; }.links a { font-weight:750; color:#12638a; }.links a:hover { text-decoration:underline; }
 @media(max-width:650px) { .studentBar { padding:16px; }.gridFields { padding:17px; grid-template-columns:1fr; gap:10px; }.toolbar { padding:18px; }.tableScroll { padding:2px 15px 24px; }.infoBanner { margin:16px; }.stats { grid-template-columns:1fr; padding:16px; }.subTitle { padding:12px 16px; }.timeline { margin:0 16px; }.links { padding:0 16px 22px; }.empty { margin:16px; padding:25px; } }
+
+/* Bảng điểm theo học phần được phân công đã lưu trên Backend. */
+.assignedGradeSection { padding: 22px 22px 26px; min-width: 0; }
+.assignedGradeToolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 0 16px; }
+.assignedGradeToolbar label { font-size: 13px; font-weight: 700; color: #304974; }
+.assignedGradeToolbar select { min-width: 220px; height: 43px; border-radius: 7px; background: #fff; color: #27466d; border: 1px solid #cbd9e8; padding: 0 12px; }
+.assignedCount { margin-left: auto; color: #7486a2; font-size: 13px; }
+.assignedGradeScroll { overflow-x: auto; border: 1px solid #e1e8f1; border-radius: 9px; }
+.assignedGradeTable { width: 100%; min-width: 980px; border-collapse: collapse; }
+.assignedGradeTable th { text-align: left; font-size: 12px; color: #2d466c; background: #f3f6fb; padding: 14px 12px; white-space: nowrap; }
+.assignedGradeTable td { color: #263e60; font-size: 13px; padding: 14px 12px; border-top: 1px solid #e8edf4; vertical-align: middle; }
+.assignedGradeTable td strong { color: #193961; font-weight: 700; }
+.assignedGradeTable td small { color: #788cac; display: block; margin-top: 5px; }
+.assignedGradeTable tr:hover td { background: #f9fbfe; }
+.gradeCompleted { font-weight: 700; color: #166846; white-space: nowrap; }
+.gradePending { color: #697d99; white-space: nowrap; }
+.gradeError { margin: 0; padding: 14px 16px; border: 1px solid #f1c4ba; background: #fff6f3; color: #af3e30; border-radius: 9px; }
+@media (max-width: 650px) { .assignedGradeSection { padding: 14px; } .assignedGradeToolbar select { min-width: 0; width: 100%; } }

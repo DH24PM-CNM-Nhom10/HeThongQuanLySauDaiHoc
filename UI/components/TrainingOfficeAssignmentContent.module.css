@@ -181,3 +181,269 @@
   .actions button { flex: 1; }
   .tableFooter { flex-direction: column; align-items: flex-start; }
 }
+
+/* CTĐT tham chiếu – khung thông tin học phần đã chọn */
+.curriculumInfo { display: grid; gap: 5px; padding: 13px 15px; background: #f3f8fd; border: 1px solid #d5e5f2; border-radius: 8px; color: #244a6c; }
+.curriculumInfo strong { font-size: 13px; line-height: 1.5; }
+.curriculumInfo span { font-size: 12px; }
+.curriculumInfo small { font-size: 11px; line-height: 1.6; color: #70879d; }
+
+/* Kỳ của năm học / Kỳ CTĐT và các điều khiển phân công bằng kéo-thả */
+.semesterInfo {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #cfe3f3;
+  background: #f0f7fd;
+  padding: 13px 16px;
+  border-radius: 10px;
+}
+.semesterInfo > span { font-size: 12px; color: #557a99; font-weight: 650; }
+.semesterInfo > strong { font-size: 14px; color: #174b78; }
+.semesterInfo > small { font-size: 12px; color: #6e8398; line-height: 1.6; }
+.radioGroup { display: flex; flex-wrap: wrap; gap: 10px; }
+.trackRadio {
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: 42px; padding: 8px 17px;
+  border: 1px solid #d4e0ec; border-radius: 9px;
+  font-size: 13px; color: #244e72; cursor: pointer;
+  background: #fff;
+}
+.trackRadio input { accent-color: #255e94; }
+.trackSelected { border-color: #4f88b8; background: #edf5fc; font-weight: 700; }
+.trackUnavailable { opacity: .52; cursor: not-allowed; }
+.courseList {
+  border: 1px solid #dae5ef;
+  border-radius: 10px;
+  max-height: 296px;
+  overflow: auto;
+  display: grid;
+  gap: 0;
+  margin-top: 10px;
+  background: #fff;
+  align-content: start;
+}
+.courseOption {
+  width: 100%; text-align: left; appearance: none;
+  background: white; border: 0; border-bottom: 1px solid #e7eef4;
+  padding: 12px 14px; color: #284e6b; cursor: grab;
+  display: grid; gap: 4px; font: inherit; font-size: 13px; line-height: 1.5;
+}
+.courseOption:last-child { border-bottom: 0; }
+.courseOption:hover:not(:disabled) { background: #f5faff; }
+.courseOption:focus-visible { outline: 2px solid #3378b1; outline-offset: -2px; }
+.courseOption:disabled { cursor: not-allowed; color: #8b9aa8; background: #f8f9fa; }
+.courseSelected { background: #eaf4fc; box-shadow: inset 3px 0 0 #286399; }
+.courseTop { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.courseTop > strong { color: #16466b; font-size: 13px; }
+.courseTop > span { color: #738da3; font-size: 12px; }
+.courseOption small { color: #9a7129; font-size: 11px; }
+.teacherOption[draggable="true"] { cursor: grab; }
+.assignmentCart {
+  margin-top: 20px;
+  border: 2px dashed #b5d0e4;
+  background: #f9fcff;
+  border-radius: 12px;
+  padding: 16px;
+  transition: background .15s ease, border-color .15s ease;
+}
+.cartDragOver { border-color: #2774a8; background: #edf7ff; }
+.cartHeader { display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; margin-bottom: 13px; }
+.cartHeader > strong { color: #17496f; font-size: 15px; }
+.cartHeader > small { color: #7590a6; font-size: 12px; line-height: 1.4; }
+.cartItems { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cartItems > div { min-width: 0; background: white; border: 1px solid #e0ebf3; border-radius: 9px; padding: 12px; display: grid; gap: 5px; }
+.cartItems span { font-size: 11px; font-weight: 650; color: #8193a5; }
+.cartItems strong { font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; color: #17496e; }
+.cartItems small { color: #7c92a7; font-size: 12px; overflow-wrap: anywhere; }
+@media (max-width: 650px) {
+  .cartItems { grid-template-columns: 1fr; }
+}
+
+/* Các mục đã đưa vào giỏ tạm ẩn khỏi danh sách, có thể bỏ riêng từng mục. */
+.cartSlotHeader { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 22px; }
+.cartRemove { border: 0; background: transparent; color: #a1433d; font-size: 11px; font-weight: 650; cursor: pointer; padding: 2px 0; white-space: nowrap; }
+.cartRemove:hover, .cartRemove:focus-visible { color: #7b2c27; text-decoration: underline; }
+
+/* V2: lựa chọn bằng click/kéo thả – bản ghi đã chọn biến mất khỏi nguồn. */
+.teacherOption {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #ecf1f5;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+}
+.teacherOption:disabled { cursor: not-allowed; opacity: .6; }
+.teacherOption:focus-visible { outline: 2px solid #3378b1; outline-offset: -2px; }
+.teacherIndicator {
+  margin-top: 4px;
+  width: 15px; height: 15px; flex-shrink: 0;
+  border-radius: 50%; border: 1.5px solid #8ca6bd; background: #fff;
+}
+.teacherOption:hover:not(:disabled) .teacherIndicator { border-color: #245e95; box-shadow: 0 0 0 3px #e8f2fc; }
+.cartRemove {
+  display: inline-flex; justify-content: center; align-items: center;
+  font-size: 20px; line-height: 1; font-weight: 500;
+  width: 28px; height: 28px; padding: 0;
+  border: 1px solid #f0d0cc; border-radius: 6px;
+  background: #fff8f7; color: #9e4038;
+}
+.cartRemove:hover, .cartRemove:focus-visible { background: #fcece9; text-decoration: none; }
+
+/* Bảng tổng hợp có thể tra cứu độc lập với biểu mẫu phía trên. */
+.filterRow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.summaryTools {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+  gap: 12px; color: #6e879c; font-size: 12px; margin: -5px 0 14px;
+}
+.clearFilters {
+  border: 1px solid #cbdceb; background: #fff; color: #315c82;
+  border-radius: 7px; padding: 7px 12px; font: inherit; cursor: pointer;
+}
+.clearFilters:hover { background: #eef6fc; }
+.clearFilters:focus-visible { outline: 2px solid #3378b1; }
+.summaryTable { min-width: 870px; table-layout: auto; }
+.summaryTable th:nth-child(1), .summaryTable td:nth-child(1) { width: 42px; }
+.summaryTable th:nth-child(2), .summaryTable td:nth-child(2) { width: 115px; }
+.summaryTable th:nth-child(3), .summaryTable td:nth-child(3) { min-width: 190px; }
+.summaryTable th:nth-child(4), .summaryTable td:nth-child(4) { min-width: 116px; }
+.summaryTable th:nth-child(5), .summaryTable td:nth-child(5) { min-width: 165px; }
+.summaryTable th:nth-child(6), .summaryTable td:nth-child(6) { width: 112px; }
+.summaryTable th:nth-child(7), .summaryTable td:nth-child(7) { width: 85px; }
+.summaryTable td { overflow-wrap: break-word; }
+@media (max-width: 1040px) { .filterRow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .filterRow { grid-template-columns: 1fr; } }
+
+/* Bảng tổng hợp: chỉ còn một bộ lọc Khoa quản lý ngành. */
+.summaryFacultyFilter {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.summaryFacultyFilter > .field { flex: 1 1 260px; max-width: 420px; }
+.summaryCount { font-size: 12px; color: #73879d; padding-bottom: 9px; }
+@media (max-width: 520px) {
+  .summaryFacultyFilter { align-items: stretch; }
+  .summaryFacultyFilter > .field { max-width: none; }
+  .summaryCount { padding-bottom: 0; }
+}
+
+/* Phân công theo bước: thu gọn bộ lọc thời gian sau khi đã xác nhận. */
+.assignmentCard { min-height: 0; }
+.scheduleSetup { padding: 15px; border: 1px solid #dce8f2; background: #f8fbfe; border-radius: 12px; }
+.stepHeadline { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
+.stepHeadline > div { display: grid; gap: 4px; }
+.stepHeadline strong { font-size: 14px; color: #153e62; }
+.stepHeadline small { font-size: 12px; color: #71879c; line-height: 1.5; }
+.stepDot { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: #255e94; color: white; font-weight: 700; font-size: 13px; }
+.scheduleActions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 16px; }
+.scheduleActions p { margin: 0; color: #71879c; font-size: 12px; line-height: 1.6; flex: 1; }
+.scheduleActions .primaryButton { white-space: nowrap; }
+.scheduleCompact { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 11px 14px; margin: 0 0 18px; border: 1px solid #cde5db; background: #f1f8f5; border-radius: 10px; }
+.scheduleCompact > div { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; color: #234c44; font-size: 13px; }
+.scheduleCompact strong { font-size: 14px; }
+.scheduleCheck { display: grid; place-items: center; width: 21px; height: 21px; background: #d4eee2; color: #236d4d; border-radius: 50%; font-weight: 800; }
+.changeScheduleButton { border: 1px solid #b8d7cb; background: white; padding: 7px 11px; color: #215744; border-radius: 7px; font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }
+.changeScheduleButton:hover { background: #eaf5ef; }
+/* Bảng tổng hợp: Khoa và Xuất Excel đứng chung một hàng. */
+.summaryHeading { margin-bottom: 14px; align-items: center; }
+.summaryHeadingText { min-width: 220px; flex: 1 1 270px; }
+.summaryHeadingActions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; flex: 0 1 450px; }
+.summarySelect { min-width: 145px; max-width: 245px; height: 42px; flex: 1 1 165px; }
+.summaryHeadingActions .exportButton { min-height: 42px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* Độ cao vùng cuộn vừa phải để tránh trang quá dài. */
+.teacherList { min-height: 225px; max-height: 415px; }
+.courseList { max-height: 245px; }
+@media (max-width: 720px) {
+  .summaryHeadingActions { flex: 1 1 100%; justify-content: stretch; }
+  .summarySelect { max-width: none; }
+  .scheduleActions { align-items: stretch; flex-direction: column; }
+  .scheduleActions .primaryButton { width: 100%; }
+}
+
+
+/* V3: thao tác bấm chọn, thay thế hoàn toàn thao tác kéo thả. */
+.teacherOption, .courseOption { cursor: pointer; }
+.teacherOption:hover, .courseOption:hover { background: #f1f7fd; }
+.chosenTeacher {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  margin: 2px 0 12px; padding: 12px 13px;
+  border: 1px solid #bedace; border-radius: 10px; background: #f2f9f5;
+}
+.chosenTeacherInfo { display: grid; gap: 4px; min-width: 0; }
+.chosenTeacherInfo small, .chosenStep { color: #467b68; font-size: 11px; font-weight: 700; }
+.chosenTeacherInfo strong { color: #194f3d; font-size: 14px; }
+.chosenTeacherInfo span { color: #537969; font-size: 12px; overflow-wrap: anywhere; }
+.chosenRemove {
+  width: 30px; height: 30px; flex-shrink: 0; border: 1px solid #d8e9e0;
+  border-radius: 7px; background: white; color: #98514a; font-size: 21px;
+  cursor: pointer; display: grid; place-items: center;
+}
+.chosenRemove:hover { background: #fff5f4; }
+.chosenCourse {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  border: 1px solid #b9d5ec; background: #f0f7fd; border-radius: 10px;
+  padding: 14px 16px; margin-top: 15px;
+}
+.chosenCourseInfo { min-width: 0; display: grid; gap: 5px; }
+.chosenStep { color: #527f9f; }
+.chosenCourseInfo strong { color: #17486f; font-size: 14px; overflow-wrap: anywhere; }
+.chosenCourseInfo small { color: #6a869f; font-size: 12px; }
+.changeCourseButton {
+  flex-shrink: 0; border: 1px solid #b9cfe2; color: #2b648e;
+  background: #fff; border-radius: 8px; padding: 10px 12px;
+  font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.changeCourseButton:hover { background: #e6f2fb; }
+/* Chọn xong học phần: danh sách môn biến mất, bảng lớp xuất hiện ngay bên dưới. */
+.classSection { margin-top: 16px; }
+.teacherList { min-height: 160px; max-height: 315px; }
+@media (max-width: 600px) {
+  .chosenCourse { align-items: stretch; flex-direction: column; }
+  .changeCourseButton { align-self: flex-start; }
+}
+
+/* Lưu các bản nháp đã được Phòng đào tạo xác nhận vào kho dữ liệu Backend. */
+.summaryHeadingActions { flex: 0 1 auto; max-width: 100%; }
+.publishButton {
+  border: 1px solid #1b714d; color: #fff; background: #146e4c;
+  min-height: 42px; border-radius: 8px; padding: 9px 13px;
+  font: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.publishButton:hover:not(:disabled) { background: #10583d; }
+.publishButton:disabled { opacity: .48; cursor: not-allowed; }
+.publishConfirm { display: flex; align-items: flex-start; gap: 10px; margin: 3px 0 14px; font-size: 12px; color: #49647b; line-height: 1.6; cursor: pointer; }
+.publishConfirm input { margin: 4px 0 0; flex: 0 0 auto; accent-color: #146e4c; }
+.publishMessage { margin: 0 0 13px; padding: 12px; border-radius: 8px; background: #eef8f4; border: 1px solid #c6e4d5; color: #205b46; font-size: 13px; }
+@media (max-width: 750px) { .summaryHeadingActions { justify-content: flex-start; } }
+
+
+.continueButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background-color: #285e99;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.continueButton:hover {
+  background-color: #1c497a;
+}
+
+.continueButton:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}

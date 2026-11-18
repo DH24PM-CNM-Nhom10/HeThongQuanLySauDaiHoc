@@ -1,5 +1,6 @@
 import PublicHome from "../../../components/PublicHome";
 
-export default function TrainingOfficeAssignmentPage() {
+// Cổng thông tin: danh sách phân công đã lưu, chỉ xem, không thao tác.
+export default function PublicOfficeAssignmentPage() {
   return <PublicHome page="office-assign" />;
 }

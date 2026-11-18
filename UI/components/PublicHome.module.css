@@ -159,3 +159,29 @@ a.noticeTitle:hover { color: #137891; text-decoration: underline; }
   .loginForm button { margin-left: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .site * { transition: none !important; } }
+
+/* AGU-PUBLIC-ACCOUNT-RIGHT-ALIGN-V1
+   Giu khoang can trai cua logo; dua cum Trang quan tri + Tai khoan sat mep phai. */
+@media (min-width: 1000px) {
+  .headerInner {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: max(18px, calc((100vw - 1230px) / 2));
+    padding-right: 24px;
+  }
+  .headerAccount {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+}
+@media (max-width: 999px) {
+  .headerAccount {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

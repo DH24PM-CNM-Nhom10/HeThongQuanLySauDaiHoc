@@ -70,3 +70,9 @@ training-office-credentials.local.txt
 .teacher-auth-backups/
 .teacher-auth-secret
 teacher-credentials.local.csv
+
+# Grade data kept only on the local Backend
+.teacher-grades.local.json
+.teacher-grades.local.json.tmp
+# Local student demo session signing key
+.student-auth-secret

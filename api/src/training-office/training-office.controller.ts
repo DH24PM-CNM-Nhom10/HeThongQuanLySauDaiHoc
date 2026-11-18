@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { TrainingOfficeService } from './training-office.service';
 
@@ -24,6 +24,10 @@ export class TrainingOfficeController {
   catalog(@Req() req: Request) { return this.office.catalog(req); }
   @Get('assignments')
   assignments(@Req() req: Request) { return this.office.assignments(req); }
+  @Post('assignments/publish')
+  publish(@Req() req: Request, @Body() body: unknown) { return this.office.publishAssignments(req, body); }
+  @Delete('assignments/:id')
+  remove(@Req() req: Request, @Param('id') id: string) { return this.office.deleteAssignment(req, id); }
   @Post('assignments')
   assign(@Req() req: Request, @Body() body: unknown) { return this.office.saveAssignments(req, body); }
 }
