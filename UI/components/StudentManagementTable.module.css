@@ -1,0 +1,274 @@
+.management {
+  min-width: 0;
+  color: var(--portal-ink);
+}
+
+.toolbar,
+.actions,
+.rowActions,
+.pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actions {
+  gap: 6px;
+}
+
+.rowActions {
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.editFields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+}
+
+.editFields label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.editFields :is(input, select) {
+  width: 100%;
+  min-width: 0;
+}
+
+.editFields input[readonly] {
+  background: #f1f5f9;
+}
+
+.fieldNote {
+  color: #43566a;
+}
+
+.toolbar {
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.scopeFilters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(140px, 1fr) minmax(145px, 1fr) minmax(115px, 0.8fr) auto;
+  align-items: end;
+  gap: 6px 8px;
+  margin-bottom: 12px;
+}
+
+.scopeFilters label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  font-weight: 600;
+}
+
+.scopeFilters :is(input, select) {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+}
+
+.scopeFilters p {
+  padding-block: 8px;
+  color: #43566a;
+  white-space: nowrap;
+}
+
+.feedback {
+  margin-block: 6px;
+  color: #43566a;
+}
+
+@media (max-width: 1100px) {
+  .scopeFilters {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+  }
+}
+
+.management input,
+.management select,
+.management button {
+  padding: 7px 10px;
+  border: 1px solid #c7d4df;
+  border-radius: 5px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.management :is(.addButton, .uploadButton, .detailButton, .editButton, .deleteButton) {
+  border-color: transparent;
+  background: var(--action-bg);
+  color: var(--action-ink, #fff);
+  font-weight: 600;
+}
+
+.addButton { --action-bg: #1757b8; }
+.uploadButton { --action-bg: #08734e; }
+.detailButton { --action-bg: #cce8ff; --action-ink: #154f82; }
+.editButton { --action-bg: #facc15; --action-ink: #422006; }
+.deleteButton { --action-bg: #b4232c; }
+
+.management :is(.addButton, .uploadButton, .detailButton, .editButton, .deleteButton):hover:not(:disabled) {
+  filter: brightness(0.90);
+}
+
+.management button {
+  cursor: pointer;
+}
+
+.management button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.sheet {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #cbd5e1;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.table :is(th, td) {
+  height: 34px;
+  padding: 4px 9px;
+  border-right: 1px solid #d8e0e8;
+  border-bottom: 1px solid #d8e0e8;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  background: #eaf2ec;
+  color: #203e2b;
+  font-weight: 700;
+}
+
+.table tr > :first-child {
+  position: sticky;
+  left: 0;
+  min-width: 44px;
+  background: #eef2f5;
+  color: #43566a;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.table tbody tr:hover {
+  background: #f2f8f3;
+}
+
+.table button {
+  padding: 3px 8px;
+}
+
+@media (min-width: 768px) {
+  .table :is(.actionHeading, .actionCell) {
+    position: sticky;
+    right: 0;
+    box-shadow: -1px 0 #d8e0e8;
+  }
+
+  .actionCell {
+    background: #fff;
+  }
+}
+
+.management .status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #eff3f6;
+  color: #475569;
+  font-weight: 600;
+}
+
+.management .status[data-status="studying"] {
+  background: var(--student-studying-bg);
+  color: var(--student-studying-ink);
+}
+
+.management .status[data-status="graduated"] {
+  background: var(--student-graduated-bg);
+  color: var(--student-graduated-ink);
+}
+
+.management .status[data-status="overdue"] {
+  background: var(--student-overdue-bg);
+  color: var(--student-overdue-ink);
+}
+
+.management .status[data-status="withdrawn"] {
+  background: var(--student-withdrawn-bg);
+  color: var(--student-withdrawn-ink);
+}
+
+.table .status[data-status],
+.table .status {
+  color: #111;
+}
+
+.editSection {
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px solid #d8e0e8;
+  border-radius: 5px;
+}
+
+.editSection summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.editSection[open] summary {
+  margin-bottom: 10px;
+}
+
+.pagination {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: #0f172a99;
+}
+
+.details {
+  width: min(680px, 92vw);
+  max-height: 85vh;
+  overflow: auto;
+  border-radius: 10px;
+  padding: 20px;
+  background: #fff;
+}
+
+.details dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.details dt {
+  font-weight: 600;
+}
+
+.details dd {
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+}

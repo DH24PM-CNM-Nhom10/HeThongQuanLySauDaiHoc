@@ -11,6 +11,14 @@
   --primary: #1a56db;
   --primary-dark: #1e429f;
   --primary-light: #e1effe;
+  --student-studying-ink: #2563eb;
+  --student-studying-bg: #e8f0ff;
+  --student-graduated-ink: #166534;
+  --student-graduated-bg: #dcfce7;
+  --student-overdue-ink: #825c04;
+  --student-overdue-bg: #fef3c7;
+  --student-withdrawn-ink: #b91c1c;
+  --student-withdrawn-bg: #fee2e2;
   --portal-ink: #153c59;
   --portal-accent: #d8a34a;
   --portal-nav-bg: #f2f5f7;
@@ -167,22 +175,28 @@ body {
 }
 
 .sidebar-admin .sidebar-group + .sidebar-group {
-  margin-top: 14px;
-  padding-top: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--sidebar-divider);
 }
 
+.sidebar-links {
+  list-style: none;
+}
+
 .sidebar-group-title {
-  margin: 2px 12px 6px;
-  color: #c7dbe9;
+  margin: 0 0 4px;
+  padding: 5px 10px;
+  color: #f8d99f;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .sidebar-admin .nav-item {
-  padding: 9px 12px;
+  margin: 0 0 2px 8px;
+  padding: 9px 10px;
   color: #e4eef6;
 }
 

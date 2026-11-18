@@ -7,29 +7,33 @@ import { GraduationCap } from "lucide-react";
 
 const MOBILE_BREAKPOINT = 900;
 
-const menuOverview = [
-  { href: "/admin", label: "Bảng điều khiển" },
-  { href: "/", label: "Cổng thông tin" },
-];
-
-const menuAdmin = [
+const adminGroups = [
   {
-    href: "/students",
-    label: "Quản lý học viên",
+    label: "Tổng quan",
+    items: [{ href: "/admin", label: "Bảng điều khiển" }],
   },
   {
-    href: "/teachers",
-    label: "Quản lý giảng viên",
+    label: "Hồ sơ đào tạo",
+    items: [
+      { href: "/students", label: "Quản lý học viên" },
+      { href: "/teachers", label: "Quản lý giảng viên" },
+    ],
   },
   {
-    href: "/assignment",
-    label: "Phân công giảng dạy",
+    label: "Điều hành đào tạo",
+    items: [
+      { href: "/assignment", label: "Phân công giảng dạy" },
+      { href: "/thesis", label: "Tiến độ luận văn" },
+    ],
   },
   {
-    href: "/thesis",
-    label: "Tiến độ luận văn",
+    label: "Dữ liệu",
+    items: [{ href: "/upload", label: "Nhập và ánh xạ dữ liệu" }],
   },
-  { href: "/upload", label: "Upload & mapping" },
+  {
+    label: "Trang công khai",
+    items: [{ href: "/", label: "Cổng thông tin" }],
+  },
 ];
 
 const menuStudent = [
@@ -48,12 +52,7 @@ function isMobileViewport() {
 export default function Sidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
   const isStudent = role === "student";
-  const groups = isStudent
-    ? [{ label: "", items: menuStudent }]
-    : [
-      { label: "Tổng quan", items: menuOverview },
-      { label: "Quản lý đào tạo", items: menuAdmin },
-    ];
+  const groups = isStudent ? [{ label: "", items: menuStudent }] : adminGroups;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -124,25 +123,31 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
         </div>
 
         <nav className="sidebar-nav" aria-label="Điều hướng chính">
-          {groups.map(({ label, items }) => (
-            <div key={label} className="sidebar-group">
-              {label && <h2 className="sidebar-group-title">{label}</h2>}
-              {items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`nav-item ${pathname === item.href ? "active" : ""}`}
-                  aria-current={pathname === item.href ? "page" : undefined}
-                  onClick={handleNavClick}
-                >
-                  {"icon" in item && typeof item.icon === "string" && (
-                    <span className="nav-icon" aria-hidden="true">{item.icon}</span>
-                  )}
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </div>
-          ))}
+          {groups.map(({ label, items }, index) => {
+            const headingId = `sidebar-group-${index}`;
+            return (
+              <div key={label} className="sidebar-group">
+                {label && <h2 id={headingId} className="sidebar-group-title">{label}</h2>}
+                <ul className="sidebar-links" aria-labelledby={label ? headingId : undefined}>
+                  {items.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={`nav-item ${pathname === item.href ? "active" : ""}`}
+                        aria-current={pathname === item.href ? "page" : undefined}
+                        onClick={handleNavClick}
+                      >
+                        {"icon" in item && typeof item.icon === "string" && (
+                          <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+                        )}
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </nav>
       </aside>
 

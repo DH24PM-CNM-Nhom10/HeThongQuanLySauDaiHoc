@@ -1,9 +1,9 @@
 {
   "students": [
     {
-      "id": "id_1794660310832_0",
+      "id": "id_1794921792911_0",
       "cccd": "89079000407",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS259505",
       "hoTen": "Lê Minh Tuấn",
       "maNganh": "9620110",
@@ -16,9 +16,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310832_1",
+      "id": "id_1794921792911_1",
       "cccd": "89187001620",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS259504",
       "hoTen": "Lý Thị Thanh Thảo",
       "maNganh": "9620110",
@@ -31,9 +31,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310832_2",
+      "id": "id_1794921792911_2",
       "cccd": "89184000932",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS259503",
       "hoTen": "Cù Ngọc Quí",
       "maNganh": "9620110",
@@ -46,9 +46,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310832_3",
+      "id": "id_1794921792911_3",
       "cccd": "89094012854",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS259502",
       "hoTen": "Nguyễn Văn Tỷ Lợi",
       "maNganh": "9620110",
@@ -61,9 +61,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310832_4",
+      "id": "id_1794921792911_4",
       "cccd": "87175000455",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS259501",
       "hoTen": "Nguyễn Thị Minh Châu",
       "maNganh": "9620110",
@@ -76,9 +76,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310832_5",
+      "id": "id_1794921792911_5",
       "cccd": "89181000709",
-      "lop": "TSKHCT01",
+      "lop": "NCS02KHCT",
       "maHocVien": "NCS248026",
       "hoTen": "Nguyễn Thị Thúy diễm",
       "maNganh": "9620110",
@@ -91,7 +91,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310832_6",
+      "id": "id_1794921792911_6",
       "cccd": "91199002746",
       "lop": "CH12CNTT",
       "maHocVien": "CH259463",
@@ -106,7 +106,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_7",
+      "id": "id_1794921792911_7",
       "cccd": "89092020509",
       "lop": "CH12CNTT",
       "maHocVien": "CH259462",
@@ -121,7 +121,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_8",
+      "id": "id_1794921792911_8",
       "cccd": "89203006140",
       "lop": "CH12CNTT",
       "maHocVien": "CH259461",
@@ -136,7 +136,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_9",
+      "id": "id_1794921792911_9",
       "cccd": "89203023115",
       "lop": "CH12CNTT",
       "maHocVien": "CH259460",
@@ -151,7 +151,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_10",
+      "id": "id_1794921792911_10",
       "cccd": "79078000596",
       "lop": "CH12CNTT",
       "maHocVien": "CH259459",
@@ -166,7 +166,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_11",
+      "id": "id_1794921792911_11",
       "cccd": "89080000382",
       "lop": "CH12CNTT",
       "maHocVien": "CH259458",
@@ -181,7 +181,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_12",
+      "id": "id_1794921792911_12",
       "cccd": "89086011629",
       "lop": "CH12CNTT",
       "maHocVien": "CH259457",
@@ -196,7 +196,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_13",
+      "id": "id_1794921792911_13",
       "cccd": "89099008696",
       "lop": "CH12CNTT",
       "maHocVien": "CH259456",
@@ -211,7 +211,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_14",
+      "id": "id_1794921792911_14",
       "cccd": "89075011230",
       "lop": "CH12CNTT",
       "maHocVien": "CH259455",
@@ -226,7 +226,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_15",
+      "id": "id_1794921792911_15",
       "cccd": "87190000910",
       "lop": "CH12CNTT",
       "maHocVien": "CH259454",
@@ -241,7 +241,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_16",
+      "id": "id_1794921792911_16",
       "cccd": "89088016636",
       "lop": "CH12CNTT",
       "maHocVien": "CH259453",
@@ -256,7 +256,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_17",
+      "id": "id_1794921792911_17",
       "cccd": "89092001608",
       "lop": "CH12CNTT",
       "maHocVien": "CH259452",
@@ -271,7 +271,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_18",
+      "id": "id_1794921792911_18",
       "cccd": "91097006784",
       "lop": "CH12CNTT",
       "maHocVien": "CH259451",
@@ -286,7 +286,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_19",
+      "id": "id_1794921792911_19",
       "cccd": "91092015270",
       "lop": "CH12CNTT",
       "maHocVien": "CH259450",
@@ -301,7 +301,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_20",
+      "id": "id_1794921792911_20",
       "cccd": "89099015127",
       "lop": "CH12CNTT",
       "maHocVien": "CH259449",
@@ -316,7 +316,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_21",
+      "id": "id_1794921792911_21",
       "cccd": "89085030256",
       "lop": "CH12CNTT",
       "maHocVien": "CH259448",
@@ -331,7 +331,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_22",
+      "id": "id_1794921792911_22",
       "cccd": "89088007352",
       "lop": "CH12CNTT",
       "maHocVien": "CH259447",
@@ -346,7 +346,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_23",
+      "id": "id_1794921792911_23",
       "cccd": "89095016600",
       "lop": "CH12CNTT",
       "maHocVien": "CH259446",
@@ -361,7 +361,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_24",
+      "id": "id_1794921792911_24",
       "cccd": "89094001081",
       "lop": "CH12CNTT",
       "maHocVien": "CH259445",
@@ -376,7 +376,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_25",
+      "id": "id_1794921792911_25",
       "cccd": "89097021320",
       "lop": "CH12CNTT",
       "maHocVien": "CH259444",
@@ -391,7 +391,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_26",
+      "id": "id_1794921792911_26",
       "cccd": "91202003562",
       "lop": "CH12CNTT",
       "maHocVien": "CH259443",
@@ -406,7 +406,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_27",
+      "id": "id_1794921792911_27",
       "cccd": "89098015272",
       "lop": "CH12CNTT",
       "maHocVien": "CH259442",
@@ -421,7 +421,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_28",
+      "id": "id_1794921792911_28",
       "cccd": "89096005804",
       "lop": "CH12CNTT",
       "maHocVien": "CH259441",
@@ -436,7 +436,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_29",
+      "id": "id_1794921792911_29",
       "cccd": "89096007185",
       "lop": "CH12CNTT",
       "maHocVien": "CH259440",
@@ -451,7 +451,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_30",
+      "id": "id_1794921792911_30",
       "cccd": "89096002080",
       "lop": "CH12CNTT",
       "maHocVien": "CH259439",
@@ -466,7 +466,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_31",
+      "id": "id_1794921792911_31",
       "cccd": "89303014485",
       "lop": "CH12CNTP",
       "maHocVien": "CH259423",
@@ -481,7 +481,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_32",
+      "id": "id_1794921792911_32",
       "cccd": "80186000976",
       "lop": "CH12CNTP",
       "maHocVien": "CH259422",
@@ -496,7 +496,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_33",
+      "id": "id_1794921792911_33",
       "cccd": "89203015493",
       "lop": "CH12CNTP",
       "maHocVien": "CH259421",
@@ -511,7 +511,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_34",
+      "id": "id_1794921792911_34",
       "cccd": "89303011424",
       "lop": "CH12CNTP",
       "maHocVien": "CH259420",
@@ -526,7 +526,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_35",
+      "id": "id_1794921792911_35",
       "cccd": "92301009754",
       "lop": "CH12CNTP",
       "maHocVien": "CH259419",
@@ -541,7 +541,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_36",
+      "id": "id_1794921792911_36",
       "cccd": "89302013409",
       "lop": "CH12CNSH",
       "maHocVien": "CH259404",
@@ -556,7 +556,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_37",
+      "id": "id_1794921792911_37",
       "cccd": "89185021881",
       "lop": "CH12CNSH",
       "maHocVien": "CH259403",
@@ -571,7 +571,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_38",
+      "id": "id_1794921792911_38",
       "cccd": "89193009902",
       "lop": "CH12CNSH",
       "maHocVien": "CH259402",
@@ -586,7 +586,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_39",
+      "id": "id_1794921792911_39",
       "cccd": "89095003346",
       "lop": "CH12CNSH",
       "maHocVien": "CH259401",
@@ -601,7 +601,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_40",
+      "id": "id_1794921792911_40",
       "cccd": "89185031976",
       "lop": "CH12CNSH",
       "maHocVien": "CH259400",
@@ -616,7 +616,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_41",
+      "id": "id_1794921792911_41",
       "cccd": "89073002409",
       "lop": "CH12CNSH",
       "maHocVien": "CH259399",
@@ -631,7 +631,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_42",
+      "id": "id_1794921792911_42",
       "cccd": "92087006975",
       "lop": "CH12KHCT",
       "maHocVien": "CH259388",
@@ -646,7 +646,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_43",
+      "id": "id_1794921792911_43",
       "cccd": "92301002403",
       "lop": "CH12KHCT",
       "maHocVien": "CH259387",
@@ -661,7 +661,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_44",
+      "id": "id_1794921792911_44",
       "cccd": "95301002338",
       "lop": "CH12KHCT",
       "maHocVien": "CH259386",
@@ -676,7 +676,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_45",
+      "id": "id_1794921792911_45",
       "cccd": "89084002447",
       "lop": "CH12KHCT",
       "maHocVien": "CH259385",
@@ -691,7 +691,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_46",
+      "id": "id_1794921792911_46",
       "cccd": "89082029459",
       "lop": "CH12KHCT",
       "maHocVien": "CH259384",
@@ -706,7 +706,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_47",
+      "id": "id_1794921792911_47",
       "cccd": "89189019180",
       "lop": "CH12KHCT",
       "maHocVien": "CH259383",
@@ -721,7 +721,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_48",
+      "id": "id_1794921792911_48",
       "cccd": "89188011970",
       "lop": "CH12KHCT",
       "maHocVien": "CH259382",
@@ -736,7 +736,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_49",
+      "id": "id_1794921792911_49",
       "cccd": "89189015520",
       "lop": "CH12KHCT",
       "maHocVien": "CH259381",
@@ -751,7 +751,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_50",
+      "id": "id_1794921792911_50",
       "cccd": "89079012975",
       "lop": "CH12KHCT",
       "maHocVien": "CH259380",
@@ -766,7 +766,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_51",
+      "id": "id_1794921792912_51",
       "cccd": "89085004411",
       "lop": "CH12KHCT",
       "maHocVien": "CH259379",
@@ -781,7 +781,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_52",
+      "id": "id_1794921792912_52",
       "cccd": "89094004118",
       "lop": "CH12CN",
       "maHocVien": "CH259365",
@@ -798,7 +798,7 @@
       "gvHuongDan1": "Nguyễn Tuyết Giang"
     },
     {
-      "id": "id_1794660310833_53",
+      "id": "id_1794921792912_53",
       "cccd": "89098003893",
       "lop": "CH12CN",
       "maHocVien": "CH259364",
@@ -813,7 +813,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_54",
+      "id": "id_1794921792912_54",
       "cccd": "89303013479",
       "lop": "CH12QLMT",
       "maHocVien": "CH259347",
@@ -828,7 +828,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_55",
+      "id": "id_1794921792912_55",
       "cccd": "89200008904",
       "lop": "CH12QLMT",
       "maHocVien": "CH259346",
@@ -843,7 +843,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_56",
+      "id": "id_1794921792912_56",
       "cccd": "89194001858",
       "lop": "CH12QLMT",
       "maHocVien": "CH259345",
@@ -858,7 +858,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_57",
+      "id": "id_1794921792912_57",
       "cccd": "89192010121",
       "lop": "CH12QLMT",
       "maHocVien": "CH259344",
@@ -873,7 +873,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_58",
+      "id": "id_1794921792912_58",
       "cccd": "60190000303",
       "lop": "CH12QLGD",
       "maHocVien": "CH259332",
@@ -888,7 +888,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_59",
+      "id": "id_1794921792912_59",
       "cccd": "92181004086",
       "lop": "CH12QLGD",
       "maHocVien": "CH259331",
@@ -903,7 +903,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_60",
+      "id": "id_1794921792912_60",
       "cccd": "89190005256",
       "lop": "CH12QLGD",
       "maHocVien": "CH259330",
@@ -918,7 +918,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_61",
+      "id": "id_1794921792912_61",
       "cccd": "92300013232",
       "lop": "CH12QLGD",
       "maHocVien": "CH259329",
@@ -933,7 +933,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_62",
+      "id": "id_1794921792912_62",
       "cccd": "89302001504",
       "lop": "CH12QLGD",
       "maHocVien": "CH259328",
@@ -948,7 +948,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_63",
+      "id": "id_1794921792912_63",
       "cccd": "89197013882",
       "lop": "CH12QLGD",
       "maHocVien": "CH259326",
@@ -963,7 +963,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_64",
+      "id": "id_1794921792912_64",
       "cccd": "89191016370",
       "lop": "CH12QLGD",
       "maHocVien": "CH259325",
@@ -978,7 +978,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310833_65",
+      "id": "id_1794921792912_65",
       "cccd": "96082002494",
       "lop": "CH12QLGD",
       "maHocVien": "CH259324",
@@ -993,7 +993,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_66",
+      "id": "id_1794921792912_66",
       "cccd": "89180026970",
       "lop": "CH12QLGD",
       "maHocVien": "CH259323",
@@ -1008,7 +1008,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310833_67",
+      "id": "id_1794921792912_67",
       "cccd": "89192015951",
       "lop": "CH12QLGD",
       "maHocVien": "CH259322",
@@ -1023,7 +1023,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_68",
+      "id": "id_1794921792912_68",
       "cccd": "89089027595",
       "lop": "CH12QLGD",
       "maHocVien": "CH259321",
@@ -1038,7 +1038,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_69",
+      "id": "id_1794921792912_69",
       "cccd": "89301000608",
       "lop": "CH12QLGD",
       "maHocVien": "CH259320",
@@ -1053,7 +1053,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_70",
+      "id": "id_1794921792912_70",
       "cccd": "89088002097",
       "lop": "CH12QLGD",
       "maHocVien": "CH259319",
@@ -1068,7 +1068,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_71",
+      "id": "id_1794921792912_71",
       "cccd": "89180015200",
       "lop": "CH12QLGD",
       "maHocVien": "CH259318",
@@ -1083,7 +1083,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_72",
+      "id": "id_1794921792912_72",
       "cccd": "89093000391",
       "lop": "CH12QLGD",
       "maHocVien": "CH259317",
@@ -1098,7 +1098,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_73",
+      "id": "id_1794921792912_73",
       "cccd": "89199008047",
       "lop": "CH12QLGD",
       "maHocVien": "CH259316",
@@ -1113,7 +1113,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_74",
+      "id": "id_1794921792912_74",
       "cccd": "89199007096",
       "lop": "CH12QLGD",
       "maHocVien": "CH259315",
@@ -1128,7 +1128,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_75",
+      "id": "id_1794921792912_75",
       "cccd": "89185006606",
       "lop": "CH12QLGD",
       "maHocVien": "CH259314",
@@ -1143,7 +1143,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_76",
+      "id": "id_1794921792912_76",
       "cccd": "89185024816",
       "lop": "CH12QLGD",
       "maHocVien": "CH259313",
@@ -1158,7 +1158,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_77",
+      "id": "id_1794921792912_77",
       "cccd": "89094021796",
       "lop": "CH12QLGD",
       "maHocVien": "CH259312",
@@ -1173,7 +1173,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_78",
+      "id": "id_1794921792912_78",
       "cccd": "89093002552",
       "lop": "CH12QLGD",
       "maHocVien": "CH259311",
@@ -1188,7 +1188,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_79",
+      "id": "id_1794921792912_79",
       "cccd": "89301019863",
       "lop": "CH12QLGD",
       "maHocVien": "CH259310",
@@ -1203,7 +1203,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_80",
+      "id": "id_1794921792912_80",
       "cccd": "89180000971",
       "lop": "CH12QLGD",
       "maHocVien": "CH259309",
@@ -1218,7 +1218,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_81",
+      "id": "id_1794921792912_81",
       "cccd": "89197018891",
       "lop": "CH12QLGD",
       "maHocVien": "CH259308",
@@ -1233,7 +1233,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_82",
+      "id": "id_1794921792912_82",
       "cccd": "89086024474",
       "lop": "CH12QLGD",
       "maHocVien": "CH259307",
@@ -1248,7 +1248,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_83",
+      "id": "id_1794921792912_83",
       "cccd": "89180014912",
       "lop": "CH12QLGD",
       "maHocVien": "CH259306",
@@ -1263,7 +1263,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_84",
+      "id": "id_1794921792912_84",
       "cccd": "89199010455",
       "lop": "CH12QLGD",
       "maHocVien": "CH259305",
@@ -1278,7 +1278,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_85",
+      "id": "id_1794921792912_85",
       "cccd": "89194015943",
       "lop": "CH12QLGD",
       "maHocVien": "CH259304",
@@ -1293,7 +1293,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_86",
+      "id": "id_1794921792912_86",
       "cccd": "89193023459",
       "lop": "CH12QLGD",
       "maHocVien": "CH259303",
@@ -1308,7 +1308,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_87",
+      "id": "id_1794921792912_87",
       "cccd": "89181026322",
       "lop": "CH12QLGD",
       "maHocVien": "CH259302",
@@ -1323,7 +1323,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_88",
+      "id": "id_1794921792912_88",
       "cccd": "89300019061",
       "lop": "CH12QLGD",
       "maHocVien": "CH259301",
@@ -1338,7 +1338,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_89",
+      "id": "id_1794921792912_89",
       "cccd": "87177027806",
       "lop": "CH12QLGD",
       "maHocVien": "CH259300",
@@ -1353,7 +1353,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_90",
+      "id": "id_1794921792912_90",
       "cccd": "89301003525",
       "lop": "CH11CNSH",
       "maHocVien": "CH248024",
@@ -1368,7 +1368,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_91",
+      "id": "id_1794921792912_91",
       "cccd": "89097006302",
       "lop": "CH11KHCT",
       "maHocVien": "CH248023",
@@ -1383,7 +1383,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_92",
+      "id": "id_1794921792912_92",
       "cccd": "89082000431",
       "lop": "CH11KHCT",
       "maHocVien": "CH248022",
@@ -1398,7 +1398,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_93",
+      "id": "id_1794921792912_93",
       "cccd": "89095016895",
       "lop": "CH11KHCT",
       "maHocVien": "CH248021",
@@ -1413,7 +1413,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_94",
+      "id": "id_1794921792912_94",
       "cccd": "91083024196",
       "lop": "CH11KHCT",
       "maHocVien": "CH248020",
@@ -1428,7 +1428,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_95",
+      "id": "id_1794921792912_95",
       "cccd": "89189018970",
       "lop": "CH11QLMT",
       "maHocVien": "CH248019",
@@ -1443,7 +1443,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_96",
+      "id": "id_1794921792912_96",
       "cccd": "893020171950",
       "lop": "CH11QLMT",
       "maHocVien": "CH248018",
@@ -1458,7 +1458,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_97",
+      "id": "id_1794921792912_97",
       "cccd": "89089018186",
       "lop": "CH11QLGD",
       "maHocVien": "CH248017",
@@ -1473,7 +1473,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_98",
+      "id": "id_1794921792912_98",
       "cccd": "89201014793",
       "lop": "CH11QLGD",
       "maHocVien": "CH248016",
@@ -1488,7 +1488,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_99",
+      "id": "id_1794921792912_99",
       "cccd": "89180009567",
       "lop": "CH11QLGD",
       "maHocVien": "CH248015",
@@ -1503,7 +1503,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_100",
+      "id": "id_1794921792912_100",
       "cccd": "89191002224",
       "lop": "CH11QLGD",
       "maHocVien": "CH248014",
@@ -1518,7 +1518,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_101",
+      "id": "id_1794921792912_101",
       "cccd": "89181014176",
       "lop": "CH11QLGD",
       "maHocVien": "CH248013",
@@ -1533,7 +1533,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_102",
+      "id": "id_1794921792912_102",
       "cccd": "89099017771",
       "lop": "CH11QLGD",
       "maHocVien": "CH248012",
@@ -1548,7 +1548,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_103",
+      "id": "id_1794921792912_103",
       "cccd": "89195003967",
       "lop": "CH11QLGD",
       "maHocVien": "CH248011",
@@ -1563,7 +1563,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_104",
+      "id": "id_1794921792912_104",
       "cccd": "89084001024",
       "lop": "CH11QLGD",
       "maHocVien": "CH248010",
@@ -1578,7 +1578,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_105",
+      "id": "id_1794921792912_105",
       "cccd": "89095003354",
       "lop": "CH11QLGD",
       "maHocVien": "CH248009",
@@ -1593,7 +1593,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_106",
+      "id": "id_1794921792912_106",
       "cccd": "89184002426",
       "lop": "CH11QLGD",
       "maHocVien": "CH248008",
@@ -1608,7 +1608,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_107",
+      "id": "id_1794921792912_107",
       "cccd": "89201010859",
       "lop": "CH11QLGD",
       "maHocVien": "CH248007",
@@ -1623,7 +1623,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_108",
+      "id": "id_1794921792912_108",
       "cccd": "91097006553",
       "lop": "CH11QLGD",
       "maHocVien": "CH248006",
@@ -1638,7 +1638,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_109",
+      "id": "id_1794921792912_109",
       "cccd": "89183012509",
       "lop": "CH11QLGD",
       "maHocVien": "CH248005",
@@ -1653,7 +1653,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_110",
+      "id": "id_1794921792912_110",
       "cccd": "91092017227",
       "lop": "CH11QLGD",
       "maHocVien": "CH248004",
@@ -1668,7 +1668,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_111",
+      "id": "id_1794921792912_111",
       "cccd": "89081018788",
       "lop": "CH11QLGD",
       "maHocVien": "CH248003",
@@ -1683,7 +1683,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_112",
+      "id": "id_1794921792912_112",
       "cccd": "87302005060",
       "lop": "CH11QLGD",
       "maHocVien": "CH248002",
@@ -1698,7 +1698,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_113",
+      "id": "id_1794921792912_113",
       "cccd": "89082028137",
       "lop": "CH11QLGD",
       "maHocVien": "CH248001",
@@ -1713,7 +1713,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_114",
+      "id": "id_1794921792912_114",
       "cccd": "89088002739",
       "lop": "CH10CNSH",
       "maHocVien": "CH232525",
@@ -1728,7 +1728,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_115",
+      "id": "id_1794921792912_115",
       "cccd": "93089007496",
       "lop": "CH10CNSH",
       "maHocVien": "CH232524",
@@ -1743,7 +1743,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_116",
+      "id": "id_1794921792912_116",
       "cccd": "89084024888",
       "lop": "CH10CNSH",
       "maHocVien": "CH232523",
@@ -1758,7 +1758,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_117",
+      "id": "id_1794921792912_117",
       "cccd": "91189002879",
       "lop": "CH10CNSH",
       "maHocVien": "CH232522",
@@ -1773,7 +1773,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_118",
+      "id": "id_1794921792912_118",
       "cccd": "89201004780",
       "lop": "CH10CNSH",
       "maHocVien": "CH232521",
@@ -1788,7 +1788,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_119",
+      "id": "id_1794921792912_119",
       "cccd": "89301001890",
       "lop": "CH10CNSH",
       "maHocVien": "CH232520",
@@ -1803,7 +1803,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310834_120",
+      "id": "id_1794921792912_120",
       "cccd": "89195003145",
       "lop": "CH10QLGD",
       "maHocVien": "CH232519",
@@ -1821,7 +1821,7 @@
       "gvHuongDan2": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310834_121",
+      "id": "id_1794921792912_121",
       "cccd": "91081016608",
       "lop": "CH10QLGD",
       "maHocVien": "CH232518",
@@ -1836,7 +1836,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310834_122",
+      "id": "id_1794921792912_122",
       "cccd": "89180022696",
       "lop": "CH10QLGD",
       "maHocVien": "CH232517",
@@ -1853,7 +1853,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310835_123",
+      "id": "id_1794921792912_123",
       "cccd": "89301016062",
       "lop": "CH10QLGD",
       "maHocVien": "CH232516",
@@ -1868,7 +1868,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_124",
+      "id": "id_1794921792912_124",
       "cccd": "89301005034",
       "lop": "CH10QLGD",
       "maHocVien": "CH232515",
@@ -1885,7 +1885,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_125",
+      "id": "id_1794921792912_125",
       "cccd": "89191020882",
       "lop": "CH10QLGD",
       "maHocVien": "CH232514",
@@ -1900,7 +1900,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_126",
+      "id": "id_1794921792912_126",
       "cccd": "89081016623",
       "lop": "CH10QLGD",
       "maHocVien": "CH232513",
@@ -1915,7 +1915,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_127",
+      "id": "id_1794921792912_127",
       "cccd": "89094003604",
       "lop": "CH10QLGD",
       "maHocVien": "CH232512",
@@ -1930,7 +1930,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_128",
+      "id": "id_1794921792912_128",
       "cccd": "89184005104",
       "lop": "CH10QLGD",
       "maHocVien": "CH232511",
@@ -1945,7 +1945,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_129",
+      "id": "id_1794921792912_129",
       "cccd": "87079017546",
       "lop": "CH10KHCT",
       "maHocVien": "CH232509",
@@ -1957,10 +1957,12 @@
       "ngayNhapHoc": "45360",
       "trangThai": "Đang học",
       "ngaySinh": "36968",
-      "gioiTinh": "Nữ"
+      "gioiTinh": "Nam",
+      "tenLuanVan": "Tác động của chủng vi khuẩn Bacillus megaterium và sự giảm phân đạm, lân đến sinh trưởng và năng suất ở cây đậu đỏ",
+      "ngayQD": "46306"
     },
     {
-      "id": "id_1794660310835_130",
+      "id": "id_1794921792912_130",
       "cccd": "89095004953",
       "lop": "CH10KHCT",
       "maHocVien": "CH232508",
@@ -1975,7 +1977,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_131",
+      "id": "id_1794921792912_131",
       "cccd": "91190021808",
       "lop": "CH10KHCT",
       "maHocVien": "CH232507",
@@ -1990,7 +1992,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_132",
+      "id": "id_1794921792912_132",
       "cccd": "91201006786",
       "lop": "CH10KHCT",
       "maHocVien": "CH232506",
@@ -2002,10 +2004,13 @@
       "ngayNhapHoc": "45360",
       "trangThai": "Đang học",
       "ngaySinh": "35774",
-      "gioiTinh": "Nam"
+      "gioiTinh": "Nam",
+      "tenLuanVan": "Ảnh hưởng của vi khuẩn nội sinh vùng rễ Bacillus megaterium Thr45 kết hợp giảm phân đạm, kali đến năng suất và chất lượng trái bắp non (Zea mays L.) trồng tại xã Chợ Mới, tỉnh An Giang",
+      "gvHuongDan1": "PGS.TS. Nguyễn Văn Chương",
+      "trangThaiLv": "Miễn bảo vệ luận văn"
     },
     {
-      "id": "id_1794660310835_133",
+      "id": "id_1794921792912_133",
       "cccd": "89097005925",
       "lop": "CH10KHCT",
       "maHocVien": "CH232505",
@@ -2017,10 +2022,11 @@
       "ngayNhapHoc": "45360",
       "trangThai": "Đang học",
       "ngaySinh": "32540",
-      "gioiTinh": "Nam"
+      "gioiTinh": "Nam",
+      "tenLuanVan": "Ảnh hưởng của ba loại gốc ghép đến khả năng chống chịu bệnh héo rũ do nấm Fusarium sp., sinh trưởng, năng suất và chất lượng dưa lê (Cucumis melo L.)"
     },
     {
-      "id": "id_1794660310835_134",
+      "id": "id_1794921792912_134",
       "cccd": "91087001707",
       "lop": "CH10KHCT",
       "maHocVien": "CH232504",
@@ -2032,10 +2038,13 @@
       "ngayNhapHoc": "45360",
       "trangThai": "Đang học",
       "ngaySinh": "35032",
-      "gioiTinh": "Nam"
+      "gioiTinh": "Nam",
+      "tenLuanVan": "Khảo sát khả năng cố định đạm và hòa tan lân của vi khuẩn Herbaspirillum seropedicae trên cây lúa (Oryza sativa L.) tại xã Vĩnh Điều, tỉnh An Giang",
+      "gvHuongDan1": "PGS.TS. Lý Ngọc Thanh Xuân",
+      "trangThaiLv": "Miễn bảo vệ luận văn"
     },
     {
-      "id": "id_1794660310835_135",
+      "id": "id_1794921792912_135",
       "cccd": "89097000285",
       "lop": "CH10KHCT",
       "maHocVien": "CH232503",
@@ -2050,7 +2059,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_136",
+      "id": "id_1794921792912_136",
       "cccd": "89196003356",
       "lop": "CH10KHCT",
       "maHocVien": "CH232502",
@@ -2062,10 +2071,13 @@
       "ngayNhapHoc": "45360",
       "trangThai": "Đang học",
       "ngaySinh": "29714",
-      "gioiTinh": "Nam"
+      "gioiTinh": "Nam",
+      "tenLuanVan": "Phân lập và tuyển chọn một số chủng xạ khuẩn có khả năng ức chế khả năng phát triển của nấm Fusarium sp. gây bệnh trên rễ cây dưa hấu (Citrullus lanatus)",
+      "gvHuongDan1": "PGS.TS. Lý Ngọc Thanh Xuân",
+      "trangThaiLv": "Miễn bảo vệ luận văn"
     },
     {
-      "id": "id_1794660310835_137",
+      "id": "id_1794921792912_137",
       "cccd": "89198011843",
       "maHocVien": "CH2325010",
       "hoTen": "Trần Thị Mỹ anh",
@@ -2079,7 +2091,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_138",
+      "id": "id_1794921792912_138",
       "cccd": "89188010854",
       "lop": "CH09CNSH",
       "maHocVien": "CH222445",
@@ -2094,7 +2106,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_139",
+      "id": "id_1794921792912_139",
       "cccd": "89088002116",
       "lop": "CH09CNSH",
       "maHocVien": "CH222444",
@@ -2111,7 +2123,7 @@
       "gvHuongDan1": "Nguyễn Thị Mỹ Duyên"
     },
     {
-      "id": "id_1794660310835_140",
+      "id": "id_1794921792912_140",
       "cccd": "87099000286",
       "lop": "CH09CNSH",
       "maHocVien": "CH222443",
@@ -2126,7 +2138,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_141",
+      "id": "id_1794921792912_141",
       "cccd": "89300014080",
       "lop": "CH09CNSH",
       "maHocVien": "CH222441",
@@ -2144,7 +2156,7 @@
       "gvHuongDan2": "Nguyễn Duy Tân"
     },
     {
-      "id": "id_1794660310835_142",
+      "id": "id_1794921792912_142",
       "cccd": "89200011047",
       "lop": "CH09CNSH",
       "maHocVien": "CH222440",
@@ -2159,7 +2171,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_143",
+      "id": "id_1794921792912_143",
       "cccd": "89190019484",
       "lop": "CH09CNSH",
       "maHocVien": "CH222439",
@@ -2176,7 +2188,7 @@
       "gvHuongDan1": "Hồ Thị Thu Ba"
     },
     {
-      "id": "id_1794660310835_144",
+      "id": "id_1794921792912_144",
       "cccd": "89190002095",
       "lop": "CH09CNSH",
       "maHocVien": "CH222438",
@@ -2193,7 +2205,7 @@
       "gvHuongDan1": "Hồ Thị Thu Ba"
     },
     {
-      "id": "id_1794660310835_145",
+      "id": "id_1794921792912_145",
       "cccd": "89185001034",
       "lop": "CH09CNSH",
       "maHocVien": "CH222437",
@@ -2211,7 +2223,7 @@
       "gvHuongDan2": "Nguyễn Duy Tân"
     },
     {
-      "id": "id_1794660310835_146",
+      "id": "id_1794921792912_146",
       "cccd": "87199008458",
       "lop": "CH09CNSH",
       "maHocVien": "CH222436",
@@ -2226,7 +2238,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310835_147",
+      "id": "id_1794921792912_147",
       "cccd": "89186000927",
       "lop": "CH09CNSH",
       "maHocVien": "CH222435",
@@ -2244,7 +2256,7 @@
       "gvHuongDan2": "Nguyễn Thị Mỹ Duyên"
     },
     {
-      "id": "id_1794660310835_148",
+      "id": "id_1794921792912_148",
       "cccd": "89190008425",
       "lop": "CH09CNSH",
       "maHocVien": "CH222434",
@@ -2261,7 +2273,7 @@
       "gvHuongDan1": "Hồ Thị Thu Ba"
     },
     {
-      "id": "id_1794660310835_149",
+      "id": "id_1794921792912_149",
       "cccd": "89193015705",
       "lop": "CH09KHCT",
       "maHocVien": "CH222433",
@@ -2278,7 +2290,7 @@
       "gvHuongDan1": "Bùi Thị Dương Khuyều"
     },
     {
-      "id": "id_1794660310835_150",
+      "id": "id_1794921792912_150",
       "cccd": "89099000393",
       "lop": "CH09KHCT",
       "maHocVien": "CH222431",
@@ -2295,7 +2307,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310835_151",
+      "id": "id_1794921792912_151",
       "cccd": "87095007234",
       "lop": "CH09KHCT",
       "maHocVien": "CH222428",
@@ -2313,7 +2325,7 @@
       "gvHuongDan2": "Trương Ánh Phương"
     },
     {
-      "id": "id_1794660310835_152",
+      "id": "id_1794921792912_152",
       "cccd": "92096009474",
       "lop": "CH09KHCT",
       "maHocVien": "CH222426",
@@ -2331,7 +2343,7 @@
       "gvHuongDan2": "Bùi Thị Dương Khuyều"
     },
     {
-      "id": "id_1794660310835_153",
+      "id": "id_1794921792912_153",
       "cccd": "89300012949",
       "lop": "CH09KHCT",
       "maHocVien": "CH222425",
@@ -2348,7 +2360,7 @@
       "gvHuongDan1": "Lê Hữu Phước"
     },
     {
-      "id": "id_1794660310835_154",
+      "id": "id_1794921792912_154",
       "cccd": "89200020561",
       "lop": "CH09KHCT",
       "maHocVien": "CH222424",
@@ -2365,7 +2377,7 @@
       "gvHuongDan1": "Nguyễn Phú Dũng"
     },
     {
-      "id": "id_1794660310835_155",
+      "id": "id_1794921792912_155",
       "cccd": "89090019579",
       "lop": "CH09QLGD",
       "maHocVien": "CH222423",
@@ -2382,7 +2394,7 @@
       "gvHuongDan1": "Nguyễn Thị Hảo"
     },
     {
-      "id": "id_1794660310835_156",
+      "id": "id_1794921792912_156",
       "cccd": "82184002050",
       "lop": "CH09QLGD",
       "maHocVien": "CH222422",
@@ -2399,7 +2411,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310835_157",
+      "id": "id_1794921792912_157",
       "cccd": "89076014976",
       "lop": "CH09QLGD",
       "maHocVien": "CH222421",
@@ -2416,7 +2428,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_158",
+      "id": "id_1794921792912_158",
       "cccd": "89085015649",
       "lop": "CH09QLGD",
       "maHocVien": "CH222420",
@@ -2433,7 +2445,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310835_159",
+      "id": "id_1794921792912_159",
       "cccd": "89077012725",
       "lop": "CH09QLGD",
       "maHocVien": "CH222419",
@@ -2450,7 +2462,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_160",
+      "id": "id_1794921792912_160",
       "cccd": "89182004330",
       "lop": "CH09QLGD",
       "maHocVien": "CH222418",
@@ -2467,7 +2479,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_161",
+      "id": "id_1794921792912_161",
       "cccd": "91078011731",
       "lop": "CH09QLGD",
       "maHocVien": "CH222417",
@@ -2484,7 +2496,7 @@
       "gvHuongDan1": "Nguyễn Thị Hảo"
     },
     {
-      "id": "id_1794660310835_162",
+      "id": "id_1794921792912_162",
       "cccd": "352211932",
       "lop": "CH09QLGD",
       "maHocVien": "CH222416",
@@ -2501,7 +2513,7 @@
       "gvHuongDan1": "Trần Minh Nhựt"
     },
     {
-      "id": "id_1794660310835_163",
+      "id": "id_1794921792912_163",
       "cccd": "91197010299",
       "lop": "CH09QLGD",
       "maHocVien": "CH222415",
@@ -2518,7 +2530,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_164",
+      "id": "id_1794921792912_164",
       "cccd": "89079022427",
       "lop": "CH09QLGD",
       "maHocVien": "CH222414",
@@ -2535,7 +2547,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310835_165",
+      "id": "id_1794921792912_165",
       "cccd": "370953453",
       "lop": "CH09QLGD",
       "maHocVien": "CH222413",
@@ -2552,7 +2564,7 @@
       "gvHuongDan1": "Nguyễn Thị Hảo"
     },
     {
-      "id": "id_1794660310835_166",
+      "id": "id_1794921792912_166",
       "cccd": "89086025719",
       "lop": "CH09QLGD",
       "maHocVien": "CH222412",
@@ -2569,7 +2581,7 @@
       "gvHuongDan1": "Trần Minh Nhựt"
     },
     {
-      "id": "id_1794660310835_167",
+      "id": "id_1794921792912_167",
       "cccd": "371052167",
       "lop": "CH09QLGD",
       "maHocVien": "CH222411",
@@ -2586,7 +2598,7 @@
       "gvHuongDan1": "Trần Thanh Hương"
     },
     {
-      "id": "id_1794660310835_168",
+      "id": "id_1794921792912_168",
       "cccd": "371759307",
       "lop": "CH09QLGD",
       "maHocVien": "CH222410",
@@ -2596,12 +2608,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng nghiên cứu",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44986",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "36095",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310835_169",
+      "id": "id_1794921792912_169",
       "cccd": "89076017861",
       "lop": "CH09QLGD",
       "maHocVien": "CH222409",
@@ -2618,7 +2630,7 @@
       "gvHuongDan1": "Trần Minh Nhựt"
     },
     {
-      "id": "id_1794660310835_170",
+      "id": "id_1794921792912_170",
       "cccd": "351609299",
       "lop": "CH09QLGD",
       "maHocVien": "CH222408",
@@ -2635,7 +2647,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310835_171",
+      "id": "id_1794921792912_171",
       "cccd": "91086017932",
       "lop": "CH09QLGD",
       "maHocVien": "CH222407",
@@ -2652,7 +2664,7 @@
       "gvHuongDan1": "Võ Văn Dễ"
     },
     {
-      "id": "id_1794660310835_172",
+      "id": "id_1794921792912_172",
       "cccd": "87076012841",
       "lop": "CH09QLGD",
       "maHocVien": "CH222406",
@@ -2670,7 +2682,7 @@
       "gvHuongDan2": "Nguyễn Tiến Ngọ"
     },
     {
-      "id": "id_1794660310835_173",
+      "id": "id_1794921792912_173",
       "cccd": "89182001745",
       "lop": "CH09QLGD",
       "maHocVien": "CH222405",
@@ -2687,7 +2699,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310835_174",
+      "id": "id_1794921792912_174",
       "cccd": "42074016469",
       "lop": "CH09QLGD",
       "maHocVien": "CH222404",
@@ -2704,7 +2716,7 @@
       "gvHuongDan1": "Võ Văn Dễ"
     },
     {
-      "id": "id_1794660310835_175",
+      "id": "id_1794921792912_175",
       "cccd": "36081023244",
       "lop": "CH09QLGD",
       "maHocVien": "CH222403",
@@ -2721,7 +2733,7 @@
       "gvHuongDan1": "Trần Thanh Hương"
     },
     {
-      "id": "id_1794660310835_176",
+      "id": "id_1794921792912_176",
       "cccd": "89084015064",
       "lop": "CH09QLGD",
       "maHocVien": "CH222402",
@@ -2738,7 +2750,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310835_177",
+      "id": "id_1794921792912_177",
       "cccd": "89077000600",
       "lop": "CH09QLGD",
       "maHocVien": "CH222401",
@@ -2755,7 +2767,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310835_178",
+      "id": "id_1794921792912_178",
       "cccd": "91093003278",
       "maHocVien": "CH219841",
       "hoTen": "Nguyễn Anh Tuấn",
@@ -2771,7 +2783,7 @@
       "gvHuongDan1": "Nguyễn Phú Dũng"
     },
     {
-      "id": "id_1794660310835_179",
+      "id": "id_1794921792912_179",
       "cccd": "89097011865",
       "maHocVien": "CH219840",
       "hoTen": "Lưu Vĩnh Trí",
@@ -2787,7 +2799,7 @@
       "gvHuongDan1": "Nguyễn Phú Dũng"
     },
     {
-      "id": "id_1794660310835_180",
+      "id": "id_1794921792912_180",
       "cccd": "87089019154",
       "maHocVien": "CH219839",
       "hoTen": "Nguyễn Ngọc Tài",
@@ -2803,7 +2815,7 @@
       "gvHuongDan1": "Bùi Thị Dương Khuyều"
     },
     {
-      "id": "id_1794660310835_181",
+      "id": "id_1794921792912_181",
       "cccd": "352294159",
       "maHocVien": "CH219838",
       "hoTen": "Nguyễn Thị Kim Phượng",
@@ -2819,7 +2831,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310835_182",
+      "id": "id_1794921792912_182",
       "cccd": "89091012613",
       "maHocVien": "CH219837",
       "hoTen": "Trần Thanh Phong",
@@ -2835,7 +2847,7 @@
       "gvHuongDan1": "Nguyễn Thị Mỹ Duyên"
     },
     {
-      "id": "id_1794660310836_183",
+      "id": "id_1794921792912_183",
       "cccd": "371656940",
       "maHocVien": "CH219836",
       "hoTen": "Lưu Thái Phi",
@@ -2851,7 +2863,7 @@
       "gvHuongDan1": "Trương Ánh Phương"
     },
     {
-      "id": "id_1794660310836_184",
+      "id": "id_1794921792912_184",
       "cccd": "352398527",
       "maHocVien": "CH219835",
       "hoTen": "Nguyễn Bình Nguyên",
@@ -2860,12 +2872,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng ứng dụng",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44621",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "35100",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310836_185",
+      "id": "id_1794921792912_185",
       "cccd": "352144140",
       "maHocVien": "CH219834",
       "hoTen": "Hoàng Trọng Nam",
@@ -2881,7 +2893,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310836_186",
+      "id": "id_1794921792912_186",
       "cccd": "89096013325",
       "maHocVien": "CH219833",
       "hoTen": "Nguyễn Văn Minh",
@@ -2897,7 +2909,7 @@
       "gvHuongDan1": "Lý Ngọc Thanh Xuân"
     },
     {
-      "id": "id_1794660310836_187",
+      "id": "id_1794921792912_187",
       "cccd": "341146046",
       "maHocVien": "CH219832",
       "hoTen": "Trần Phước Lộc",
@@ -2913,7 +2925,7 @@
       "gvHuongDan1": "Phạm Huỳnh Thanh Vân"
     },
     {
-      "id": "id_1794660310836_188",
+      "id": "id_1794921792912_188",
       "cccd": "331656369",
       "maHocVien": "CH219831",
       "hoTen": "Nguyễn Tấn Đạt",
@@ -2930,7 +2942,7 @@
       "gvHuongDan2": "Nguyễn Tấn Đạt"
     },
     {
-      "id": "id_1794660310836_189",
+      "id": "id_1794921792912_189",
       "cccd": "89096007202",
       "maHocVien": "CH219830",
       "hoTen": "Nguyễn Hùng Cường",
@@ -2946,7 +2958,7 @@
       "gvHuongDan1": "Phạm Huỳnh Thanh Vân"
     },
     {
-      "id": "id_1794660310836_190",
+      "id": "id_1794921792912_190",
       "cccd": "352459716",
       "maHocVien": "CH219829",
       "hoTen": "Trần Quốc Bảo",
@@ -2962,7 +2974,7 @@
       "gvHuongDan1": "Nguyễn Hữu Thanh"
     },
     {
-      "id": "id_1794660310836_191",
+      "id": "id_1794921792912_191",
       "cccd": "89096021280",
       "maHocVien": "CH219828",
       "hoTen": "Đặng Hữu Ân",
@@ -2978,7 +2990,7 @@
       "gvHuongDan1": "Lý Ngọc Thanh Xuân"
     },
     {
-      "id": "id_1794660310836_192",
+      "id": "id_1794921792912_192",
       "cccd": "351363803",
       "maHocVien": "CH219827",
       "hoTen": "Chương Trung Thành",
@@ -2994,7 +3006,7 @@
       "gvHuongDan1": "Nguyễn Duy Tân"
     },
     {
-      "id": "id_1794660310836_193",
+      "id": "id_1794921792912_193",
       "cccd": "352079560",
       "maHocVien": "CH219826",
       "hoTen": "Nguyễn Hoàng Thái",
@@ -3003,12 +3015,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng ứng dụng",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44621",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "32966",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310836_194",
+      "id": "id_1794921792912_194",
       "cccd": "89190028813",
       "maHocVien": "CH219825",
       "hoTen": "Hồ Xuân Hoa",
@@ -3024,7 +3036,7 @@
       "gvHuongDan1": "Nguyễn Duy Tân"
     },
     {
-      "id": "id_1794660310836_195",
+      "id": "id_1794921792912_195",
       "cccd": "351375324",
       "maHocVien": "CH219824",
       "hoTen": "Phan Thị Minh Châu",
@@ -3040,7 +3052,7 @@
       "gvHuongDan1": "Cao Thị Luyến"
     },
     {
-      "id": "id_1794660310836_196",
+      "id": "id_1794921792912_196",
       "cccd": "89185013074",
       "maHocVien": "CH219823",
       "hoTen": "Lưu Thị ánh Xuân",
@@ -3056,7 +3068,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310836_197",
+      "id": "id_1794921792912_197",
       "cccd": "89087023150",
       "maHocVien": "CH219822",
       "hoTen": "Đặng Phú Vinh",
@@ -3072,7 +3084,7 @@
       "gvHuongDan1": "Nguyễn Tuấn Khanh"
     },
     {
-      "id": "id_1794660310836_198",
+      "id": "id_1794921792912_198",
       "cccd": "351710805",
       "maHocVien": "CH219821",
       "hoTen": "Tạ Thị Thanh Vân",
@@ -3088,7 +3100,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310836_199",
+      "id": "id_1794921792912_199",
       "cccd": "89184014766",
       "maHocVien": "CH219820",
       "hoTen": "Lý Thị Mỹ Trinh",
@@ -3104,7 +3116,7 @@
       "gvHuongDan1": "Mai Thị Yến Lan"
     },
     {
-      "id": "id_1794660310836_200",
+      "id": "id_1794921792912_200",
       "cccd": "89183016839",
       "maHocVien": "CH219819",
       "hoTen": "Minh Bảo Trân",
@@ -3120,7 +3132,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310836_201",
+      "id": "id_1794921792912_201",
       "cccd": "351935029",
       "maHocVien": "CH219818",
       "hoTen": "Nguyễn Phú Thạnh",
@@ -3134,7 +3146,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310836_202",
+      "id": "id_1794921792912_202",
       "cccd": "89184011644",
       "maHocVien": "CH219817",
       "hoTen": "Nguyễn Thị Thắm",
@@ -3150,7 +3162,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310836_203",
+      "id": "id_1794921792912_203",
       "cccd": "89076018325",
       "maHocVien": "CH219816",
       "hoTen": "Phan Thanh Sơn",
@@ -3166,7 +3178,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310836_204",
+      "id": "id_1794921792912_204",
       "cccd": "89183001654",
       "maHocVien": "CH219815",
       "hoTen": "Lại Thị Mộng Quyên",
@@ -3182,7 +3194,7 @@
       "gvHuongDan1": "Hồ Văn Thống"
     },
     {
-      "id": "id_1794660310836_205",
+      "id": "id_1794921792912_205",
       "cccd": "351528990",
       "maHocVien": "CH219813",
       "hoTen": "Cao Trúc Phương",
@@ -3198,7 +3210,7 @@
       "gvHuongDan1": "Nguyễn Văn Đệ"
     },
     {
-      "id": "id_1794660310836_206",
+      "id": "id_1794921792912_206",
       "cccd": "34186019271",
       "maHocVien": "CH219812",
       "hoTen": "Nguyễn Thị Ngọc Oanh",
@@ -3212,7 +3224,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310836_207",
+      "id": "id_1794921792912_207",
       "cccd": "352116443",
       "maHocVien": "CH219811",
       "hoTen": "Nguyễn Thị Kim Ngân",
@@ -3228,7 +3240,7 @@
       "gvHuongDan1": "Lê Hùng Cường"
     },
     {
-      "id": "id_1794660310836_208",
+      "id": "id_1794921792912_208",
       "cccd": "351297393",
       "maHocVien": "CH219810",
       "hoTen": "Lưu Thị Kim Loan",
@@ -3244,7 +3256,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310836_209",
+      "id": "id_1794921792912_209",
       "cccd": "89089000299",
       "maHocVien": "CH219809",
       "hoTen": "Đỗ Lê Quốc Lập",
@@ -3260,7 +3272,7 @@
       "gvHuongDan1": "Phạm Phương Tâm"
     },
     {
-      "id": "id_1794660310836_210",
+      "id": "id_1794921792912_210",
       "cccd": "351400488",
       "maHocVien": "CH219808",
       "hoTen": "Nguyễn Thị Hồng Đào",
@@ -3276,7 +3288,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310836_211",
+      "id": "id_1794921792912_211",
       "cccd": "86187006533",
       "maHocVien": "CH219807",
       "hoTen": "Nguyễn Thị Kim Xuyến",
@@ -3293,7 +3305,7 @@
       "gvHuongDan2": "Phan Trường Khanh"
     },
     {
-      "id": "id_1794660310836_212",
+      "id": "id_1794921792912_212",
       "cccd": "352389104",
       "maHocVien": "CH219805",
       "hoTen": "Phạm Thị Phương Thảo",
@@ -3310,7 +3322,7 @@
       "gvHuongDan2": "Phan Trường Khanh"
     },
     {
-      "id": "id_1794660310836_213",
+      "id": "id_1794921792912_213",
       "cccd": "352416520",
       "maHocVien": "CH219804",
       "hoTen": "Nguyễn Thị Trúc Thanh",
@@ -3326,7 +3338,7 @@
       "gvHuongDan1": "Trần Ngọc Châu"
     },
     {
-      "id": "id_1794660310836_214",
+      "id": "id_1794921792912_214",
       "cccd": "351916694",
       "maHocVien": "CH219803",
       "hoTen": "Nguyễn Hồ Phương",
@@ -3342,7 +3354,7 @@
       "gvHuongDan1": "Nguyễn Trần Thiện Khánh"
     },
     {
-      "id": "id_1794660310836_215",
+      "id": "id_1794921792912_215",
       "cccd": "352447226",
       "maHocVien": "CH219802",
       "hoTen": "Nguyễn Đỗ Ngọc Hiền",
@@ -3351,12 +3363,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng nghiên cứu",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44621",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "35923",
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310836_216",
+      "id": "id_1794921792912_216",
       "cccd": "91080016273",
       "maHocVien": "CH219801",
       "hoTen": "Trần Văn Hải",
@@ -3365,12 +3377,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng nghiên cứu",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44621",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "29465",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310836_217",
+      "id": "id_1794921792913_217",
       "cccd": "89193000500",
       "maHocVien": "CH209862",
       "hoTen": "Nguyễn Thị Thùy Vân",
@@ -3386,7 +3398,7 @@
       "gvHuongDan1": "Trần Ngọc Châu"
     },
     {
-      "id": "id_1794660310836_218",
+      "id": "id_1794921792913_218",
       "cccd": "351116672",
       "maHocVien": "CH209861",
       "hoTen": "Phạm Quốc Tuấn",
@@ -3402,7 +3414,7 @@
       "gvHuongDan1": "Trần Ngọc Châu"
     },
     {
-      "id": "id_1794660310836_219",
+      "id": "id_1794921792913_219",
       "cccd": "89189026000",
       "maHocVien": "CH209860",
       "hoTen": "Huỳnh Thị Thanh Thủy",
@@ -3419,7 +3431,7 @@
       "gvHuongDan2": "Nguyễn Thanh Hùng"
     },
     {
-      "id": "id_1794660310836_220",
+      "id": "id_1794921792913_220",
       "cccd": "352294064",
       "maHocVien": "CH209859",
       "hoTen": "Hồ Phương Thảo",
@@ -3435,7 +3447,7 @@
       "gvHuongDan1": "Nguyễn Trần Thiện Khánh"
     },
     {
-      "id": "id_1794660310836_221",
+      "id": "id_1794921792913_221",
       "cccd": "351926651",
       "maHocVien": "CH209858",
       "hoTen": "Lương Hoàng Thái",
@@ -3451,7 +3463,7 @@
       "gvHuongDan1": "Trần Thị Hồng Ngọc"
     },
     {
-      "id": "id_1794660310836_222",
+      "id": "id_1794921792913_222",
       "cccd": "352031318",
       "maHocVien": "CH209857",
       "hoTen": "Phạm Hồng Phúc",
@@ -3467,7 +3479,7 @@
       "gvHuongDan1": "Nguyễn Thanh Hùng"
     },
     {
-      "id": "id_1794660310836_223",
+      "id": "id_1794921792913_223",
       "cccd": "352427345",
       "maHocVien": "CH209856",
       "hoTen": "Nguyễn Thị Tuyết Nhung",
@@ -3483,7 +3495,7 @@
       "gvHuongDan1": "Bùi Thị Mai Phụng"
     },
     {
-      "id": "id_1794660310836_224",
+      "id": "id_1794921792913_224",
       "cccd": "352481836",
       "maHocVien": "CH209855",
       "hoTen": "Hà Hồng Lĩnh",
@@ -3499,7 +3511,7 @@
       "gvHuongDan1": "Nguyễn Trần Nhẫn Tánh"
     },
     {
-      "id": "id_1794660310836_225",
+      "id": "id_1794921792913_225",
       "cccd": "89096024302",
       "maHocVien": "CH209854",
       "hoTen": "Nguyễn Hữu Linh",
@@ -3515,7 +3527,7 @@
       "gvHuongDan1": "Nguyễn Trần Nhẫn Tánh"
     },
     {
-      "id": "id_1794660310836_226",
+      "id": "id_1794921792913_226",
       "cccd": "352262259",
       "maHocVien": "CH209853",
       "hoTen": "Nguyễn Chí Linh",
@@ -3532,7 +3544,7 @@
       "gvHuongDan2": "Đặng Thị Thanh Quỳnh"
     },
     {
-      "id": "id_1794660310836_227",
+      "id": "id_1794921792913_227",
       "cccd": "89092001733",
       "maHocVien": "CH209852",
       "hoTen": "Đinh Đăng Khoa",
@@ -3548,7 +3560,7 @@
       "gvHuongDan1": "Phan Trường Khanh"
     },
     {
-      "id": "id_1794660310836_228",
+      "id": "id_1794921792913_228",
       "cccd": "352345578",
       "maHocVien": "CH209851",
       "hoTen": "Văng Thị Mai Hương",
@@ -3564,7 +3576,7 @@
       "gvHuongDan1": "Phan Trường Khanh"
     },
     {
-      "id": "id_1794660310836_229",
+      "id": "id_1794921792913_229",
       "cccd": "352449354",
       "maHocVien": "CH209850",
       "hoTen": "Nguyễn Thị Tuyết Hoa",
@@ -3581,7 +3593,7 @@
       "gvHuongDan2": "Trần Thị Hồng Ngọc"
     },
     {
-      "id": "id_1794660310836_230",
+      "id": "id_1794921792913_230",
       "cccd": "351606669",
       "maHocVien": "CH209849",
       "hoTen": "Trần Văn Kim Danh",
@@ -3597,7 +3609,7 @@
       "gvHuongDan1": "Phan Trường Khanh"
     },
     {
-      "id": "id_1794660310836_231",
+      "id": "id_1794921792913_231",
       "cccd": "80087012188",
       "maHocVien": "CH209848",
       "hoTen": "Phạm Văn Cao",
@@ -3613,7 +3625,7 @@
       "gvHuongDan1": "Nguyễn Trần Thiện Khánh"
     },
     {
-      "id": "id_1794660310836_232",
+      "id": "id_1794921792913_232",
       "cccd": "89197004695",
       "maHocVien": "CH209847",
       "hoTen": "Nguyễn Tường Vy",
@@ -3629,7 +3641,7 @@
       "gvHuongDan1": "Lê Thị Thúy Hằng"
     },
     {
-      "id": "id_1794660310836_233",
+      "id": "id_1794921792913_233",
       "cccd": "87181010924",
       "maHocVien": "CH209846",
       "hoTen": "Nguyễn Ngọc Bích",
@@ -3646,7 +3658,7 @@
       "gvHuongDan2": "Nguyễn Bình Trường"
     },
     {
-      "id": "id_1794660310836_234",
+      "id": "id_1794921792913_234",
       "cccd": "34073010742",
       "maHocVien": "CH209845",
       "hoTen": "Đặng Văn Uyên",
@@ -3662,7 +3674,7 @@
       "gvHuongDan1": "Dương Văn Nhã"
     },
     {
-      "id": "id_1794660310836_235",
+      "id": "id_1794921792913_235",
       "cccd": "89081014640",
       "maHocVien": "CH209844",
       "hoTen": "Lê Ngọc Tuấn",
@@ -3678,7 +3690,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310836_236",
+      "id": "id_1794921792913_236",
       "cccd": "89093011449",
       "maHocVien": "CH209843",
       "hoTen": "Lê Tuấn",
@@ -3695,7 +3707,7 @@
       "gvHuongDan2": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310836_237",
+      "id": "id_1794921792913_237",
       "cccd": "352442657",
       "maHocVien": "CH209842",
       "hoTen": "Hồ Thanh Tuấn",
@@ -3711,7 +3723,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310836_238",
+      "id": "id_1794921792913_238",
       "cccd": "92093005821",
       "maHocVien": "CH209841",
       "hoTen": "Đoàn Minh Trí",
@@ -3727,7 +3739,7 @@
       "gvHuongDan1": "Phạm Văn Quang"
     },
     {
-      "id": "id_1794660310836_239",
+      "id": "id_1794921792913_239",
       "cccd": "89185031267",
       "maHocVien": "CH209840",
       "hoTen": "Nguyễn Ngọc Trâm",
@@ -3744,7 +3756,7 @@
       "gvHuongDan2": "Nguyễn Thi Thanh Xuân"
     },
     {
-      "id": "id_1794660310836_240",
+      "id": "id_1794921792913_240",
       "cccd": "381223697",
       "maHocVien": "CH209839",
       "hoTen": "Lê Mộng Trai",
@@ -3760,7 +3772,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310836_241",
+      "id": "id_1794921792913_241",
       "cccd": "89193004014",
       "maHocVien": "CH209838",
       "hoTen": "Trần Thị Thủy Tiên",
@@ -3776,7 +3788,7 @@
       "gvHuongDan1": "Bùi Thị Dương Khuyều"
     },
     {
-      "id": "id_1794660310836_242",
+      "id": "id_1794921792913_242",
       "cccd": "351853180",
       "maHocVien": "CH209837",
       "hoTen": "Phạm Thị Bé Thi",
@@ -3792,7 +3804,7 @@
       "gvHuongDan1": "Lê Minh Tường"
     },
     {
-      "id": "id_1794660310836_243",
+      "id": "id_1794921792913_243",
       "cccd": "301490686",
       "maHocVien": "CH209836",
       "hoTen": "Nguyễn Thị Xuân Thắm",
@@ -3808,7 +3820,7 @@
       "gvHuongDan1": "Phạm Văn Quang"
     },
     {
-      "id": "id_1794660310836_244",
+      "id": "id_1794921792913_244",
       "cccd": "352372748",
       "maHocVien": "CH209835",
       "hoTen": "Phan Quý Quá",
@@ -3825,7 +3837,7 @@
       "gvHuongDan2": "Lê Minh Tường"
     },
     {
-      "id": "id_1794660310836_245",
+      "id": "id_1794921792913_245",
       "cccd": "352182980",
       "maHocVien": "CH209834",
       "hoTen": "Nguyễn Thị Quỳnh Như",
@@ -3841,7 +3853,7 @@
       "gvHuongDan1": "Bùi Thị Dương Khuyều"
     },
     {
-      "id": "id_1794660310836_246",
+      "id": "id_1794921792913_246",
       "cccd": "352319448",
       "maHocVien": "CH209833",
       "hoTen": "Trần Chí Nhân",
@@ -3857,7 +3869,7 @@
       "gvHuongDan1": "Lý Ngọc Thanh Xuân"
     },
     {
-      "id": "id_1794660310836_247",
+      "id": "id_1794921792913_247",
       "cccd": "89180022634",
       "maHocVien": "CH209832",
       "hoTen": "Nguyễn Thị Ngọc Nhàn",
@@ -3874,7 +3886,7 @@
       "gvHuongDan2": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310837_248",
+      "id": "id_1794921792913_248",
       "cccd": "89095011584",
       "maHocVien": "CH209830",
       "hoTen": "Huỳnh Đắc Huy",
@@ -3891,7 +3903,7 @@
       "gvHuongDan2": "Nguyễn Hữu Thanh"
     },
     {
-      "id": "id_1794660310837_249",
+      "id": "id_1794921792913_249",
       "cccd": "351128835",
       "maHocVien": "CH209829",
       "hoTen": "Huỳnh Tấn Hưng",
@@ -3907,7 +3919,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310837_250",
+      "id": "id_1794921792913_250",
       "cccd": "352367488",
       "maHocVien": "CH209828",
       "hoTen": "Võ Minh Hiền",
@@ -3916,12 +3928,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng ứng dụng",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44256",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "35126",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_251",
+      "id": "id_1794921792913_251",
       "cccd": "352431980",
       "maHocVien": "CH209827",
       "hoTen": "Nguyễn Thanh Điền",
@@ -3930,7 +3942,7 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng ứng dụng",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "44256",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "35683",
       "gioiTinh": "Nam",
       "tenLuanVan": "Ảnh hưởng của phân bón và kích thước củ đến sinh trưởng giống hoa huệ hồng Polianthes tuberrosa “Pink Sapphire” trồng tại An Giang",
@@ -3938,7 +3950,7 @@
       "gvHuongDan2": "Nguyễn Thị Thanh Xuân"
     },
     {
-      "id": "id_1794660310837_252",
+      "id": "id_1794921792913_252",
       "cccd": "370884900",
       "maHocVien": "CH209826",
       "hoTen": "Trần Văn Cường",
@@ -3954,7 +3966,7 @@
       "gvHuongDan1": "Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310837_253",
+      "id": "id_1794921792913_253",
       "cccd": "371566175",
       "maHocVien": "CH209825",
       "hoTen": "Vũ Thị Chung",
@@ -3970,7 +3982,7 @@
       "gvHuongDan1": "Phạm Văn Quang"
     },
     {
-      "id": "id_1794660310837_254",
+      "id": "id_1794921792913_254",
       "cccd": "352251590",
       "maHocVien": "CH209824",
       "hoTen": "Mai Chí Bảo",
@@ -3986,7 +3998,7 @@
       "gvHuongDan1": "Lý Ngọc Thanh Xuân"
     },
     {
-      "id": "id_1794660310837_255",
+      "id": "id_1794921792913_255",
       "cccd": "96184000362",
       "maHocVien": "CH209823",
       "hoTen": "Nguyễn Thị Hải Yến",
@@ -4000,7 +4012,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310837_256",
+      "id": "id_1794921792913_256",
       "cccd": "371499278",
       "maHocVien": "CH209822",
       "hoTen": "Phan Thanh Vũ",
@@ -4016,7 +4028,7 @@
       "gvHuongDan1": "Nguyễn Tuấn Khanh"
     },
     {
-      "id": "id_1794660310837_257",
+      "id": "id_1794921792913_257",
       "cccd": "351297290",
       "maHocVien": "CH209821",
       "hoTen": "Nguyễn Thị Diễm Tuyết",
@@ -4032,7 +4044,7 @@
       "gvHuongDan1": "Phạm Hữu Ngãi"
     },
     {
-      "id": "id_1794660310837_258",
+      "id": "id_1794921792913_258",
       "cccd": "351494950",
       "maHocVien": "CH209820",
       "hoTen": "Đào Thị Tuất",
@@ -4048,7 +4060,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310837_259",
+      "id": "id_1794921792913_259",
       "cccd": "89081015546",
       "maHocVien": "CH209819",
       "hoTen": "Nguyễn Phước Trung",
@@ -4064,7 +4076,7 @@
       "gvHuongDan1": "Nguyễn Văn Đệ"
     },
     {
-      "id": "id_1794660310837_260",
+      "id": "id_1794921792913_260",
       "cccd": "351326847",
       "maHocVien": "CH209818",
       "hoTen": "Lê Hồ Thảo Trang",
@@ -4080,7 +4092,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310837_261",
+      "id": "id_1794921792913_261",
       "cccd": "351485217",
       "maHocVien": "CH209817",
       "hoTen": "Trương Kim Hồng Thư",
@@ -4096,7 +4108,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310837_262",
+      "id": "id_1794921792913_262",
       "cccd": "89081023789",
       "maHocVien": "CH209816",
       "hoTen": "Nguyễn Văn Thịnh",
@@ -4112,7 +4124,7 @@
       "gvHuongDan1": "Hồ Văn Thống"
     },
     {
-      "id": "id_1794660310837_263",
+      "id": "id_1794921792913_263",
       "cccd": "89082012840",
       "maHocVien": "CH209815",
       "hoTen": "Trần Tấn Phước",
@@ -4128,7 +4140,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310837_264",
+      "id": "id_1794921792913_264",
       "cccd": "89199003048",
       "maHocVien": "CH209814",
       "hoTen": "Huỳnh Thị Ngọc Ngân",
@@ -4144,7 +4156,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310837_265",
+      "id": "id_1794921792913_265",
       "cccd": "351500568",
       "maHocVien": "CH209813",
       "hoTen": "Đào Thị Loan",
@@ -4160,7 +4172,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310837_266",
+      "id": "id_1794921792913_266",
       "cccd": "351105971",
       "maHocVien": "CH209812",
       "hoTen": "Huỳnh Vinh Huy",
@@ -4176,7 +4188,7 @@
       "gvHuongDan1": "Phạm Minh Giản"
     },
     {
-      "id": "id_1794660310837_267",
+      "id": "id_1794921792913_267",
       "cccd": "351859071",
       "maHocVien": "CH209811",
       "hoTen": "Diệp Quốc Huy",
@@ -4192,7 +4204,7 @@
       "gvHuongDan1": "Mai Thị Yến Lan"
     },
     {
-      "id": "id_1794660310837_268",
+      "id": "id_1794921792913_268",
       "cccd": "351556530",
       "maHocVien": "CH209810",
       "hoTen": "Nguyễn Thị Hồng",
@@ -4208,7 +4220,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310837_269",
+      "id": "id_1794921792913_269",
       "cccd": "89187005063",
       "maHocVien": "CH209809",
       "hoTen": "Huỳnh Thị Thu Hồng",
@@ -4224,7 +4236,7 @@
       "gvHuongDan1": "Lê Hùng Cường"
     },
     {
-      "id": "id_1794660310837_270",
+      "id": "id_1794921792913_270",
       "cccd": "351494305",
       "maHocVien": "CH209808",
       "hoTen": "Phạm Thị Bích Hạnh",
@@ -4240,7 +4252,7 @@
       "gvHuongDan1": "Phan Ngọc Thạch"
     },
     {
-      "id": "id_1794660310837_271",
+      "id": "id_1794921792913_271",
       "cccd": "91075008080",
       "maHocVien": "CH209807",
       "hoTen": "Thạch Hoàng Hà",
@@ -4256,7 +4268,7 @@
       "gvHuongDan1": "Phạm Xuân Bình"
     },
     {
-      "id": "id_1794660310837_272",
+      "id": "id_1794921792913_272",
       "cccd": "89186008164",
       "maHocVien": "CH209806",
       "hoTen": "Ôn Thị Hà",
@@ -4272,7 +4284,7 @@
       "gvHuongDan1": "Hồ Văn Thống"
     },
     {
-      "id": "id_1794660310837_273",
+      "id": "id_1794921792913_273",
       "cccd": "92192001318",
       "maHocVien": "CH209805",
       "hoTen": "Phan Thị Thủy Duyên",
@@ -4288,7 +4300,7 @@
       "gvHuongDan1": "Phạm Phương Tâm"
     },
     {
-      "id": "id_1794660310837_274",
+      "id": "id_1794921792913_274",
       "cccd": "89183021770",
       "maHocVien": "CH209804",
       "hoTen": "Nguyễn Thị Ngọc Dung",
@@ -4304,7 +4316,7 @@
       "gvHuongDan1": "Nguyễn Văn Đệ"
     },
     {
-      "id": "id_1794660310837_275",
+      "id": "id_1794921792913_275",
       "cccd": "371130599",
       "maHocVien": "CH209803",
       "hoTen": "Phan Ngọc Diệp",
@@ -4320,7 +4332,7 @@
       "gvHuongDan1": "Nguyễn Tuấn Khanh"
     },
     {
-      "id": "id_1794660310837_276",
+      "id": "id_1794921792913_276",
       "cccd": "89081001203",
       "maHocVien": "CH209802",
       "hoTen": "Trần Kiên Cường",
@@ -4336,7 +4348,7 @@
       "gvHuongDan1": "Trương Tấn Đạt"
     },
     {
-      "id": "id_1794660310837_277",
+      "id": "id_1794921792913_277",
       "cccd": "89082000806",
       "maHocVien": "CH209801",
       "hoTen": "Huỳnh Trung Cang",
@@ -4352,7 +4364,7 @@
       "gvHuongDan1": "Nguyễn Bách Thắng"
     },
     {
-      "id": "id_1794660310837_278",
+      "id": "id_1794921792913_278",
       "cccd": "89083016873",
       "maHocVien": "CH209800",
       "hoTen": "Nguyễn Huy Bình",
@@ -4368,7 +4380,7 @@
       "gvHuongDan1": "Phạm Minh Giản"
     },
     {
-      "id": "id_1794660310837_279",
+      "id": "id_1794921792913_279",
       "cccd": "89083027669",
       "maHocVien": "CH199031",
       "hoTen": "Trần Thanh Tùng",
@@ -4384,7 +4396,7 @@
       "gvHuongDan1": "Huỳnh Thanh Tiến"
     },
     {
-      "id": "id_1794660310837_280",
+      "id": "id_1794921792913_280",
       "cccd": "351956878",
       "maHocVien": "CH199030",
       "hoTen": "Lâm Mộc Tùng",
@@ -4401,7 +4413,7 @@
       "gvHuongDan2": "Lâm Mộc Tùng"
     },
     {
-      "id": "id_1794660310837_281",
+      "id": "id_1794921792913_281",
       "cccd": "89084006942",
       "maHocVien": "CH199029",
       "hoTen": "Võ Thanh Tú",
@@ -4410,12 +4422,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng nghiên cứu",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "43891",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "30866",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_282",
+      "id": "id_1794921792913_282",
       "cccd": "351790570",
       "maHocVien": "CH199028",
       "hoTen": "Trần Trung Trưởng",
@@ -4432,7 +4444,7 @@
       "gvHuongDan2": "Trần Trung Trưởng"
     },
     {
-      "id": "id_1794660310837_283",
+      "id": "id_1794921792913_283",
       "cccd": "89080014090",
       "maHocVien": "CH199027",
       "hoTen": "Trần Văn Tấn",
@@ -4446,7 +4458,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_284",
+      "id": "id_1794921792913_284",
       "cccd": "89179000906",
       "maHocVien": "CH199026",
       "hoTen": "Phạm Thị Quý",
@@ -4463,7 +4475,7 @@
       "gvHuongDan2": "Phạm Thị Quý"
     },
     {
-      "id": "id_1794660310837_285",
+      "id": "id_1794921792913_285",
       "cccd": "92082001843",
       "maHocVien": "CH199025",
       "hoTen": "Huỳnh Thanh Quang",
@@ -4477,7 +4489,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_286",
+      "id": "id_1794921792913_286",
       "cccd": "351660064",
       "maHocVien": "CH199024",
       "hoTen": "Trần Văn Phước",
@@ -4491,7 +4503,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_287",
+      "id": "id_1794921792913_287",
       "cccd": "89088029050",
       "maHocVien": "CH199023",
       "hoTen": "Chiêu Hồng Nhân",
@@ -4507,7 +4519,7 @@
       "gvHuongDan1": "Nguyễn Văn Đệ"
     },
     {
-      "id": "id_1794660310837_288",
+      "id": "id_1794921792913_288",
       "cccd": "89079018502",
       "maHocVien": "CH199022",
       "hoTen": "Nông Văn Nghe",
@@ -4523,7 +4535,7 @@
       "gvHuongDan1": "Trần Văn Đạt"
     },
     {
-      "id": "id_1794660310837_289",
+      "id": "id_1794921792913_289",
       "cccd": "89182001675",
       "maHocVien": "CH199021",
       "hoTen": "Ôn Thị Nga",
@@ -4537,7 +4549,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310837_290",
+      "id": "id_1794921792913_290",
       "cccd": "351514118",
       "maHocVien": "CH199020",
       "hoTen": "Lý Thị Lệ Huyền",
@@ -4553,7 +4565,7 @@
       "gvHuongDan1": "Hồ Văn Thống"
     },
     {
-      "id": "id_1794660310837_291",
+      "id": "id_1794921792913_291",
       "cccd": "350854065",
       "maHocVien": "CH199019",
       "hoTen": "Tống Văn On Em",
@@ -4562,12 +4574,12 @@
       "loaiChuongTrinh": "Chương trình thạc sĩ định hướng nghiên cứu",
       "trinhDo": "Thạc sĩ",
       "ngayNhapHoc": "43891",
-      "trangThai": "Đang học",
+      "trangThai": "Xóa tên",
       "ngaySinh": "24168",
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_292",
+      "id": "id_1794921792913_292",
       "cccd": "89078000858",
       "maHocVien": "CH199018",
       "hoTen": "Nguyễn Vĩnh Điền",
@@ -4583,7 +4595,7 @@
       "gvHuongDan1": "Hồ Văn Thống"
     },
     {
-      "id": "id_1794660310837_293",
+      "id": "id_1794921792913_293",
       "cccd": "89079003713",
       "maHocVien": "CH199017",
       "hoTen": "Nguyễn Tuấn Anh",
@@ -4600,7 +4612,7 @@
       "gvHuongDan2": "Nguyễn Tuấn Anh"
     },
     {
-      "id": "id_1794660310837_294",
+      "id": "id_1794921792913_294",
       "cccd": "351879796",
       "maHocVien": "CH199016",
       "hoTen": "Tô Dương Thanh Tuyền",
@@ -4616,7 +4628,7 @@
       "gvHuongDan1": "Nguyễn Bá Trung"
     },
     {
-      "id": "id_1794660310837_295",
+      "id": "id_1794921792913_295",
       "cccd": "89085006070",
       "maHocVien": "CH199014",
       "hoTen": "Bùi Quang Tuấn",
@@ -4632,7 +4644,7 @@
       "gvHuongDan1": "Nguyễn Thị Thu Hồng"
     },
     {
-      "id": "id_1794660310837_296",
+      "id": "id_1794921792913_296",
       "cccd": "351750532",
       "maHocVien": "CH199012",
       "hoTen": "Phạm Văn Thao",
@@ -4648,7 +4660,7 @@
       "gvHuongDan1": "Nguyễn Tuyết Giang"
     },
     {
-      "id": "id_1794660310837_297",
+      "id": "id_1794921792913_297",
       "cccd": "351625276",
       "maHocVien": "CH199011",
       "hoTen": "Võ Thanh Sang",
@@ -4664,7 +4676,7 @@
       "gvHuongDan1": "Nguyễn Bá Trung"
     },
     {
-      "id": "id_1794660310837_298",
+      "id": "id_1794921792913_298",
       "cccd": "351660255",
       "maHocVien": "CH199010",
       "hoTen": "Lê Rô Pin",
@@ -4680,7 +4692,7 @@
       "gvHuongDan1": "Võ Lâm"
     },
     {
-      "id": "id_1794660310837_299",
+      "id": "id_1794921792913_299",
       "cccd": "351627634",
       "maHocVien": "CH199009",
       "hoTen": "Trương Thanh Phong",
@@ -4696,7 +4708,7 @@
       "gvHuongDan1": "Bùi Phan Thu Hằng"
     },
     {
-      "id": "id_1794660310837_300",
+      "id": "id_1794921792913_300",
       "cccd": "352546612",
       "maHocVien": "CH199008",
       "hoTen": "Nguyễn Huỳnh Kháng",
@@ -4712,7 +4724,7 @@
       "gvHuongDan1": "Nguyễn Bá Trung"
     },
     {
-      "id": "id_1794660310837_301",
+      "id": "id_1794921792913_301",
       "cccd": "351533313",
       "maHocVien": "CH199006",
       "hoTen": "Lê Trần Minh Hiếu",
@@ -4728,7 +4740,7 @@
       "gvHuongDan1": "Nguyễn Thị Thu Hồng"
     },
     {
-      "id": "id_1794660310837_302",
+      "id": "id_1794921792913_302",
       "cccd": "351509741",
       "maHocVien": "CH199005",
       "hoTen": "Nguyễn Thị Bích Hạnh",
@@ -4744,7 +4756,7 @@
       "gvHuongDan1": "Bùi Phan Thu Hằng"
     },
     {
-      "id": "id_1794660310837_303",
+      "id": "id_1794921792913_303",
       "cccd": "351373281",
       "maHocVien": "CH199004",
       "hoTen": "Nguyễn Thị út Em",
@@ -4760,7 +4772,7 @@
       "gvHuongDan1": "Bùi Phan Thu Hằng"
     },
     {
-      "id": "id_1794660310837_304",
+      "id": "id_1794921792913_304",
       "cccd": "89086010377",
       "maHocVien": "CH199003",
       "hoTen": "Ngô Trí Dũng",
@@ -4776,7 +4788,7 @@
       "gvHuongDan1": "Nguyễn Tuyết Giang"
     },
     {
-      "id": "id_1794660310837_305",
+      "id": "id_1794921792913_305",
       "cccd": "351934542",
       "maHocVien": "CH199002",
       "hoTen": "Nguyễn Văn Cường",
@@ -4792,7 +4804,7 @@
       "gvHuongDan1": "Võ Lâm"
     },
     {
-      "id": "id_1794660310837_306",
+      "id": "id_1794921792913_306",
       "cccd": "351316250",
       "maHocVien": "CH199001",
       "hoTen": "Dương Trung Chiến",
@@ -4808,7 +4820,7 @@
       "gvHuongDan1": "Võ Lâm"
     },
     {
-      "id": "id_1794660310837_307",
+      "id": "id_1794921792913_307",
       "lop": "CH5QLGD",
       "maHocVien": "CH189029",
       "hoTen": "Huỳnh Quốc Bảo",
@@ -4821,7 +4833,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310837_308",
+      "id": "id_1794921792913_308",
       "lop": "CH5QLGD",
       "maHocVien": "CH189030",
       "hoTen": "Ôn Quốc Chiến",
@@ -4834,7 +4846,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_309",
+      "id": "id_1794921792913_309",
       "lop": "CH5QLGD",
       "maHocVien": "CH189031",
       "hoTen": "Huỳnh Thị Kiều Diễm",
@@ -4847,7 +4859,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_310",
+      "id": "id_1794921792913_310",
       "lop": "CH5QLGD",
       "maHocVien": "CH189032",
       "hoTen": "Thái Thị Thùy Dương",
@@ -4860,7 +4872,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_311",
+      "id": "id_1794921792913_311",
       "lop": "CH5QLGD",
       "maHocVien": "CH189033",
       "hoTen": "Lê Đoàn Mỹ Giang",
@@ -4873,7 +4885,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_312",
+      "id": "id_1794921792913_312",
       "lop": "CH5QLGD",
       "maHocVien": "CH189034",
       "hoTen": "Nguyễn Thị Hà",
@@ -4886,7 +4898,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_313",
+      "id": "id_1794921792913_313",
       "lop": "CH5QLGD",
       "maHocVien": "CH189036",
       "hoTen": "Nguyễn Thị Minh Hiền",
@@ -4899,7 +4911,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_314",
+      "id": "id_1794921792913_314",
       "lop": "CH5QLGD",
       "maHocVien": "CH189035",
       "hoTen": "Thái Phước Hiệp",
@@ -4912,7 +4924,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_315",
+      "id": "id_1794921792913_315",
       "lop": "CH5QLGD",
       "maHocVien": "CH189037",
       "hoTen": "Nguyễn Minh Khang",
@@ -4925,7 +4937,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_316",
+      "id": "id_1794921792913_316",
       "lop": "CH5QLGD",
       "maHocVien": "CH189038",
       "hoTen": "Nguyễn Thị Quốc Khánh",
@@ -4938,7 +4950,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_317",
+      "id": "id_1794921792913_317",
       "lop": "CH5QLGD",
       "maHocVien": "CH189039",
       "hoTen": "Huỳnh Anh Kiệt",
@@ -4951,7 +4963,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_318",
+      "id": "id_1794921792913_318",
       "lop": "CH5QLGD",
       "maHocVien": "CH189040",
       "hoTen": "Nguyễn Thị Thùy Liên",
@@ -4964,7 +4976,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_319",
+      "id": "id_1794921792913_319",
       "lop": "CH5QLGD",
       "maHocVien": "CH189041",
       "hoTen": "Hồ Như Ngọc",
@@ -4977,7 +4989,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_320",
+      "id": "id_1794921792913_320",
       "lop": "CH5QLGD",
       "maHocVien": "CH189042",
       "hoTen": "Phạm Thị Kim Ngọc",
@@ -4990,7 +5002,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_321",
+      "id": "id_1794921792913_321",
       "lop": "CH5QLGD",
       "maHocVien": "CH189043",
       "hoTen": "Trần Bá Thể",
@@ -5003,7 +5015,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_322",
+      "id": "id_1794921792913_322",
       "lop": "CH5QLGD",
       "maHocVien": "CH189044",
       "hoTen": "Nguyễn Hữu Trí",
@@ -5016,7 +5028,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_323",
+      "id": "id_1794921792913_323",
       "lop": "CH5QM",
       "maHocVien": "CH189001",
       "hoTen": "Trần Hữu Bình",
@@ -5029,7 +5041,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_324",
+      "id": "id_1794921792913_324",
       "lop": "CH5QM",
       "maHocVien": "CH189002",
       "hoTen": "Lê Thị Sơn Ca",
@@ -5042,7 +5054,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_325",
+      "id": "id_1794921792913_325",
       "lop": "CH5QM",
       "maHocVien": "CH189003",
       "hoTen": "Huỳnh Thị Diễm",
@@ -5055,7 +5067,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_326",
+      "id": "id_1794921792913_326",
       "lop": "CH5QM",
       "maHocVien": "CH189005",
       "hoTen": "Nguyễn Văn Điền",
@@ -5068,7 +5080,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_327",
+      "id": "id_1794921792913_327",
       "lop": "CH5QM",
       "maHocVien": "CH189006",
       "hoTen": "Cao Sơn Đại Hải",
@@ -5081,7 +5093,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_328",
+      "id": "id_1794921792913_328",
       "lop": "CH5QM",
       "maHocVien": "CH189007",
       "hoTen": "Nguyễn Hồng Hạnh",
@@ -5094,7 +5106,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_329",
+      "id": "id_1794921792913_329",
       "lop": "CH5QM",
       "maHocVien": "CH189008",
       "hoTen": "Kiều Ngọc Huyền",
@@ -5107,7 +5119,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_330",
+      "id": "id_1794921792913_330",
       "lop": "CH5QM",
       "maHocVien": "CH189009",
       "hoTen": "Trương Tuấn Kiệt",
@@ -5120,7 +5132,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_331",
+      "id": "id_1794921792913_331",
       "lop": "CH5QM",
       "maHocVien": "CH189010",
       "hoTen": "Nguyễn Hữu Lộc",
@@ -5133,7 +5145,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_332",
+      "id": "id_1794921792913_332",
       "lop": "CH5QM",
       "maHocVien": "CH189011",
       "hoTen": "Huỳnh Minh Luân",
@@ -5146,7 +5158,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_333",
+      "id": "id_1794921792913_333",
       "lop": "CH5QM",
       "maHocVien": "CH189012",
       "hoTen": "Nguyễn Trọng Luật",
@@ -5159,7 +5171,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_334",
+      "id": "id_1794921792913_334",
       "lop": "CH5QM",
       "maHocVien": "CH189013",
       "hoTen": "Tô Hoàng Môn",
@@ -5172,7 +5184,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_335",
+      "id": "id_1794921792913_335",
       "lop": "CH5QM",
       "maHocVien": "CH189014",
       "hoTen": "Phạm Kim Ngân",
@@ -5185,7 +5197,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_336",
+      "id": "id_1794921792913_336",
       "lop": "CH5QM",
       "maHocVien": "CH189015",
       "hoTen": "Ngô Hoàng Vân Phi",
@@ -5198,7 +5210,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_337",
+      "id": "id_1794921792913_337",
       "lop": "CH5QM",
       "maHocVien": "CH189016",
       "hoTen": "Phạm Văn Phúc",
@@ -5211,7 +5223,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_338",
+      "id": "id_1794921792913_338",
       "lop": "CH5QM",
       "maHocVien": "CH189017",
       "hoTen": "Nguyễn Lê Thụy Nhã Phương",
@@ -5224,7 +5236,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_339",
+      "id": "id_1794921792913_339",
       "lop": "CH5QM",
       "maHocVien": "CH189018",
       "hoTen": "Hồ Huyền Quang",
@@ -5237,7 +5249,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_340",
+      "id": "id_1794921792913_340",
       "lop": "CH5QM",
       "maHocVien": "CH189019",
       "hoTen": "Nguyễn Đức Sơn",
@@ -5250,7 +5262,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_341",
+      "id": "id_1794921792913_341",
       "lop": "CH5QM",
       "maHocVien": "CH189020",
       "hoTen": "Trần Hưng Thịnh",
@@ -5263,7 +5275,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_342",
+      "id": "id_1794921792913_342",
       "lop": "CH5QM",
       "maHocVien": "CH189021",
       "hoTen": "Trần Phước Thọ",
@@ -5276,7 +5288,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_343",
+      "id": "id_1794921792913_343",
       "lop": "CH5QM",
       "maHocVien": "CH189023",
       "hoTen": "Nguyễn Quang Trí",
@@ -5289,7 +5301,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_344",
+      "id": "id_1794921792913_344",
       "lop": "CH5QM",
       "maHocVien": "CH189022",
       "hoTen": "Lê Hoàng Triệu",
@@ -5302,7 +5314,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_345",
+      "id": "id_1794921792913_345",
       "lop": "CH5QM",
       "maHocVien": "CH189024",
       "hoTen": "Trương Chí Trung",
@@ -5315,7 +5327,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_346",
+      "id": "id_1794921792913_346",
       "lop": "CH5QM",
       "maHocVien": "CH189025",
       "hoTen": "Bùi Ngọc Trường",
@@ -5328,7 +5340,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_347",
+      "id": "id_1794921792913_347",
       "lop": "CH5QM",
       "maHocVien": "CH189028",
       "hoTen": "Nguyễn Vi Thiên Vũ",
@@ -5341,7 +5353,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_348",
+      "id": "id_1794921792913_348",
       "lop": "CH4CN",
       "maHocVien": "CH179001",
       "hoTen": "Huỳnh Hòa Bình",
@@ -5354,7 +5366,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_349",
+      "id": "id_1794921792913_349",
       "lop": "CH4CN",
       "maHocVien": "CH179003",
       "hoTen": "Lâm Việt Chiều",
@@ -5367,7 +5379,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_350",
+      "id": "id_1794921792913_350",
       "lop": "CH4CN",
       "maHocVien": "CH179002",
       "hoTen": "Nguyễn Văn Cọp",
@@ -5380,7 +5392,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_351",
+      "id": "id_1794921792913_351",
       "lop": "CH4CN",
       "maHocVien": "CH179004",
       "hoTen": "Dương Hồng Duyên",
@@ -5393,7 +5405,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_352",
+      "id": "id_1794921792913_352",
       "lop": "CH4CN",
       "maHocVien": "CH179005",
       "hoTen": "Lê Thị Ngọc Hân",
@@ -5406,7 +5418,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_353",
+      "id": "id_1794921792913_353",
       "lop": "CH4CN",
       "maHocVien": "CH179006",
       "hoTen": "Nguyễn Hữu Hòa",
@@ -5419,7 +5431,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_354",
+      "id": "id_1794921792913_354",
       "lop": "CH4CN",
       "maHocVien": "CH179007",
       "hoTen": "Trần Minh Huy",
@@ -5432,7 +5444,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_355",
+      "id": "id_1794921792913_355",
       "lop": "CH4CN",
       "maHocVien": "CH179009",
       "hoTen": "Nguyễn Văn Khanh",
@@ -5445,7 +5457,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_356",
+      "id": "id_1794921792913_356",
       "lop": "CH4CN",
       "maHocVien": "CH179008",
       "hoTen": "Lại Quốc Khánh",
@@ -5458,7 +5470,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_357",
+      "id": "id_1794921792913_357",
       "lop": "CH4CN",
       "maHocVien": "CH179010",
       "hoTen": "Hồ Thị Thùy Linh",
@@ -5471,7 +5483,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_358",
+      "id": "id_1794921792913_358",
       "lop": "CH4CN",
       "maHocVien": "CH179011",
       "hoTen": "Đặng Nguyễn Hoàng Minh",
@@ -5484,7 +5496,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_359",
+      "id": "id_1794921792913_359",
       "lop": "CH4CN",
       "maHocVien": "CH179012",
       "hoTen": "Nguyễn Phương Nam",
@@ -5497,7 +5509,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_360",
+      "id": "id_1794921792913_360",
       "lop": "CH4CN",
       "maHocVien": "CH179013",
       "hoTen": "Đặng Văn Nghiên",
@@ -5510,7 +5522,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_361",
+      "id": "id_1794921792913_361",
       "lop": "CH4CN",
       "maHocVien": "CH179014",
       "hoTen": "Đặng Văn Phúc",
@@ -5523,7 +5535,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_362",
+      "id": "id_1794921792913_362",
       "lop": "CH4CN",
       "maHocVien": "CH179016",
       "hoTen": "Võ Minh Trí",
@@ -5536,7 +5548,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_363",
+      "id": "id_1794921792913_363",
       "lop": "CH4CN",
       "maHocVien": "CH179015",
       "hoTen": "Nguyễn Tấn Trung",
@@ -5549,7 +5561,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_364",
+      "id": "id_1794921792913_364",
       "lop": "CH4CN",
       "maHocVien": "CH179017",
       "hoTen": "Lê Tinh Sinh Tuệ",
@@ -5562,7 +5574,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_365",
+      "id": "id_1794921792913_365",
       "lop": "CH4KHCT",
       "maHocVien": "CH179018",
       "hoTen": "Đào Hoài Ân",
@@ -5575,7 +5587,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_366",
+      "id": "id_1794921792913_366",
       "lop": "CH4KHCT",
       "maHocVien": "CH179019",
       "hoTen": "Ngô Trà Cu Ba",
@@ -5588,7 +5600,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_367",
+      "id": "id_1794921792913_367",
       "lop": "CH4KHCT",
       "maHocVien": "CH179020",
       "hoTen": "Nguyễn Xuân Bình",
@@ -5601,7 +5613,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_368",
+      "id": "id_1794921792913_368",
       "lop": "CH4KHCT",
       "maHocVien": "CH179021",
       "hoTen": "Nguyễn Văn Chí",
@@ -5614,7 +5626,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_369",
+      "id": "id_1794921792913_369",
       "lop": "CH4KHCT",
       "maHocVien": "CH179022",
       "hoTen": "Trần Thị Ngọc Dung",
@@ -5627,7 +5639,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_370",
+      "id": "id_1794921792913_370",
       "lop": "CH4KHCT",
       "maHocVien": "CH179023",
       "hoTen": "Lê Văn Đá",
@@ -5640,7 +5652,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_371",
+      "id": "id_1794921792913_371",
       "lop": "CH4KHCT",
       "maHocVien": "CH179024",
       "hoTen": "Quách Tỉnh Em",
@@ -5653,7 +5665,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_372",
+      "id": "id_1794921792913_372",
       "lop": "CH4KHCT",
       "maHocVien": "CH179025",
       "hoTen": "Lê Diệu Giác",
@@ -5666,7 +5678,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310838_373",
+      "id": "id_1794921792913_373",
       "lop": "CH4KHCT",
       "maHocVien": "CH179026",
       "hoTen": "Trần Văn Hiểu",
@@ -5679,7 +5691,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_374",
+      "id": "id_1794921792913_374",
       "lop": "CH4KHCT",
       "maHocVien": "CH179027",
       "hoTen": "Nguyễn Minh Hoàng",
@@ -5692,7 +5704,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310838_375",
+      "id": "id_1794921792913_375",
       "lop": "CH4KHCT",
       "maHocVien": "CH179028",
       "hoTen": "Trần Anh Khoa",
@@ -5705,7 +5717,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_376",
+      "id": "id_1794921792913_376",
       "lop": "CH4KHCT",
       "maHocVien": "CH179029",
       "hoTen": "Nguyễn Hữu An Khương",
@@ -5718,7 +5730,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_377",
+      "id": "id_1794921792913_377",
       "lop": "CH4KHCT",
       "maHocVien": "CH179030",
       "hoTen": "Võ Trung Kiên",
@@ -5731,7 +5743,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_378",
+      "id": "id_1794921792913_378",
       "lop": "CH4KHCT",
       "maHocVien": "CH179032",
       "hoTen": "Đặng Thanh Liêm",
@@ -5744,7 +5756,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_379",
+      "id": "id_1794921792913_379",
       "lop": "CH4KHCT",
       "maHocVien": "CH179033",
       "hoTen": "Phạm Văn Liêm",
@@ -5757,7 +5769,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_380",
+      "id": "id_1794921792913_380",
       "lop": "CH4KHCT",
       "maHocVien": "CH179034",
       "hoTen": "Lê Thị Huyền Linh",
@@ -5770,7 +5782,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_381",
+      "id": "id_1794921792913_381",
       "lop": "CH4KHCT",
       "maHocVien": "CH179031",
       "hoTen": "Phan Tấn Phước Lộc",
@@ -5783,7 +5795,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_382",
+      "id": "id_1794921792913_382",
       "lop": "CH4KHCT",
       "maHocVien": "CH179035",
       "hoTen": "Phan Hoàng Minh",
@@ -5796,7 +5808,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_383",
+      "id": "id_1794921792913_383",
       "lop": "CH4KHCT",
       "maHocVien": "CH179036",
       "hoTen": "Trương Thoại Mỹ",
@@ -5809,7 +5821,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_384",
+      "id": "id_1794921792913_384",
       "lop": "CH4KHCT",
       "maHocVien": "CH179037",
       "hoTen": "Trần Thị Cẩm Ngân",
@@ -5822,7 +5834,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_385",
+      "id": "id_1794921792913_385",
       "lop": "CH4KHCT",
       "maHocVien": "CH179038",
       "hoTen": "Trần Huỳnh Thanh Nghĩa",
@@ -5835,7 +5847,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_386",
+      "id": "id_1794921792913_386",
       "lop": "CH4KHCT",
       "maHocVien": "CH179039",
       "hoTen": "Hồ Lê Vân Nhi",
@@ -5848,7 +5860,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_387",
+      "id": "id_1794921792913_387",
       "lop": "CH4KHCT",
       "maHocVien": "CH179040",
       "hoTen": "Tô Hải Phong",
@@ -5861,7 +5873,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_388",
+      "id": "id_1794921792913_388",
       "lop": "CH4KHCT",
       "maHocVien": "CH179041",
       "hoTen": "Nguyễn Văn Phụng",
@@ -5874,7 +5886,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_389",
+      "id": "id_1794921792913_389",
       "lop": "CH4KHCT",
       "maHocVien": "CH179042",
       "hoTen": "Trần Thị Thu Sương",
@@ -5887,7 +5899,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_390",
+      "id": "id_1794921792913_390",
       "lop": "CH4KHCT",
       "maHocVien": "CH179043",
       "hoTen": "Nguyễn Hữu Tài",
@@ -5900,7 +5912,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_391",
+      "id": "id_1794921792913_391",
       "lop": "CH4KHCT",
       "maHocVien": "CH179045",
       "hoTen": "Nguyễn Thị Bích Thắm",
@@ -5913,7 +5925,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_392",
+      "id": "id_1794921792913_392",
       "lop": "CH4KHCT",
       "maHocVien": "CH179044",
       "hoTen": "Trần Anh Thơ",
@@ -5926,7 +5938,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_393",
+      "id": "id_1794921792913_393",
       "lop": "CH4KHCT",
       "maHocVien": "CH179046",
       "hoTen": "Kiều Chính Thuần",
@@ -5939,7 +5951,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_394",
+      "id": "id_1794921792913_394",
       "lop": "CH4KHCT",
       "maHocVien": "CH179047",
       "hoTen": "Phạm Thị Diễm Thúy",
@@ -5952,7 +5964,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_395",
+      "id": "id_1794921792913_395",
       "lop": "CH4KHCT",
       "maHocVien": "CH179048",
       "hoTen": "Trần Quốc Tiến",
@@ -5965,7 +5977,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_396",
+      "id": "id_1794921792913_396",
       "lop": "CH4KHCT",
       "maHocVien": "CH179049",
       "hoTen": "Nguyễn Huỳnh An Tịnh",
@@ -5978,7 +5990,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_397",
+      "id": "id_1794921792913_397",
       "lop": "CH4KHCT",
       "maHocVien": "CH179050",
       "hoTen": "Lê Tấn Trung",
@@ -5991,7 +6003,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_398",
+      "id": "id_1794921792913_398",
       "lop": "CH4KHCT",
       "maHocVien": "CH179051",
       "hoTen": "Nguyễn Anh Tú",
@@ -6004,7 +6016,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_399",
+      "id": "id_1794921792913_399",
       "lop": "CH4KHCT",
       "maHocVien": "CH179052",
       "hoTen": "Vũ Thanh Tuấn",
@@ -6017,7 +6029,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_400",
+      "id": "id_1794921792913_400",
       "lop": "CH4KHCT",
       "maHocVien": "CH179053",
       "hoTen": "Đặng Thị Vân",
@@ -6030,7 +6042,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_401",
+      "id": "id_1794921792913_401",
       "lop": "CH4KHCT",
       "maHocVien": "CH179054",
       "hoTen": "Phạm Hoàng Việt",
@@ -6043,7 +6055,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_402",
+      "id": "id_1794921792913_402",
       "lop": "CH4QLGD",
       "maHocVien": "CH179055",
       "hoTen": "Lê Hoàng Anh",
@@ -6056,7 +6068,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_403",
+      "id": "id_1794921792913_403",
       "lop": "CH4QLGD",
       "maHocVien": "CH179056",
       "hoTen": "Nguyễn Văn Cần",
@@ -6069,7 +6081,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_404",
+      "id": "id_1794921792913_404",
       "lop": "CH4QLGD",
       "maHocVien": "CH179057",
       "hoTen": "Huỳnh Thị Kim Chi",
@@ -6082,7 +6094,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_405",
+      "id": "id_1794921792913_405",
       "lop": "CH4QLGD",
       "maHocVien": "CH179058",
       "hoTen": "Hồ Tấn Duy",
@@ -6095,7 +6107,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_406",
+      "id": "id_1794921792913_406",
       "lop": "CH4QLGD",
       "maHocVien": "CH179059",
       "hoTen": "Trần Minh Đàng",
@@ -6108,7 +6120,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_407",
+      "id": "id_1794921792913_407",
       "lop": "CH4QLGD",
       "maHocVien": "CH179060",
       "hoTen": "Huỳnh Thị Mai Gi",
@@ -6121,7 +6133,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_408",
+      "id": "id_1794921792913_408",
       "lop": "CH4QLGD",
       "maHocVien": "CH179061",
       "hoTen": "Đặng Phương Hà",
@@ -6134,7 +6146,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_409",
+      "id": "id_1794921792913_409",
       "lop": "CH4QLGD",
       "maHocVien": "CH179062",
       "hoTen": "Đinh Thu Hà",
@@ -6147,7 +6159,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_410",
+      "id": "id_1794921792913_410",
       "lop": "CH4QLGD",
       "maHocVien": "CH179063",
       "hoTen": "Dương Văn Hai",
@@ -6160,7 +6172,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_411",
+      "id": "id_1794921792913_411",
       "lop": "CH4QLGD",
       "maHocVien": "CH179064",
       "hoTen": "Huỳnh Thanh Hải",
@@ -6173,7 +6185,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_412",
+      "id": "id_1794921792913_412",
       "lop": "CH4QLGD",
       "maHocVien": "CH179065",
       "hoTen": "Ngô Trung Hưng",
@@ -6186,7 +6198,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_413",
+      "id": "id_1794921792913_413",
       "lop": "CH4QLGD",
       "maHocVien": "CH179066",
       "hoTen": "Mã Ngọc Linh",
@@ -6199,7 +6211,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_414",
+      "id": "id_1794921792913_414",
       "lop": "CH4QLGD",
       "maHocVien": "CH179067",
       "hoTen": "Đỗ Thị Kim Loan",
@@ -6212,7 +6224,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_415",
+      "id": "id_1794921792913_415",
       "lop": "CH4QLGD",
       "maHocVien": "CH179068",
       "hoTen": "Huỳnh Trung Nam",
@@ -6225,7 +6237,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_416",
+      "id": "id_1794921792913_416",
       "lop": "CH4QLGD",
       "maHocVien": "CH179069",
       "hoTen": "Nguyễn Hùng Phong",
@@ -6238,7 +6250,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_417",
+      "id": "id_1794921792913_417",
       "lop": "CH4QLGD",
       "maHocVien": "CH179070",
       "hoTen": "Lưu Văn Phước",
@@ -6251,7 +6263,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_418",
+      "id": "id_1794921792913_418",
       "lop": "CH4QLGD",
       "maHocVien": "CH179071",
       "hoTen": "Huỳnh Thị Mỹ Quí",
@@ -6264,7 +6276,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_419",
+      "id": "id_1794921792913_419",
       "lop": "CH4QLGD",
       "maHocVien": "CH179072",
       "hoTen": "Trần Thanh Tâm",
@@ -6277,7 +6289,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_420",
+      "id": "id_1794921792913_420",
       "lop": "CH4QLGD",
       "maHocVien": "CH179073",
       "hoTen": "Nguyễn Thanh Tân",
@@ -6290,7 +6302,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_421",
+      "id": "id_1794921792913_421",
       "lop": "CH4QLGD",
       "maHocVien": "CH179074",
       "hoTen": "Đỗ Thành Thiện",
@@ -6303,7 +6315,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_422",
+      "id": "id_1794921792913_422",
       "lop": "CH4QLGD",
       "maHocVien": "CH179075",
       "hoTen": "Nguyễn Trung Trực",
@@ -6316,7 +6328,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_423",
+      "id": "id_1794921792913_423",
       "lop": "CH4QLGD",
       "maHocVien": "CH179076",
       "hoTen": "Nguyễn Thanh Tùng",
@@ -6329,7 +6341,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_424",
+      "id": "id_1794921792913_424",
       "lop": "CH4QLGD",
       "maHocVien": "CH179077",
       "hoTen": "Đinh Ngọc Tuyên",
@@ -6342,7 +6354,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_425",
+      "id": "id_1794921792913_425",
       "lop": "CH3KHCT",
       "maHocVien": "CH165801",
       "hoTen": "Nguyễn Thái Bình",
@@ -6355,7 +6367,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_426",
+      "id": "id_1794921792913_426",
       "lop": "CH3KHCT",
       "maHocVien": "CH165802",
       "hoTen": "Nguyễn Thị Mỹ Bình",
@@ -6368,7 +6380,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_427",
+      "id": "id_1794921792913_427",
       "lop": "CH3KHCT",
       "maHocVien": "CH165803",
       "hoTen": "Trang Kiên Bush",
@@ -6381,7 +6393,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_428",
+      "id": "id_1794921792913_428",
       "lop": "CH3KHCT",
       "maHocVien": "CH165804",
       "hoTen": "Nguyễn Trung Chánh",
@@ -6394,7 +6406,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_429",
+      "id": "id_1794921792913_429",
       "lop": "CH3KHCT",
       "maHocVien": "CH165805",
       "hoTen": "Lê Văn Chắn",
@@ -6407,7 +6419,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_430",
+      "id": "id_1794921792913_430",
       "lop": "CH3KHCT",
       "maHocVien": "CH165806",
       "hoTen": "Đổ Văn Chúng",
@@ -6420,7 +6432,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_431",
+      "id": "id_1794921792913_431",
       "lop": "CH3KHCT",
       "maHocVien": "CH165807",
       "hoTen": "Nguyễn Tiến Đạt",
@@ -6433,7 +6445,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_432",
+      "id": "id_1794921792913_432",
       "lop": "CH3KHCT",
       "maHocVien": "CH165808",
       "hoTen": "Phan Văn Chí Em",
@@ -6446,7 +6458,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_433",
+      "id": "id_1794921792913_433",
       "lop": "CH3KHCT",
       "maHocVien": "CH165809",
       "hoTen": "Lê Thanh Hà",
@@ -6459,7 +6471,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_434",
+      "id": "id_1794921792913_434",
       "lop": "CH3KHCT",
       "maHocVien": "CH165810",
       "hoTen": "Trần Trọng Hữu",
@@ -6472,7 +6484,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_435",
+      "id": "id_1794921792913_435",
       "lop": "CH3KHCT",
       "maHocVien": "CH165811",
       "hoTen": "Nguyễn Thành Lập",
@@ -6485,7 +6497,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310839_436",
+      "id": "id_1794921792913_436",
       "lop": "CH3KHCT",
       "maHocVien": "CH165812",
       "hoTen": "Nguyễn Thị Thu Lễ",
@@ -6498,7 +6510,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310839_437",
+      "id": "id_1794921792913_437",
       "lop": "CH3KHCT",
       "maHocVien": "CH165813",
       "hoTen": "Ngô Thanh Liêm",
@@ -6511,7 +6523,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_438",
+      "id": "id_1794921792913_438",
       "lop": "CH3KHCT",
       "maHocVien": "CH165814",
       "hoTen": "Nguyễn Đức Long",
@@ -6524,7 +6536,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_439",
+      "id": "id_1794921792913_439",
       "lop": "CH3KHCT",
       "maHocVien": "CH165815",
       "hoTen": "Đỗ Trần Vĩnh Lộc",
@@ -6537,7 +6549,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_440",
+      "id": "id_1794921792913_440",
       "lop": "CH3KHCT",
       "maHocVien": "CH165816",
       "hoTen": "Nguyễn Chí Lưu",
@@ -6550,7 +6562,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_441",
+      "id": "id_1794921792913_441",
       "lop": "CH3KHCT",
       "maHocVien": "CH165817",
       "hoTen": "Nguyễn Trung Nghĩa",
@@ -6563,7 +6575,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_442",
+      "id": "id_1794921792913_442",
       "lop": "CH3KHCT",
       "maHocVien": "CH165818",
       "hoTen": "Lăng Hoài Phong",
@@ -6576,7 +6588,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_443",
+      "id": "id_1794921792913_443",
       "lop": "CH3KHCT",
       "maHocVien": "CH165820",
       "hoTen": "Lâm Trường Phúc",
@@ -6589,7 +6601,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_444",
+      "id": "id_1794921792913_444",
       "lop": "CH3KHCT",
       "maHocVien": "CH165819",
       "hoTen": "Lê Hồng Phúc",
@@ -6602,7 +6614,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_445",
+      "id": "id_1794921792913_445",
       "lop": "CH3KHCT",
       "maHocVien": "CH165821",
       "hoTen": "Nguyễn Hữu Phước",
@@ -6615,7 +6627,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_446",
+      "id": "id_1794921792913_446",
       "lop": "CH3KHCT",
       "maHocVien": "CH165822",
       "hoTen": "Phạm Duy Tân",
@@ -6628,7 +6640,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_447",
+      "id": "id_1794921792913_447",
       "lop": "CH3KHCT",
       "maHocVien": "CH165823",
       "hoTen": "Nguyễn Quốc Tình",
@@ -6641,7 +6653,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_448",
+      "id": "id_1794921792913_448",
       "lop": "CH3KHCT",
       "maHocVien": "CH165826",
       "hoTen": "Lê Quốc Toàn",
@@ -6654,7 +6666,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_449",
+      "id": "id_1794921792913_449",
       "lop": "CH3KHCT",
       "maHocVien": "CH165824",
       "hoTen": "Lương Bảo Toàn",
@@ -6667,7 +6679,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_450",
+      "id": "id_1794921792913_450",
       "lop": "CH3KHCT",
       "maHocVien": "CH165825",
       "hoTen": "Trần Văn Toàn",
@@ -6680,7 +6692,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_451",
+      "id": "id_1794921792913_451",
       "lop": "CH3KHCT",
       "maHocVien": "CH165827",
       "hoTen": "Ngô Thanh Tòng",
@@ -6693,7 +6705,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_452",
+      "id": "id_1794921792913_452",
       "lop": "CH3KHCT",
       "maHocVien": "CH165828",
       "hoTen": "Dương Chí Tôn",
@@ -6706,7 +6718,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_453",
+      "id": "id_1794921792914_453",
       "lop": "CH3KHCT",
       "maHocVien": "CH165829",
       "hoTen": "Lê Anh Triết",
@@ -6719,7 +6731,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_454",
+      "id": "id_1794921792914_454",
       "lop": "CH3KHCT",
       "maHocVien": "CH165830",
       "hoTen": "Nguyễn Quốc Trinh",
@@ -6732,7 +6744,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_455",
+      "id": "id_1794921792914_455",
       "lop": "CH3KHCT",
       "maHocVien": "CH165831",
       "hoTen": "Quách Kiến Trung",
@@ -6745,7 +6757,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_456",
+      "id": "id_1794921792914_456",
       "lop": "CH3KHCT",
       "maHocVien": "CH165832",
       "hoTen": "Cao Thành Tỷ",
@@ -6758,7 +6770,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_457",
+      "id": "id_1794921792914_457",
       "lop": "CH2KHCT",
       "maHocVien": "CH155201",
       "hoTen": "Nguyễn Trung Chính",
@@ -6771,7 +6783,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_458",
+      "id": "id_1794921792914_458",
       "lop": "CH2KHCT",
       "maHocVien": "CH155202",
       "hoTen": "Trần Phương Dinh",
@@ -6784,7 +6796,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_459",
+      "id": "id_1794921792914_459",
       "lop": "CH2KHCT",
       "maHocVien": "CH155203",
       "hoTen": "Trương Thị Ngọc Hân",
@@ -6797,7 +6809,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_460",
+      "id": "id_1794921792914_460",
       "lop": "CH2KHCT",
       "maHocVien": "CH155205",
       "hoTen": "Nguyễn Trương Khương",
@@ -6810,7 +6822,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_461",
+      "id": "id_1794921792914_461",
       "lop": "CH2KHCT",
       "maHocVien": "CH155204",
       "hoTen": "Lê Thị Bạch Kim",
@@ -6823,7 +6835,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_462",
+      "id": "id_1794921792914_462",
       "lop": "CH2KHCT",
       "maHocVien": "CH155206",
       "hoTen": "Đoàn Hữu Mạnh",
@@ -6836,7 +6848,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_463",
+      "id": "id_1794921792914_463",
       "lop": "CH2KHCT",
       "maHocVien": "CH155207",
       "hoTen": "Bùi Phạm Trần Minh",
@@ -6849,7 +6861,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_464",
+      "id": "id_1794921792914_464",
       "lop": "CH2KHCT",
       "maHocVien": "CH155208",
       "hoTen": "Nguyễn Thị Thúy Ngân",
@@ -6862,7 +6874,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_465",
+      "id": "id_1794921792914_465",
       "lop": "CH2KHCT",
       "maHocVien": "CH155209",
       "hoTen": "Lê Đức Nghị",
@@ -6875,7 +6887,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_466",
+      "id": "id_1794921792914_466",
       "lop": "CH2KHCT",
       "maHocVien": "CH155210",
       "hoTen": "Lê Trần Phúc Nguyên",
@@ -6888,7 +6900,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_467",
+      "id": "id_1794921792914_467",
       "lop": "CH2KHCT",
       "maHocVien": "CH155211",
       "hoTen": "Đoàn Thị Hoa Nhi",
@@ -6901,7 +6913,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_468",
+      "id": "id_1794921792914_468",
       "lop": "CH2KHCT",
       "maHocVien": "CH155212",
       "hoTen": "Trần Văn Săng",
@@ -6914,7 +6926,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_469",
+      "id": "id_1794921792914_469",
       "lop": "CH2KHCT",
       "maHocVien": "CH155213",
       "hoTen": "Quách Kiều Tiên",
@@ -6927,7 +6939,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_470",
+      "id": "id_1794921792914_470",
       "lop": "CH2KHCT",
       "maHocVien": "CH155214",
       "hoTen": "Trần Thị Thủy Tiên",
@@ -6940,7 +6952,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_471",
+      "id": "id_1794921792914_471",
       "lop": "CH2KHCT",
       "maHocVien": "CH155215",
       "hoTen": "Nguyễn Thị Lan Vi",
@@ -6953,7 +6965,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_472",
+      "id": "id_1794921792914_472",
       "lop": "CH2KHCT",
       "maHocVien": "CH155216",
       "hoTen": "Phan Thị Kim Yến",
@@ -6966,7 +6978,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_473",
+      "id": "id_1794921792914_473",
       "lop": "CH1KHCT",
       "maHocVien": "CH148301",
       "hoTen": "Phan Thúy An",
@@ -6979,7 +6991,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_474",
+      "id": "id_1794921792914_474",
       "lop": "CH1KHCT",
       "maHocVien": "CH148302",
       "hoTen": "Trịnh Văn Cường",
@@ -6992,7 +7004,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_475",
+      "id": "id_1794921792914_475",
       "lop": "CH1KHCT",
       "maHocVien": "CH148303",
       "hoTen": "Nguyễn Quốc Đạt",
@@ -7005,7 +7017,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_476",
+      "id": "id_1794921792914_476",
       "lop": "CH1KHCT",
       "maHocVien": "CH148304",
       "hoTen": "Nguyễn Bền Em",
@@ -7018,7 +7030,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_477",
+      "id": "id_1794921792914_477",
       "lop": "CH1KHCT",
       "maHocVien": "CH148306",
       "hoTen": "Lý Hậu Giang",
@@ -7031,7 +7043,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_478",
+      "id": "id_1794921792914_478",
       "lop": "CH1KHCT",
       "maHocVien": "CH148305",
       "hoTen": "Dương Văn Minh Giàu",
@@ -7044,7 +7056,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_479",
+      "id": "id_1794921792914_479",
       "lop": "CH1KHCT",
       "maHocVien": "CH148307",
       "hoTen": "Nguyễn Văn Hòa",
@@ -7057,7 +7069,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_480",
+      "id": "id_1794921792914_480",
       "lop": "CH1KHCT",
       "maHocVien": "CH148308",
       "hoTen": "Lê Thị Huệ",
@@ -7070,7 +7082,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_481",
+      "id": "id_1794921792914_481",
       "lop": "CH1KHCT",
       "maHocVien": "CH148309",
       "hoTen": "Lê Thị Ngọc Lam",
@@ -7083,7 +7095,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_482",
+      "id": "id_1794921792914_482",
       "lop": "CH1KHCT",
       "maHocVien": "CH148310",
       "hoTen": "Trần Thị Nga",
@@ -7096,7 +7108,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_483",
+      "id": "id_1794921792914_483",
       "lop": "CH1KHCT",
       "maHocVien": "CH148311",
       "hoTen": "Nguyễn Lê Kim Ngân",
@@ -7109,7 +7121,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_484",
+      "id": "id_1794921792914_484",
       "lop": "CH1KHCT",
       "maHocVien": "CH148312",
       "hoTen": "Phạm Thị Thảo Nguyên",
@@ -7122,7 +7134,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_485",
+      "id": "id_1794921792914_485",
       "lop": "CH1KHCT",
       "maHocVien": "CH148313",
       "hoTen": "Phạm Thị Kiều Oanh",
@@ -7135,7 +7147,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_486",
+      "id": "id_1794921792914_486",
       "lop": "CH1KHCT",
       "maHocVien": "CH148315",
       "hoTen": "Nguyễn Bùi Thị Thanh Pha",
@@ -7148,7 +7160,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_487",
+      "id": "id_1794921792914_487",
       "lop": "CH1KHCT",
       "maHocVien": "CH148316",
       "hoTen": "Nguyễn Hoàng Phúc",
@@ -7161,7 +7173,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_488",
+      "id": "id_1794921792914_488",
       "lop": "CH1KHCT",
       "maHocVien": "CH148317",
       "hoTen": "Nguyễn Văn Sang",
@@ -7174,7 +7186,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_489",
+      "id": "id_1794921792914_489",
       "lop": "CH1KHCT",
       "maHocVien": "CH148318",
       "hoTen": "Huỳnh Văn Tâm",
@@ -7187,7 +7199,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_490",
+      "id": "id_1794921792914_490",
       "lop": "CH1KHCT",
       "maHocVien": "CH148322",
       "hoTen": "Trần Hùng Thanh",
@@ -7200,7 +7212,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_491",
+      "id": "id_1794921792914_491",
       "lop": "CH1KHCT",
       "maHocVien": "CH148319",
       "hoTen": "Đỗ Hà Thành",
@@ -7213,7 +7225,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_492",
+      "id": "id_1794921792914_492",
       "lop": "CH1KHCT",
       "maHocVien": "CH148320",
       "hoTen": "Nguyễn Chí Thành",
@@ -7226,7 +7238,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_493",
+      "id": "id_1794921792914_493",
       "lop": "CH1KHCT",
       "maHocVien": "CH148321",
       "hoTen": "Trần Công Thành",
@@ -7239,7 +7251,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_494",
+      "id": "id_1794921792914_494",
       "lop": "CH1KHCT",
       "maHocVien": "CH148323",
       "hoTen": "Phạm Thanh Tiền",
@@ -7252,7 +7264,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_495",
+      "id": "id_1794921792914_495",
       "lop": "CH1KHCT",
       "maHocVien": "CH148324",
       "hoTen": "Trương Thị Tiền",
@@ -7265,7 +7277,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_496",
+      "id": "id_1794921792914_496",
       "lop": "CH1KHCT",
       "maHocVien": "CH148325",
       "hoTen": "Nguyễn Thị Thu Trang",
@@ -7278,7 +7290,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_497",
+      "id": "id_1794921792914_497",
       "lop": "CH1KHCT",
       "maHocVien": "CH148326",
       "hoTen": "Phan Anh Tú",
@@ -7291,7 +7303,7 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_498",
+      "id": "id_1794921792914_498",
       "lop": "CH1KHCT",
       "maHocVien": "CH148327",
       "hoTen": "Nguyễn Thị Kim Tuyền",
@@ -7304,7 +7316,7 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310840_499",
+      "id": "id_1794921792914_499",
       "lop": "CH1KHCT",
       "maHocVien": "CH148314",
       "hoTen": "Phan Văn Út",
@@ -7317,9 +7329,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310840_500",
+      "id": "id_1794921792914_500",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260001",
+      "maHocVien": "EDM726001",
       "hoTen": "Trần Ngọc Bảo Châu",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7331,9 +7343,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_501",
+      "id": "id_1794921792914_501",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260002",
+      "maHocVien": "EDM726002",
       "hoTen": "Cao Ngọc Uyên",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7345,9 +7357,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_502",
+      "id": "id_1794921792914_502",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260003",
+      "maHocVien": "EDM726003",
       "hoTen": "Nguyễn Đông Dương",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7359,9 +7371,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_503",
+      "id": "id_1794921792914_503",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260004",
+      "maHocVien": "EDM726004",
       "hoTen": "Lê Thị Hân",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7373,9 +7385,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_504",
+      "id": "id_1794921792914_504",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260005",
+      "maHocVien": "EDM726005",
       "hoTen": "Võ Thị Tương Lai",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7387,9 +7399,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_505",
+      "id": "id_1794921792914_505",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260006",
+      "maHocVien": "EDM726006",
       "hoTen": "Nguyễn Viết Long",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7401,9 +7413,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_506",
+      "id": "id_1794921792914_506",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260007",
+      "maHocVien": "EDM726007",
       "hoTen": "Lê Hà Như Ngọc",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7415,9 +7427,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_507",
+      "id": "id_1794921792914_507",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260008",
+      "maHocVien": "EDM726008",
       "hoTen": "Hồ Xảo Nhi",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7429,9 +7441,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_508",
+      "id": "id_1794921792914_508",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260009",
+      "maHocVien": "EDM726009",
       "hoTen": "Trương Văn Quý",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7443,9 +7455,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_509",
+      "id": "id_1794921792914_509",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260010",
+      "maHocVien": "EDM726010",
       "hoTen": "Nguyễn Hoài Thanh",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7457,9 +7469,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_510",
+      "id": "id_1794921792914_510",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260011",
+      "maHocVien": "EDM726011",
       "hoTen": "Trần Thị Ngọc Thảo",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7471,9 +7483,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_511",
+      "id": "id_1794921792914_511",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260012",
+      "maHocVien": "EDM726012",
       "hoTen": "Lê Văn Thọ",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7485,9 +7497,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_512",
+      "id": "id_1794921792914_512",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260013",
+      "maHocVien": "EDM726013",
       "hoTen": "Võ Minh Trí",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7499,9 +7511,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_513",
+      "id": "id_1794921792914_513",
       "lop": "CH13QLGD",
-      "maHocVien": "EDM7260014",
+      "maHocVien": "EDM726014",
       "hoTen": "Phạm Thị Tuyết Trinh",
       "maNganh": "8140114",
       "tenNganh": "Quản lý giáo dục",
@@ -7513,9 +7525,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_514",
+      "id": "id_1794921792914_514",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260001",
+      "maHocVien": "TMP726001",
       "hoTen": "Huỳnh Tấn Duy",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7527,9 +7539,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_515",
+      "id": "id_1794921792914_515",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260002",
+      "maHocVien": "TMP726002",
       "hoTen": "Lưu Thiện Hiếu",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7541,9 +7553,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_516",
+      "id": "id_1794921792914_516",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260003",
+      "maHocVien": "TMP726003",
       "hoTen": "Nguyễn Thị Thúy Huyên",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7555,9 +7567,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_517",
+      "id": "id_1794921792914_517",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260004",
+      "maHocVien": "TMP726004",
       "hoTen": "Trần Kim Quyên",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7569,9 +7581,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_518",
+      "id": "id_1794921792914_518",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260005",
+      "maHocVien": "TMP726005",
       "hoTen": "Võ Thị Cẩm Tiên",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7583,9 +7595,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_519",
+      "id": "id_1794921792914_519",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260006",
+      "maHocVien": "TMP726006",
       "hoTen": "Trương Thị Bảo Trân",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7597,9 +7609,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_520",
+      "id": "id_1794921792914_520",
       "lop": "CH13VLLT",
-      "maHocVien": "TMP7260007",
+      "maHocVien": "TMP726007",
       "hoTen": "Hồ Anh Thư",
       "maNganh": "8440103",
       "tenNganh": "Vật lý lý thuyết và Vật lý toán",
@@ -7611,9 +7623,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_521",
+      "id": "id_1794921792914_521",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260001",
+      "maHocVien": "TTM726001",
       "hoTen": "Phạm Minh Anh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7625,9 +7637,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_522",
+      "id": "id_1794921792914_522",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260002",
+      "maHocVien": "TTM726002",
       "hoTen": "Võ Thị Thùy Dung",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7639,9 +7651,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_523",
+      "id": "id_1794921792914_523",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260003",
+      "maHocVien": "TTM726003",
       "hoTen": "Hồ Tuấn Khải",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7653,9 +7665,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_524",
+      "id": "id_1794921792914_524",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260004",
+      "maHocVien": "TTM726004",
       "hoTen": "Nguyễn Dương Khang",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7667,9 +7679,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_525",
+      "id": "id_1794921792914_525",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260005",
+      "maHocVien": "TTM726005",
       "hoTen": "Nguyễn Thị Thúy Oanh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7681,9 +7693,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_526",
+      "id": "id_1794921792914_526",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260006",
+      "maHocVien": "TTM726006",
       "hoTen": "Võ Thành Vinh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7695,9 +7707,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_527",
+      "id": "id_1794921792914_527",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260007",
+      "maHocVien": "TTM726007",
       "hoTen": "Nguyễn Thuỳ Trang",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7709,9 +7721,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_528",
+      "id": "id_1794921792914_528",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260008",
+      "maHocVien": "TTM726008",
       "hoTen": "Lê Tuấn Anh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7723,9 +7735,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_529",
+      "id": "id_1794921792914_529",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260009",
+      "maHocVien": "TTM726009",
       "hoTen": "Võ Thị Thảo Vi",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7737,9 +7749,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_530",
+      "id": "id_1794921792914_530",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260011",
+      "maHocVien": "TTM726011",
       "hoTen": "Nguyễn Thị Mỹ Ngọc",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7751,9 +7763,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_531",
+      "id": "id_1794921792914_531",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260012",
+      "maHocVien": "TTM726012",
       "hoTen": "Lưu Thị Hồng Thắm",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7765,9 +7777,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_532",
+      "id": "id_1794921792914_532",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260013",
+      "maHocVien": "TTM726013",
       "hoTen": "Trần Thái Như Huỳnh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7779,9 +7791,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_533",
+      "id": "id_1794921792914_533",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260014",
+      "maHocVien": "TTM726014",
       "hoTen": "Nguyễn Hoàng Khang",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7793,9 +7805,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_534",
+      "id": "id_1794921792914_534",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260015",
+      "maHocVien": "TTM726015",
       "hoTen": "Võ Thị Mỹ Nương",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7807,9 +7819,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_535",
+      "id": "id_1794921792914_535",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260016",
+      "maHocVien": "TTM726016",
       "hoTen": "Đỗ Phúc Thịnh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7821,9 +7833,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_536",
+      "id": "id_1794921792914_536",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260017",
+      "maHocVien": "TTM726017",
       "hoTen": "Huỳnh Thanh Tâm",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7835,9 +7847,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_537",
+      "id": "id_1794921792914_537",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260018",
+      "maHocVien": "TTM726018",
       "hoTen": "Nguyễn Thị Cẩm Tiên",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7849,9 +7861,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_538",
+      "id": "id_1794921792914_538",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260019",
+      "maHocVien": "TTM726019",
       "hoTen": "Nguyễn Thị Tài Linh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7863,9 +7875,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_539",
+      "id": "id_1794921792914_539",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260020",
+      "maHocVien": "TTM726020",
       "hoTen": "Lê Thị Mộng Thủy",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7877,9 +7889,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_540",
+      "id": "id_1794921792914_540",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260021",
+      "maHocVien": "TTM726021",
       "hoTen": "Phạm Hoài Đạt",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7891,9 +7903,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_541",
+      "id": "id_1794921792914_541",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260022",
+      "maHocVien": "TTM726022",
       "hoTen": "Lê Văn Xiêm",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7905,9 +7917,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_542",
+      "id": "id_1794921792914_542",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260023",
+      "maHocVien": "TTM726023",
       "hoTen": "Ngô Thị Hạnh",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7919,9 +7931,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_543",
+      "id": "id_1794921792914_543",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260024",
+      "maHocVien": "TTM726024",
       "hoTen": "Thân Minh Hải",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7933,9 +7945,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_544",
+      "id": "id_1794921792914_544",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260025",
+      "maHocVien": "TTM726025",
       "hoTen": "Bùi Hoàng Nam",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7947,9 +7959,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_545",
+      "id": "id_1794921792914_545",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260026",
+      "maHocVien": "TTM726026",
       "hoTen": "Phan Thị Ngọc Điệp",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7961,9 +7973,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_546",
+      "id": "id_1794921792914_546",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260027",
+      "maHocVien": "TTM726027",
       "hoTen": "Đinh Thị Thắm",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7975,9 +7987,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_547",
+      "id": "id_1794921792914_547",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260028",
+      "maHocVien": "TTM726028",
       "hoTen": "Hồ Thị Hoàng Chi",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -7989,9 +8001,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_548",
+      "id": "id_1794921792914_548",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260029",
+      "maHocVien": "TTM726029",
       "hoTen": "Bùi Thị Lan Ngọc Lin Đa Trang Đài",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8003,9 +8015,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_549",
+      "id": "id_1794921792914_549",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260030",
+      "maHocVien": "TTM726030",
       "hoTen": "Dương Thúy An",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8017,9 +8029,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_550",
+      "id": "id_1794921792914_550",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260031",
+      "maHocVien": "TTM726031",
       "hoTen": "Võ Thị Ngọc Mỹ",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8031,9 +8043,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_551",
+      "id": "id_1794921792914_551",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260032",
+      "maHocVien": "TTM726032",
       "hoTen": "Nguyễn Lê Vĩnh Phúc",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8045,9 +8057,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_552",
+      "id": "id_1794921792914_552",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260033",
+      "maHocVien": "TTM726033",
       "hoTen": "Trần Cao Anh Phong",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8059,9 +8071,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_553",
+      "id": "id_1794921792914_553",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260034",
+      "maHocVien": "TTM726034",
       "hoTen": "Nguyễn Hải Đăng",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8073,9 +8085,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_554",
+      "id": "id_1794921792914_554",
       "lop": "CH13PPDH",
-      "maHocVien": "TTM7260035",
+      "maHocVien": "TTM726035",
       "hoTen": "Nguyễn Nhật Minh Thư",
       "maNganh": "8140110",
       "tenNganh": "Lý luận và Phương pháp dạy học",
@@ -8087,9 +8099,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_555",
+      "id": "id_1794921792914_555",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260001",
+      "maHocVien": "EME726001",
       "hoTen": "Nguyễn Gia Đạt",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8101,9 +8113,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_556",
+      "id": "id_1794921792914_556",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260002",
+      "maHocVien": "EME726002",
       "hoTen": "Phạm Lê Phi Hùng",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8115,9 +8127,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_557",
+      "id": "id_1794921792914_557",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260003",
+      "maHocVien": "EME726003",
       "hoTen": "Trần Nhất Huy",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8129,9 +8141,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_558",
+      "id": "id_1794921792914_558",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260004",
+      "maHocVien": "EME726004",
       "hoTen": "Bùi Hiệp Lợi",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8143,9 +8155,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_559",
+      "id": "id_1794921792914_559",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260005",
+      "maHocVien": "EME726005",
       "hoTen": "Nguyễn Thị Thu Ngân",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8157,9 +8169,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_560",
+      "id": "id_1794921792914_560",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260006",
+      "maHocVien": "EME726006",
       "hoTen": "Ngô Lê Bảo Ngọc",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8171,9 +8183,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_561",
+      "id": "id_1794921792914_561",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260007",
+      "maHocVien": "EME726007",
       "hoTen": "Nguyễn Thị Kiều Thanh",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8185,9 +8197,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_562",
+      "id": "id_1794921792914_562",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260008",
+      "maHocVien": "EME726008",
       "hoTen": "Nguyễn Thị Kim Tho",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8199,9 +8211,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_563",
+      "id": "id_1794921792914_563",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260009",
+      "maHocVien": "EME726009",
       "hoTen": "Huỳnh Lý Phương Trúc",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8213,9 +8225,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_564",
+      "id": "id_1794921792914_564",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260010",
+      "maHocVien": "EME726010",
       "hoTen": "Nguyễn Ngọc Trung",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8227,9 +8239,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310841_565",
+      "id": "id_1794921792914_565",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260011",
+      "maHocVien": "EME726011",
       "hoTen": "Đỗ Thị Yến Linh",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8241,9 +8253,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_566",
+      "id": "id_1794921792914_566",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260012",
+      "maHocVien": "EME726012",
       "hoTen": "Nguyễn Thị Thúy Vân",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8255,9 +8267,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_567",
+      "id": "id_1794921792914_567",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260013",
+      "maHocVien": "EME726013",
       "hoTen": "Phan Ngọc Tường Vi",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8269,9 +8281,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_568",
+      "id": "id_1794921792914_568",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260014",
+      "maHocVien": "EME726014",
       "hoTen": "Nguyễn Thị Ngọc Nhi",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8283,9 +8295,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310841_569",
+      "id": "id_1794921792914_569",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260015",
+      "maHocVien": "EME726015",
       "hoTen": "Trịnh Thúy Uyên",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8297,9 +8309,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_570",
+      "id": "id_1794921792914_570",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260016",
+      "maHocVien": "EME726016",
       "hoTen": "Đoàn Phương Lam",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8311,9 +8323,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_571",
+      "id": "id_1794921792914_571",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260017",
+      "maHocVien": "EME726017",
       "hoTen": "Nguyễn Trung Huấn",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8325,9 +8337,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_572",
+      "id": "id_1794921792914_572",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260018",
+      "maHocVien": "EME726018",
       "hoTen": "Huỳnh Lê Thiên Trúc",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8339,9 +8351,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_573",
+      "id": "id_1794921792914_573",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260019",
+      "maHocVien": "EME726019",
       "hoTen": "Nguyễn Thị Hương",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8353,9 +8365,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_574",
+      "id": "id_1794921792914_574",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260020",
+      "maHocVien": "EME726020",
       "hoTen": "Phạm Hoàng Anh",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8367,9 +8379,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_575",
+      "id": "id_1794921792914_575",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260021",
+      "maHocVien": "EME726021",
       "hoTen": "Trần Huỳnh Khánh Chương",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8381,9 +8393,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_576",
+      "id": "id_1794921792914_576",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260022",
+      "maHocVien": "EME726022",
       "hoTen": "Trần Thị Bích Tuyền",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8395,9 +8407,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_577",
+      "id": "id_1794921792914_577",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260023",
+      "maHocVien": "EME726023",
       "hoTen": "Trần Thị Ny",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8409,9 +8421,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_578",
+      "id": "id_1794921792914_578",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260024",
+      "maHocVien": "EME726024",
       "hoTen": "Huỳnh Thanh Ngân",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8423,9 +8435,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_579",
+      "id": "id_1794921792914_579",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260025",
+      "maHocVien": "EME726025",
       "hoTen": "Trần Ngọc Minh",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8437,9 +8449,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_580",
+      "id": "id_1794921792914_580",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260026",
+      "maHocVien": "EME726026",
       "hoTen": "Lê Thị Cẩm Hồng",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8451,9 +8463,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_581",
+      "id": "id_1794921792914_581",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260027",
+      "maHocVien": "EME726027",
       "hoTen": "Dương Thị Thúy Trang",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8465,9 +8477,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_582",
+      "id": "id_1794921792914_582",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260028",
+      "maHocVien": "EME726028",
       "hoTen": "Đào Thanh Hằng",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8479,9 +8491,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_583",
+      "id": "id_1794921792914_583",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260029",
+      "maHocVien": "EME726029",
       "hoTen": "Nguyễn Thị Mỹ Linh",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8493,9 +8505,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_584",
+      "id": "id_1794921792914_584",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260030",
+      "maHocVien": "EME726030",
       "hoTen": "Đặng Thị Diểm My",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8507,9 +8519,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_585",
+      "id": "id_1794921792914_585",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260031",
+      "maHocVien": "EME726031",
       "hoTen": "Hoàng Hoa Chân",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8521,9 +8533,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_586",
+      "id": "id_1794921792914_586",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260032",
+      "maHocVien": "EME726032",
       "hoTen": "Lâm Thị Vẹn",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8535,9 +8547,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_587",
+      "id": "id_1794921792914_587",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260033",
+      "maHocVien": "EME726033",
       "hoTen": "Phan Kim Ngân",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8549,9 +8561,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_588",
+      "id": "id_1794921792914_588",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260034",
+      "maHocVien": "EME726034",
       "hoTen": "Nguyễn Thị Mỹ Kiều",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8563,9 +8575,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_589",
+      "id": "id_1794921792914_589",
       "lop": "CH13PPTA",
-      "maHocVien": "EME7260035",
+      "maHocVien": "EME726035",
       "hoTen": "Nguyễn Trần Phương Thảo",
       "maNganh": "8140111",
       "tenNganh": "Lý luận và phương pháp dạy học môn tiếng Anh",
@@ -8577,9 +8589,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_590",
+      "id": "id_1794921792914_590",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260001",
+      "maHocVien": "IFT726001",
       "hoTen": "Lê Hiệp Nguyên",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8591,9 +8603,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_591",
+      "id": "id_1794921792914_591",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260002",
+      "maHocVien": "IFT726002",
       "hoTen": "Trần Nguyễn Minh Thiên",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8605,9 +8617,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_592",
+      "id": "id_1794921792914_592",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260003",
+      "maHocVien": "IFT726003",
       "hoTen": "Bùi Quân Bảo",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8619,9 +8631,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_593",
+      "id": "id_1794921792914_593",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260004",
+      "maHocVien": "IFT726004",
       "hoTen": "Đặng Tôn Gia Bảo",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8633,9 +8645,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_594",
+      "id": "id_1794921792914_594",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260005",
+      "maHocVien": "IFT726005",
       "hoTen": "Mai Nhật Đăng",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8647,9 +8659,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_595",
+      "id": "id_1794921792914_595",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260006",
+      "maHocVien": "IFT726006",
       "hoTen": "Phạm Thị Mộng Điềm",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8661,9 +8673,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_596",
+      "id": "id_1794921792914_596",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260007",
+      "maHocVien": "IFT726007",
       "hoTen": "Chau Đặng Trung Hưng",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8675,9 +8687,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_597",
+      "id": "id_1794921792914_597",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260008",
+      "maHocVien": "IFT726008",
       "hoTen": "Nguyễn Phạm Khánh Linh",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8689,9 +8701,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_598",
+      "id": "id_1794921792914_598",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260009",
+      "maHocVien": "IFT726009",
       "hoTen": "Đặng Thị Thảo Loan",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8703,9 +8715,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_599",
+      "id": "id_1794921792914_599",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260010",
+      "maHocVien": "IFT726010",
       "hoTen": "Nguyễn Hoài Nam",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8717,9 +8729,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_600",
+      "id": "id_1794921792914_600",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260011",
+      "maHocVien": "IFT726011",
       "hoTen": "Huỳnh Thị Mỹ Ngọc",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8731,9 +8743,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_601",
+      "id": "id_1794921792914_601",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260012",
+      "maHocVien": "IFT726012",
       "hoTen": "Lê Ánh Nguyệt",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8745,9 +8757,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_602",
+      "id": "id_1794921792914_602",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260013",
+      "maHocVien": "IFT726013",
       "hoTen": "Phan Hồng Tuyết Nhung",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8759,9 +8771,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_603",
+      "id": "id_1794921792914_603",
       "lop": "CH13CNTT",
-      "maHocVien": "IFT7260014",
+      "maHocVien": "IFT726014",
       "hoTen": "Cù Minh Tài",
       "maNganh": "8480201",
       "tenNganh": "Công nghệ thông tin",
@@ -8773,9 +8785,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_604",
+      "id": "id_1794921792914_604",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260001",
+      "maHocVien": "CRS726001",
       "hoTen": "Đặng Thị Hồng Gấm",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8787,9 +8799,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_605",
+      "id": "id_1794921792914_605",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260002",
+      "maHocVien": "CRS726002",
       "hoTen": "Trần Quốc Kiệt",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8801,9 +8813,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_606",
+      "id": "id_1794921792914_606",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260003",
+      "maHocVien": "CRS726003",
       "hoTen": "Huỳnh Thanh Luân",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8815,9 +8827,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_607",
+      "id": "id_1794921792914_607",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260005",
+      "maHocVien": "CRS726005",
       "hoTen": "Cao Hoàng Phúc",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8829,9 +8841,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_608",
+      "id": "id_1794921792914_608",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260006",
+      "maHocVien": "CRS726006",
       "hoTen": "Trần Thị Mỹ Tâm",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8843,9 +8855,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_609",
+      "id": "id_1794921792914_609",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260008",
+      "maHocVien": "CRS726008",
       "hoTen": "Vũ Tiến Đạt",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8857,9 +8869,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_610",
+      "id": "id_1794921792914_610",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260010",
+      "maHocVien": "CRS726010",
       "hoTen": "Hồng Quốc Hào",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8871,9 +8883,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_611",
+      "id": "id_1794921792914_611",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260012",
+      "maHocVien": "CRS726012",
       "hoTen": "Huỳnh Thị Thùy Linh",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8885,9 +8897,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_612",
+      "id": "id_1794921792914_612",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260013",
+      "maHocVien": "CRS726013",
       "hoTen": "Neáng Nath",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8899,9 +8911,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_613",
+      "id": "id_1794921792914_613",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260015",
+      "maHocVien": "CRS726015",
       "hoTen": "Nguyễn Hữu Phước",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8913,9 +8925,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_614",
+      "id": "id_1794921792914_614",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260016",
+      "maHocVien": "CRS726016",
       "hoTen": "Nguyễn Thành Sang",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8927,9 +8939,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_615",
+      "id": "id_1794921792914_615",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260017",
+      "maHocVien": "CRS726017",
       "hoTen": "Hà Quốc Thái",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8941,9 +8953,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_616",
+      "id": "id_1794921792914_616",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260018",
+      "maHocVien": "CRS726018",
       "hoTen": "Lê Nguyễn Trường Thọ",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8955,9 +8967,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_617",
+      "id": "id_1794921792914_617",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260019",
+      "maHocVien": "CRS726019",
       "hoTen": "Nguyễn Phước Tồn",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8969,9 +8981,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_618",
+      "id": "id_1794921792914_618",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260020",
+      "maHocVien": "CRS726020",
       "hoTen": "Đặng Thị Thùy Trang",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8983,9 +8995,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_619",
+      "id": "id_1794921792914_619",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260021",
+      "maHocVien": "CRS726021",
       "hoTen": "Huỳnh Thị Bảo Trang",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -8997,9 +9009,9 @@
       "gioiTinh": "Nữ"
     },
     {
-      "id": "id_1794660310842_620",
+      "id": "id_1794921792914_620",
       "lop": "CH13KHCT",
-      "maHocVien": "CRS7260023",
+      "maHocVien": "CRS726023",
       "hoTen": "Trần Thanh Vũ",
       "maNganh": "8620110",
       "tenNganh": "Khoa học cây trồng",
@@ -9011,9 +9023,9 @@
       "gioiTinh": "Nam"
     },
     {
-      "id": "id_1794660310842_621",
-      "lop": "TSKHCT02",
-      "maHocVien": "CRS8260001",
+      "id": "id_1794921792914_621",
+      "lop": "TS02KHCT",
+      "maHocVien": "CRS826001",
       "hoTen": "Nguyễn Trung Chính",
       "maNganh": "9620110",
       "tenNganh": "Khoa học cây trồng",
@@ -9027,9 +9039,9 @@
       "gvHuongDan1": "PGS. TS. Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310842_622",
-      "lop": "TSKHCT02",
-      "maHocVien": "CRS8260002",
+      "id": "id_1794921792914_622",
+      "lop": "TS02KHCT",
+      "maHocVien": "CRS826002",
       "hoTen": "Đỗ Ngọc Bảo Trân",
       "maNganh": "9620110",
       "tenNganh": "Khoa học cây trồng",
@@ -9043,9 +9055,9 @@
       "gvHuongDan1": "PGS. TS. Nguyễn Văn Chương"
     },
     {
-      "id": "id_1794660310842_623",
-      "lop": "TSKHCT02",
-      "maHocVien": "CRS8260003",
+      "id": "id_1794921792914_623",
+      "lop": "TS02KHCT",
+      "maHocVien": "CRS826003",
       "hoTen": "Nguyễn Trương Hồng Công",
       "maNganh": "9620110",
       "tenNganh": "Khoa học cây trồng",
@@ -9059,9 +9071,9 @@
       "gvHuongDan1": "TS. Nguyễn Phú Dũng"
     },
     {
-      "id": "id_1794660310842_624",
-      "lop": "TSKHCT02",
-      "maHocVien": "CRS8260004",
+      "id": "id_1794921792914_624",
+      "lop": "TS02KHCT",
+      "maHocVien": "CRS826004",
       "hoTen": "Huỳnh Hữu Lợi",
       "maNganh": "9620110",
       "tenNganh": "Khoa học cây trồng",

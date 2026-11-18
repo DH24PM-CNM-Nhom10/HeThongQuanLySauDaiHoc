@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        // Khong proxy API xac thuc va thong bao do Next.js tu xu ly.
+        // Next.js xử lý xác thực, thông báo, học viên và tải Excel.
         // Cac endpoint nghiep vu khac giu backend NestJS o cong 3001.
-        source: "/api/:path((?!auth(?:/|$)|thong-bao(?:/|$)).*)",
+        source: "/api/:path((?!auth(?:/|$)|thong-bao(?:/|$)|students$|students/advisors$|upload$).*)",
         destination: "http://localhost:3001/api/:path",
       },
     ];

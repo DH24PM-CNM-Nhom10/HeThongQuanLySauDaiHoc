@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore, saveStoreToFile } from "../../../lib/store";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
+import { AGU_SESSION_COOKIE, readAguSession } from "../../../lib/agu-auth";
+import { appendNewStudents, studentCode } from "../../../lib/studentRecords";
+
+function studentMutationDenied(req: NextRequest, entity: string) {
+  return entity === "students" &&
+    readAguSession(req.cookies.get(AGU_SESSION_COOKIE)?.value)?.role !== "admin";
+}
+
+function studentError(error: string, status: number) {
+  return NextResponse.json({ success: false, error }, { status });
+}
 
 // 1. GET: Lấy danh sách trực tiếp từ db.json
 export async function GET(
@@ -22,7 +33,7 @@ export async function GET(
     const limit = parseInt(searchParams.get("limit") || "10", 10);
 
     // Luôn lấy store mới nhất từ db.json
-    const currentStore = getStore();
+    const currentStore = getStore(entityKey === "students");
     const list = currentStore[entityKey] || [];
 
     // Lọc theo từ khóa tìm kiếm
@@ -58,8 +69,20 @@ export async function POST(
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
 
+    if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const body = await req.json();
-    const currentStore = getStore();
+    const currentStore = getStore(entityKey === "students");
+
+    if (entityKey === "students") {
+      if (!body || typeof body !== "object" || Array.isArray(body) || !studentCode(body) || !String(body.hoTen ?? "").trim()) {
+        return studentError("Cần nhập mã và họ tên học viên.", 400);
+      }
+      const result = appendNewStudents(currentStore.students ?? [], [body]);
+      if (result.duplicates) return studentError("Mã học viên đã tồn tại.", 409);
+      currentStore.students = result.records;
+      saveStoreToFile(currentStore);
+      return NextResponse.json({ success: true, data: body });
+    }
 
     if (Array.isArray(body)) {
       currentStore[entityKey] = body;
@@ -89,9 +112,26 @@ export async function PUT(
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
 
+    if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const updatedRecord = await req.json();
-    const currentStore = getStore();
+    const currentStore = getStore(entityKey === "students");
     const list = currentStore[entityKey] || [];
+
+    if (entityKey === "students") {
+      if (!updatedRecord || typeof updatedRecord !== "object" || Array.isArray(updatedRecord) ||
+          !studentCode(updatedRecord) ||
+          (Object.hasOwn(updatedRecord, "hoTen") && !String(updatedRecord.hoTen ?? "").trim())) {
+        return studentError("Cần mã học viên và họ tên hợp lệ khi sửa họ tên.", 400);
+      }
+      const code = studentCode(updatedRecord);
+      const matches = list.filter((item) => studentCode(item) === code);
+      if (!matches.length) return studentError("Không tìm thấy học viên.", 404);
+      if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
+      const record = { ...matches[0], ...updatedRecord };
+      list[list.indexOf(matches[0])] = record;
+      saveStoreToFile(currentStore);
+      return NextResponse.json({ success: true, data: record });
+    }
 
     const schema = ENTITY_SCHEMAS[entityKey];
     const keyField = schema?.fields[0]?.key || "id";
@@ -129,6 +169,7 @@ export async function DELETE(
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
 
+    if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
@@ -139,8 +180,17 @@ export async function DELETE(
       );
     }
 
-    const currentStore = getStore();
+    const currentStore = getStore(entityKey === "students");
     const list = currentStore[entityKey] || [];
+    if (entityKey === "students") {
+      const code = id.trim().toUpperCase();
+      const matches = list.filter((item) => studentCode(item) === code);
+      if (!code || !matches.length) return studentError("Không tìm thấy học viên.", 404);
+      if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
+      currentStore.students = list.filter((item) => item !== matches[0]);
+      saveStoreToFile(currentStore);
+      return NextResponse.json({ success: true });
+    }
     const schema = ENTITY_SCHEMAS[entityKey];
     const keyField = schema?.fields[0]?.key || "id";
 

@@ -1,22 +1,115 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, type FormEvent } from "react";
 import { DB } from "../lib/db";
+import { ENTITY_SCHEMAS } from "../lib/schemas";
+import { parseVNStyleDate } from "../lib/studentUtils";
+import UploadMapping from "./UploadMapping";
+import styles from "./StudentManagementTable.module.css";
 
-interface StudentItem {
-  id: string;
-  name: string;
-  gender: string;
-  email: string;
-  class: string;
-  major: string;
-  thesisTitle: string;
-  advisor1: string;
-  advisor2: string;
-  decisionDate: string;
-  status: string;
-  defenseDate: string;
-  graduationDate: string;
+type StudentItem = Record<string, string>;
+
+const fields = ENTITY_SCHEMAS.students.fields;
+const detailOnlyFields = new Set([
+  "email",
+  "tenLuanVan",
+  "gvHuongDan1",
+  "gvHuongDan2",
+  "ngayQD",
+  "trangThaiLv",
+  "ngayBaoVe",
+  "ngayTotNghiep",
+]);
+const columns = fields.filter(({ key }) => !detailOnlyFields.has(key));
+const statusOptions = [
+  { key: "studying", label: "Đang học" },
+  { key: "graduated", label: "Đã tốt nghiệp" },
+  { key: "overdue", label: "Quá hạn" },
+  { key: "withdrawn", label: "Xóa tên" },
+  { key: "reserved", label: "Bảo lưu" },
+  { key: "paused", label: "Tạm dừng" },
+  { key: "left", label: "Thôi học" },
+];
+
+const thesisFields = fields.filter(({ key }) => detailOnlyFields.has(key) && key !== "email");
+const profileFields = fields.filter((field) => !thesisFields.includes(field));
+const calendarFields = new Set(["ngayNhapHoc", "ngaySinh", "ngayTotNghiep"]);
+
+function calendarValue(raw: string) {
+  const value = raw.trim();
+  const serial = Number(value);
+  if (/^\d{5}(?:\.\d+)?$/.test(value) && serial >= 10000 && serial < 60000) {
+    const date = new Date(Date.UTC(1899, 11, 30) + Math.floor(serial) * 86400000);
+    return date.toISOString().slice(0, 10);
+  }
+  const vn = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/.exec(value);
+  const iso = vn
+    ? `${vn[3]}-${vn[2].padStart(2, "0")}-${vn[1].padStart(2, "0")}`
+    : /^(\d{4}-\d{2}-\d{2})(?:[T ]|$)/.exec(value)?.[1] ?? "";
+  const date = new Date(iso + "T00:00:00Z");
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === iso ? iso : "";
+}
+
+function statusChoices(current: string) {
+  return (
+    <>
+      <option value="">Chưa cập nhật</option>
+      {current && !statusOptions.some(({ label }) => label === current) && (
+        <option value={current}>{current}</option>
+      )}
+      {statusOptions.map(({ key, label }) => <option key={key} value={label}>{label}</option>)}
+    </>
+  );
+}
+
+const aliases: Record<string, string[]> = {
+  lop: ["class"],
+  maHocVien: ["mahv", "id"],
+  hoTen: ["name"],
+  gioiTinh: ["gender"],
+  tenNganh: ["major"],
+  trinhDo: ["trinh_do_dt", "TRINH_DO_DT"],
+  tenLuanVan: ["tenDeAn", "ten_de_an", "TEN_DE_AN"],
+  gvHuongDan1: ["nguoi_huong_dan_1", "NGUOI_HUONG_DAN_1", "gvHuongDan"],
+  gvHuongDan2: ["nguoi_huong_dan_2", "NGUOI_HUONG_DAN_2"],
+  ngayQD: ["ngay_qd", "ngay_qd_luan_van_de_an", "NGAY_QD_LUAN_VAN_DE_AN"],
+  trangThaiLv: ["trang_thai_luan_van_de_an", "TRANG_THAI_LUAN_VAN_DE_AN"],
+  trangThai: ["status"],
+  email: ["Email"],
+};
+
+function mapStudent(record: Record<string, unknown>): StudentItem {
+  const student: StudentItem = {};
+  for (const { key } of fields) {
+    const snakeCase = key.replace(/[A-Z]/g, (letter) => "_" + letter.toLowerCase());
+    const value = record[key] ?? [snakeCase, snakeCase.toUpperCase(), ...(aliases[key] ?? [])]
+      .map((alias) => record[alias])
+      .find((entry) => entry != null && String(entry).trim() !== "" && entry !== "-");
+    const text = String(value ?? "").trim();
+    const calendar = calendarFields.has(key) ? calendarValue(text) : "";
+    const date = key.startsWith("ngay") && !calendarFields.has(key) && value != null ? parseVNStyleDate(value) : null;
+    student[key] = calendar ? calendar.split("-").reverse().join("/") : date ? date.toLocaleDateString("vi-VN") : text;
+  }
+  student.email = student.email.replace(/@agu\.edu\.vn$/i, "@student.agu.edu.vn");
+  if (!student.email && student.maHocVien) student.email = `${student.maHocVien}@student.agu.edu.vn`;
+  return student;
+}
+
+function statusKey(status: string) {
+  const value = status.trim().toLowerCase();
+  if (value.includes("quá hạn")) return "overdue";
+  if (["xóa tên", "xoá tên"].includes(value)) return "withdrawn";
+  if (["thôi học", "bỏ học"].includes(value)) return "left";
+  if (value === "bảo lưu") return "reserved";
+  if (value === "tạm dừng") return "paused";
+  if (["đã tốt nghiệp", "tốt nghiệp", "đã hoàn thành", "hoàn thành"].includes(value)) return "graduated";
+  if (value === "đang học") return "studying";
+  return undefined;
+}
+
+function renderValue(student: StudentItem, key: string) {
+  const value = student[key] || "—";
+  return value;
 }
 
 export default function StudentManagementTable() {
@@ -25,392 +118,425 @@ export default function StudentManagementTable() {
   const [selectedStudent, setSelectedStudent] = useState<StudentItem | null>(null);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 10;
+  const pageSize = 20;
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // 🟢 1. Thêm State lưu trạng thái cần lọc
+
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [majorFilter, setMajorFilter] = useState("");
+  const [classFilter, setClassFilter] = useState("");
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      setLoading(true);
-      let rawData: any[] = [];
+  const [editing, setEditing] = useState<StudentItem | null>(null);
+  const [selectedMajorCode, setSelectedMajorCode] = useState("");
+  const [advisors, setAdvisors] = useState<string[]>([]);
+  const [advisorMessage, setAdvisorMessage] = useState("");
+  const [showUpload, setShowUpload] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [serverReady, setServerReady] = useState(false);
+  const [message, setMessage] = useState("");
 
-      // 1. Kiểm tra và đọc dữ liệu từ LocalStorage trước
-      try {
-        const localRecords = DB.get("students");
-        if (Array.isArray(localRecords) && localRecords.length > 0) {
-          rawData = localRecords;
-        }
-      } catch (e) {
-        console.error("Lỗi đọc LocalStorage:", e);
+  const loadStudents = useCallback(async (refreshCache = false) => {
+    setLoading(true);
+    try {
+      const records: Record<string, unknown>[] = [];
+      let totalPages = 1;
+      for (let page = 1; page <= totalPages; page++) {
+        const res = await fetch(`/api/students?limit=2000&page=${page}`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const result = await res.json();
+        const data = Array.isArray(result) ? result : result?.data ?? result?.records;
+        if (!Array.isArray(data)) throw new Error("Dữ liệu học viên không hợp lệ");
+        records.push(...data);
+        totalPages = result?.pagination?.totalPages ?? 1;
       }
-
-      // 2. Nếu LocalStorage chưa có, gọi API từ server
-      if (rawData.length === 0) {
+      setStudents(records.map(mapStudent));
+      setServerReady(true);
+      if (refreshCache) {
         try {
-          const res = await fetch("/api/students?limit=2000");
-          if (res.ok) {
-            const text = await res.text();
-            try {
-              const result = text ? JSON.parse(text) : null;
-              rawData = Array.isArray(result)
-                ? result
-                : result?.data || result?.records || [];
-            } catch {
-              rawData = [];
-            }
-          }
-        } catch (err) {
-          console.error("Lỗi API:", err);
+          DB.set("students", records);
+        } catch {
+          DB.remove("students");
         }
       }
-
-      // 3. Map và chuyển đổi dữ liệu hiển thị
-      const mapped = rawData.map((hv: any) => ({
-        id: hv.maHocVien || hv.ma_hoc_vien || hv.mahv || hv.id || "-",
-        name: hv.hoTen || hv.ho_ten || hv.name || "Chưa có tên",
-        gender: hv.gioiTinh || hv.gioi_tinh || hv.gender || "-",
-        email: (() => {
-          const maHv = hv.maHocVien || hv.ma_hoc_vien || hv.mahv || hv.id;
-          let rawEmail = hv.email || hv.Email;
-
-          if (rawEmail && rawEmail.includes("@agu.edu.vn") && !rawEmail.includes("@student.agu.edu.vn")) {
-            rawEmail = rawEmail.replace("@agu.edu.vn", "@student.agu.edu.vn");
-          }
-
-          return rawEmail || (maHv ? `${maHv}@student.agu.edu.vn` : "-");
-        })(),
-        class: hv.lop || hv.LOP || hv.class || "-",
-        major: hv.tenNganh || hv.ten_nganh || hv.major || "-",
-        thesisTitle: hv.tenLuanVan || hv.ten_luan_van || hv.tenDeAn || "-",
-        advisor1: hv.gvHuongDan1 || hv.nguoi_huong_dan_1 || hv.gvHuongDan || "-",
-        advisor2: hv.gvHuongDan2 || hv.nguoi_huong_dan_2 || "-",
-        decisionDate: hv.ngayQD || hv.ngay_qd || "-",
-        status: hv.trangThai || hv.trang_thai || "Đang học",
-        defenseDate: hv.ngayBaoVe || hv.ngay_bao_ve || "-",
-        graduationDate: hv.ngayTotNghiep || hv.ngay_tot_nghiep || "-",
-      }));
-
-      setStudents(mapped);
+    } catch (error) {
+      console.error(error);
+      setServerReady(false);
+      setMessage("Không tải được danh sách từ máy chủ.");
+      if (!refreshCache) setStudents(DB.get("students").map(mapStudent));
+    } finally {
       setLoading(false);
-    };
-
-    fetchStudents();
+    }
   }, []);
 
-  // 🟢 2. Kết hợp lọc Tìm kiếm từ khóa + Bộ lọc Trạng thái
-  const filteredData = students.filter((item) => {
-    // Lọc từ khóa
-    const term = searchTerm.toLowerCase().trim();
-    const matchesSearch =
-      !term ||
-      item.name.toLowerCase().includes(term) ||
-      item.id.toLowerCase().includes(term) ||
-      item.class.toLowerCase().includes(term);
+  useEffect(() => { void loadStudents(); }, [loadStudents]);
 
-    // Lọc trạng thái
-    const s = (item.status || "").toLowerCase();
-    let matchesStatus = true;
-
-    if (statusFilter === "DANG_HOC") {
-      matchesStatus = s.includes("đang học");
-    } else if (statusFilter === "TOT_NGHIEP") {
-      matchesStatus = s.includes("tốt nghiệp") || s.includes("hoàn thành");
-    } else if (statusFilter === "QUA_HAN") {
-      matchesStatus = s.includes("quá hạn");
+  const editOpen = editing !== null;
+  useEffect(() => {
+    if (!editOpen) return;
+    const controller = new AbortController();
+    async function loadAdvisors() {
+      setAdvisors([]);
+      setAdvisorMessage("Đang tải danh sách giảng viên…");
+      try {
+        const response = await fetch("/api/students/advisors", { signal: controller.signal, cache: "no-store" });
+        const result = await response.json();
+        if (!response.ok || !Array.isArray(result.data)) throw new Error(result.error);
+        if (controller.signal.aborted) return;
+        setAdvisors(result.data);
+        setAdvisorMessage(result.data.length ? "" : "Chưa có giảng viên trong danh mục.");
+      } catch {
+        if (!controller.signal.aborted) setAdvisorMessage("Không tải được danh sách giảng viên. Mở lại biểu mẫu để thử lại.");
+      }
     }
+    void loadAdvisors();
+    return () => controller.abort();
+  }, [editOpen]);
 
-    return matchesSearch && matchesStatus;
-  });
+  const classOptions = useMemo(() => studentOptions(students, "lop"), [students]);
+  const majorCatalog = useMemo(() => {
+    const catalog = new Map<string, string>();
+    for (const { maNganh, tenNganh } of students) {
+      if (maNganh && tenNganh && maNganh !== "-" && tenNganh !== "-" && !catalog.has(maNganh)) {
+        catalog.set(maNganh, tenNganh);
+      }
+    }
+    return new Map([...catalog].sort(([a], [b]) => a.localeCompare(b, "vi", { numeric: true })));
+  }, [students]);
 
+  function openEditor(student: StudentItem) {
+    setMessage("");
+    setSelectedMajorCode(student.maNganh ?? "");
+    setEditing(student);
+  }
+
+  async function mutateStudent(method: "POST" | "PUT" | "DELETE", student: StudentItem) {
+    if (saving) return;
+    setSaving(true);
+    setMessage("");
+    try {
+      const url = method === "DELETE"
+        ? `/api/students?id=${encodeURIComponent(student.maHocVien)}`
+        : "/api/students";
+      const res = await fetch(url, {
+        method,
+        ...(method === "DELETE" ? {} : {
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(student),
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok || !result.success) throw new Error(result.error || "Không thể lưu thay đổi.");
+      setEditing(null);
+      setMessage(method === "DELETE" ? "Đã xóa học viên." : "Đã lưu hồ sơ học viên.");
+      await loadStudents(true);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Không thể lưu thay đổi.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function saveStudent(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!editing) return;
+    const values = Object.fromEntries(
+      Array.from(new FormData(event.currentTarget), ([key, value]) => [key, String(value).trim()]),
+    );
+    const majorName = majorCatalog.get(values.maNganh);
+    if (!classOptions.includes(values.lop) || !majorName) {
+      setMessage("Hãy chọn lớp và mã ngành có trong danh mục.");
+      return;
+    }
+    values.tenNganh = majorName;
+    if (!editing.maHocVien) {
+      void mutateStudent("POST", values);
+      return;
+    }
+    const changes = Object.fromEntries(
+      Object.entries(values).filter(([key, value]) =>
+        value !== (calendarFields.has(key) ? calendarValue(editing[key] ?? "") : editing[key] ?? ""),
+      ),
+    );
+    if (Object.keys(changes).length === 0) {
+      setEditing(null);
+      return;
+    }
+    void mutateStudent("PUT", { ...changes, maHocVien: editing.maHocVien });
+  }
+
+  function renderEditField({ key, label }: (typeof fields)[number], student: StudentItem) {
+    if (key === "loaiChuongTrinh" || key === "trinhDo") {
+      const choices = studentOptions(students, key);
+      return (
+        <label key={key}>{label}
+          <select name={key} defaultValue={student[key] ?? ""}>
+            <option value="">Chọn {label.toLocaleLowerCase("vi")}</option>
+            {choices.map((choice) => <option key={choice} value={choice}>{choice}</option>)}
+          </select>
+        </label>
+      );
+    }
+    if (key === "lop") {
+      return (
+        <label key={key}>{label}
+          <select name={key} required defaultValue={student[key] ?? ""}>
+            <option value="">Chọn lớp</option>
+            {classOptions.map((className) => <option key={className} value={className}>{className}</option>)}
+          </select>
+        </label>
+      );
+    }
+    if (key === "maNganh") {
+      return (
+        <label key={key}>{label}
+          <select name={key} required value={selectedMajorCode} onChange={(event) => setSelectedMajorCode(event.target.value)}>
+            <option value="">Chọn mã ngành</option>
+            {[...majorCatalog.keys()].map((code) => <option key={code} value={code}>{code}</option>)}
+          </select>
+        </label>
+      );
+    }
+    if (key === "tenNganh") {
+      return (
+        <label key={key}>{label}
+          <input name={key} value={majorCatalog.get(selectedMajorCode) ?? ""} readOnly />
+        </label>
+      );
+    }
+    if (key === "gioiTinh" || key === "gvHuongDan1" || key === "gvHuongDan2") {
+      const isGender = key === "gioiTinh";
+      const choices = isGender ? ["Nam", "Nữ"] : advisors;
+      const current = student[key] ?? "";
+      return (
+        <label key={key}>{label}
+          <select name={key} defaultValue={current} required={isGender}>
+            <option value="">{isGender ? "Chọn giới tính" : "Chọn giảng viên"}</option>
+            {!isGender && current && (
+              <option value={current}>{current}{choices.includes(current) ? "" : " (đã lưu)"}</option>
+            )}
+            {choices.filter((choice) => isGender || choice !== current).map((choice) => (
+              <option key={choice} value={choice}>{choice}</option>
+            ))}
+          </select>
+        </label>
+      );
+    }
+    return (
+      <label key={key}>
+        {label}
+        {key === "trangThai" ? (
+          <select name={key} defaultValue={student[key] ?? ""}>
+            {statusChoices(student[key] ?? "")}
+          </select>
+        ) : (
+          <input
+            name={key}
+            type={calendarFields.has(key) ? "date" : "text"}
+            defaultValue={calendarFields.has(key) ? calendarValue(student[key] ?? "") : student[key] ?? ""}
+            required={key === "maHocVien" || key === "hoTen"}
+            readOnly={key === "maHocVien" && Boolean(student.maHocVien)}
+          />
+        )}
+        {calendarFields.has(key) && /^\d{4}$/.test(student[key] ?? "") && (
+          <small className={styles.fieldNote}>Dữ liệu hiện tại chỉ có năm {student[key]}.</small>
+        )}
+      </label>
+    );
+  }
+
+  const majors = useMemo(() => studentOptions(students, "tenNganh"), [students]);
+  const studentsInMajor = useMemo(
+    () => majorFilter ? students.filter((student) => student.tenNganh.trim() === majorFilter) : students,
+    [majorFilter, students],
+  );
+  const classes = useMemo(() => studentOptions(studentsInMajor, "lop"), [studentsInMajor]);
+  const term = searchTerm.trim().toLocaleLowerCase("vi");
+  const filteredData = studentsInMajor.filter((student) =>
+    (!classFilter || student.lop.trim() === classFilter) &&
+    (statusFilter === "ALL" || statusKey(student.trangThai) === statusFilter) &&
+    (!term || [student.hoTen, student.maHocVien, student.lop].some((value) =>
+      value.toLocaleLowerCase("vi").includes(term),
+    )),
+  );
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedData = filteredData.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
-
-  const emptyRowsCount = pageSize - paginatedData.length;
-
-  if (loading) return <div style={{ padding: "20px", color: "#64748b" }}>Đang tải danh sách học viên...</div>;
+  const visiblePage = Math.min(currentPage, totalPages);
+  const start = (visiblePage - 1) * pageSize;
+  const pageStudents = filteredData.slice(start, start + pageSize);
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: "16px", backgroundColor: "#f8fafc" }}>
-      {/* Header & Thanh Tìm Kiếm + Bộ Lọc */}
-      <div style={{ backgroundColor: "#fff", borderRadius: "12px", padding: "20px", border: "1px solid #e2e8f0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-          <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>
-            👥 Quản lý Danh sách Học viên ({filteredData.length})
-          </h3>
-          
-          {/* 🟢 3. Cụm thanh tìm kiếm và Menu Dropdown Lọc */}
-          <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: "8px 12px",
-                borderRadius: "8px",
-                border: "1px solid #cbd5e1",
-                fontSize: "14px",
-                outline: "none",
-                cursor: "pointer",
-                backgroundColor: "#fff",
-                color: "#334155",
-                fontWeight: 600,
-              }}
-            >
-              <option value="ALL">📌 Tất cả trạng thái</option>
-              <option value="DANG_HOC">🟡 Đang học</option>
-              <option value="TOT_NGHIEP">🟢 Đã tốt nghiệp</option>
-              <option value="QUA_HAN">🔴 Quá hạn</option>
-            </select>
-
-            <input
-              type="text"
-              placeholder="🔍 Tìm theo Tên, Mã HV, Lớp..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: "8px 14px",
-                borderRadius: "8px",
-                border: "1px solid #cbd5e1",
-                fontSize: "14px",
-                width: "240px",
-                outline: "none",
-              }}
-            />
-          </div>
+    <section className={styles.management}>
+      <header className={styles.toolbar}>
+        <h2>Quản lý học viên</h2>
+        <div className={styles.actions}>
+          <button type="button" className={styles.addButton} disabled={loading || saving || !serverReady} onClick={() => {
+            const matchingCodes = [...majorCatalog].filter(([, name]) => name === majorFilter);
+            openEditor({ lop: classFilter, maNganh: matchingCodes.length === 1 ? matchingCodes[0][0] : "", trangThai: "Đang học" });
+          }}>Thêm học viên</button>
+          <button type="button" className={styles.uploadButton} disabled={saving} aria-expanded={showUpload} onClick={() => setShowUpload(!showUpload)}>
+            {showUpload ? "Ẩn nhập Excel" : "Nhập Excel"}
+          </button>
         </div>
+      </header>
 
-        {/* Bảng Dữ Liệu Tinh Gọn */}
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", tableLayout: "fixed", borderCollapse: "collapse", fontSize: "14px", textAlign: "left", minWidth: "1000px" }}>
-            <colgroup>
-              <col style={{ width: "20%" }} />
-              <col style={{ width: "18%" }} />
-              <col style={{ width: "30%" }} />
-              <col style={{ width: "18%" }} />
-              <col style={{ width: "14%" }} />
-            </colgroup>
-            <thead>
-              <tr style={{ backgroundColor: "#f8fafc", borderBottom: "2px solid #cbd5e1", color: "#475569", height: "44px" }}>
-                <th style={{ padding: "8px 12px" }}>Học viên</th>
-                <th style={{ padding: "8px 12px" }}>Lớp & Ngành</th>
-                <th style={{ padding: "8px 12px" }}>Đề tài & GVHD</th>
-                <th style={{ padding: "8px 12px", textAlign: "center" }}>Trạng thái & Tiến độ</th>
-                <th style={{ padding: "8px 12px", textAlign: "center" }}>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length === 0 ? (
-                <tr style={{ height: "400px" }}>
-                  <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8" }}>Không tìm thấy học viên phù hợp.</td>
-                </tr>
-              ) : (
-                <>
-                  {paginatedData.map((item) => (
-                    <tr key={item.id} style={{ borderBottom: "1px solid #f1f5f9", height: "64px" }}>
-                      {/* Cột 1: Họ tên + Mã HV + Giới tính */}
-                      <td style={{ padding: "8px 12px", verticalAlign: "middle" }}>
-                        <div style={{ fontWeight: 700, color: "#1e293b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={item.name}>
-                          {item.name}
-                        </div>
-                        <div style={{ fontSize: "12px", color: "#64748b" }}>
-                          {item.id} • <span style={{ color: "#475569" }}>{item.gender}</span>
-                        </div>
-                      </td>
+      {showUpload && (
+        <UploadMapping studentsOnly onSuccess={() => {
+          setShowUpload(false);
+          setCurrentPage(1);
+          void loadStudents();
+        }} />
+      )}
 
-                      {/* Cột 2: Lớp + Ngành */}
-                      <td style={{ padding: "8px 12px", verticalAlign: "middle" }}>
-                        <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={item.major}>
-                          {item.major}
-                        </div>
-                        <div style={{ fontSize: "12px", color: "#64748b" }}>Lớp: {item.class}</div>
-                      </td>
+      {message && !editing && <p className={styles.feedback} role="status">{message}</p>}
 
-                      {/* Cột 3: Đề tài & GVHD */}
-                      <td style={{ padding: "8px 12px", verticalAlign: "middle" }}>
-                        <div style={{ color: item.thesisTitle !== "-" ? "#0f172a" : "#94a3b8", fontWeight: item.thesisTitle !== "-" ? 500 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={item.thesisTitle}>
-                          {item.thesisTitle !== "-" ? item.thesisTitle : "Chưa đăng ký đề tài"}
-                        </div>
-                        {(item.advisor1 !== "-" || item.advisor2 !== "-") && (
-                          <div style={{ fontSize: "12px", color: "#2563eb", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            GVHD: {[item.advisor1, item.advisor2].filter((g) => g !== "-").join(", ")}
-                          </div>
-                        )}
-                      </td>
-
-                      {/* Cột 4: Trạng thái & Tiến độ */}
-                      <td style={{ padding: "8px 12px", textAlign: "center", verticalAlign: "middle" }}>
-                        <div style={{ marginBottom: "2px" }}>
-                          <span style={{ display: "inline-block", padding: "2px 10px", borderRadius: "10px", fontSize: "12px", fontWeight: 600, ...getStatusBadgeStyle(item.status) }}>
-                            {item.status}
-                          </span>
-                        </div>
-                        {item.graduationDate !== "-" ? (
-                          <div style={{ fontSize: "11px", color: "#059669" }}>TN: {item.graduationDate}</div>
-                        ) : item.defenseDate !== "-" ? (
-                          <div style={{ fontSize: "11px", color: "#0284c7" }}>BV: {item.defenseDate}</div>
-                        ) : null}
-                      </td>
-
-                      {/* Cột 5: Xem Chi Tiết */}
-                      <td style={{ padding: "8px 12px", textAlign: "center", verticalAlign: "middle" }}>
-                        <button
-                          onClick={() => setSelectedStudent(item)}
-                          style={{
-                            padding: "6px 12px",
-                            backgroundColor: "#f1f5f9",
-                            color: "#0f172a",
-                            border: "1px solid #cbd5e1",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            cursor: "pointer",
-                          }}
-                        >
-                          👁️ Chi tiết
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {/* Bù hàng trống */}
-                  {emptyRowsCount > 0 &&
-                    Array.from({ length: emptyRowsCount }).map((_, idx) => (
-                      <tr key={`empty-${idx}`} style={{ height: "64px", borderBottom: "1px solid transparent" }}>
-                        <td colSpan={5}>&nbsp;</td>
-                      </tr>
-                    ))}
-                </>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Thanh Phân Trang */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "16px",
-            paddingTop: "16px",
-            borderTop: "1px solid #e2e8f0",
-            flexWrap: "wrap",
-            gap: "12px",
-            fontSize: "14px",
-            color: "#475569",
+      <div className={styles.scopeFilters}>
+        <input
+          type="text"
+          aria-label="Tìm học viên"
+          placeholder="Tìm theo tên, mã học viên hoặc lớp"
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            setCurrentPage(1);
+          }}
+        />
+        <select
+          aria-label="Lọc theo trạng thái"
+          value={statusFilter}
+          onChange={(event) => {
+            setStatusFilter(event.target.value);
+            setCurrentPage(1);
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontWeight: 500, color: "#64748b" }}>
-              Trang <strong style={{ color: "#0f172a" }}>{safeCurrentPage}</strong> / {totalPages}
-            </span>
-
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button
-                disabled={safeCurrentPage === 1}
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: "8px",
-                  border: "1px solid #cbd5e1",
-                  backgroundColor: safeCurrentPage === 1 ? "#f1f5f9" : "#fff",
-                  color: safeCurrentPage === 1 ? "#94a3b8" : "#1e293b",
-                  fontWeight: 600,
-                  fontSize: "13px",
-                  cursor: safeCurrentPage === 1 ? "not-allowed" : "pointer",
-                }}
-              >
-                ← Trước
-              </button>
-
-              <button
-                disabled={safeCurrentPage === totalPages}
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: "8px",
-                  border: "1px solid #cbd5e1",
-                  backgroundColor: safeCurrentPage === totalPages ? "#f1f5f9" : "#fff",
-                  color: safeCurrentPage === totalPages ? "#94a3b8" : "#1e293b",
-                  fontWeight: 600,
-                  fontSize: "13px",
-                  cursor: safeCurrentPage === totalPages ? "not-allowed" : "pointer",
-                }}
-              >
-                Sau →
-              </button>
-            </div>
-          </div>
-        </div>
+          <option value="ALL">Tất cả trạng thái</option>
+          {statusOptions.map(({ key, label }) => <option key={key} value={key}>{label}</option>)}
+        </select>
+        <label>
+          Ngành
+          <select value={majorFilter} onChange={(event) => {
+            setMajorFilter(event.target.value);
+            setClassFilter("");
+            setCurrentPage(1);
+          }}>
+            <option value="">Tất cả ngành</option>
+            {majors.map((major) => <option key={major}>{major}</option>)}
+          </select>
+        </label>
+        <label>
+          Lớp
+          <select value={classFilter} onChange={(event) => {
+            setClassFilter(event.target.value);
+            setCurrentPage(1);
+          }}>
+            <option value="">Tất cả lớp</option>
+            {classes.map((className) => <option key={className}>{className}</option>)}
+          </select>
+        </label>
+        {!loading && <p role="status">{filteredData.length} / {students.length} học viên</p>}
       </div>
 
-      {/* Modal Xem Chi Tiết */}
-      {selectedStudent && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
-          <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "12px", width: "550px", maxWidth: "90%", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #e2e8f0", paddingBottom: "12px" }}>
-              <h3 style={{ margin: 0, color: "#0f172a" }}>🎓 Thông tin học viên chi tiết</h3>
-              <button onClick={() => setSelectedStudent(null)} style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer" }}>✕</button>
-            </div>
+      <div className={styles.sheet} tabIndex={0} role="region" aria-label="Bảng danh sách học viên">
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th scope="col">STT</th>
+              {columns.map(({ key, label }) => <th scope="col" key={key}>{label}</th>)}
+              <th scope="col" className={styles.actionHeading}>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pageStudents.map((student, index) => (
+              <tr key={start + index}>
+                <td>{start + index + 1}</td>
+                {columns.map(({ key }) => (
+                  <td key={key}>
+                    {renderValue(student, key)}
+                  </td>
+                ))}
+                <td className={styles.actionCell}>
+                  <div className={styles.rowActions}>
+                    <button type="button" className={styles.detailButton} onClick={() => setSelectedStudent(student)}>Chi tiết</button>
+                    <button type="button" className={styles.editButton} disabled={!student.maHocVien || saving || !serverReady} onClick={() => {
+                      openEditor(student);
+                    }}>Sửa</button>
+                    <button type="button" className={styles.deleteButton} disabled={!student.maHocVien || saving || !serverReady} onClick={() => {
+                      if (window.confirm(`Xóa học viên ${student.hoTen} (${student.maHocVien})?`)) {
+                        void mutateStudent("DELETE", student);
+                      }
+                    }}>Xóa</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {pageStudents.length === 0 && (
+              <tr><td colSpan={columns.length + 2} role="status">
+                {loading ? "Đang tải danh sách học viên..." : "Không tìm thấy học viên phù hợp."}
+              </td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "14px", color: "#334155" }}>
-              <div><strong>Mã HV:</strong> {selectedStudent.id}</div>
-              <div><strong>Họ và tên:</strong> {selectedStudent.name}</div>
-              <div><strong>Giới tính:</strong> {selectedStudent.gender}</div>
-              <div><strong>Lớp:</strong> {selectedStudent.class}</div>
-              <div style={{ gridColumn: "span 2" }}><strong>Ngành:</strong> {selectedStudent.major}</div>
-              <div style={{ gridColumn: "span 2" }}><strong>Email:</strong> {selectedStudent.email}</div>
-              <div style={{ gridColumn: "span 2", backgroundColor: "#f8fafc", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                <strong style={{ color: "#2563eb" }}>Tên luận văn / Đề tài:</strong>
-                <div style={{ marginTop: "4px" }}>{selectedStudent.thesisTitle}</div>
+      <footer className={styles.pagination}>
+        <span>Trang {visiblePage} / {totalPages}</span>
+        <button type="button" disabled={visiblePage <= 1} onClick={() => setCurrentPage(visiblePage - 1)}>Trang trước</button>
+        <button type="button" disabled={visiblePage >= totalPages} onClick={() => setCurrentPage(visiblePage + 1)}>Trang sau</button>
+      </footer>
+
+      {editing && (
+        <div className={styles.backdrop}>
+          <form className={styles.details} role="dialog" aria-modal="true" aria-labelledby="student-edit-title" onSubmit={saveStudent}>
+            <header className={styles.toolbar}>
+              <h2 id="student-edit-title">{editing.maHocVien ? "Sửa học viên" : "Thêm học viên"}</h2>
+              <button type="button" disabled={saving} onClick={() => { setEditing(null); setMessage(""); }}>Đóng</button>
+            </header>
+            <div className={styles.editFields}>
+              {profileFields.map((field) => renderEditField(field, editing))}
+            </div>
+            <details className={styles.editSection}>
+              <summary>Luận văn và tốt nghiệp</summary>
+              {advisorMessage && <p className={styles.feedback} role="status">{advisorMessage}</p>}
+              <div className={styles.editFields}>
+                {thesisFields.map((field) => renderEditField(field, editing))}
               </div>
-              <div><strong>GVHD 1:</strong> {selectedStudent.advisor1}</div>
-              <div><strong>GVHD 2:</strong> {selectedStudent.advisor2}</div>
-              <div><strong>Ngày QĐ giao đề tài:</strong> {selectedStudent.decisionDate}</div>
-              <div><strong>Trạng thái:</strong> {selectedStudent.status}</div>
-              <div><strong>Ngày bảo vệ:</strong> {selectedStudent.defenseDate}</div>
-              <div><strong>Ngày tốt nghiệp:</strong> {selectedStudent.graduationDate}</div>
-            </div>
-
-            <div style={{ textAlign: "right", marginTop: "20px" }}>
-              <button onClick={() => setSelectedStudent(null)} style={{ padding: "8px 16px", backgroundColor: "#2563eb", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: 600 }}>
-                Đóng
-              </button>
-            </div>
-          </div>
+            </details>
+            {message && <p role="alert">{message}</p>}
+            <footer className={styles.pagination}>
+              <button type="submit" className={styles.addButton} disabled={saving}>{saving ? "Đang lưu..." : "Lưu học viên"}</button>
+            </footer>
+          </form>
         </div>
       )}
-    </div>
+
+      {selectedStudent && (
+        <div className={styles.backdrop}>
+          <section className={styles.details} role="dialog" aria-modal="true" aria-labelledby="student-details-title">
+            <header className={styles.toolbar}>
+              <h2 id="student-details-title">Thông tin học viên</h2>
+              <div className={styles.actions}>
+                <button type="button" className={styles.editButton}
+                  disabled={!selectedStudent.maHocVien || saving || !serverReady}
+                  onClick={() => {
+                    openEditor(selectedStudent);
+                    setSelectedStudent(null);
+                  }}>Sửa hồ sơ</button>
+                <button type="button" onClick={() => setSelectedStudent(null)}>Đóng</button>
+              </div>
+            </header>
+            <dl>
+              {fields.map(({ key, label }) => (
+                <div key={key}>
+                  <dt>{label}</dt>
+                  <dd>{renderValue(selectedStudent, key)}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      )}
+    </section>
   );
 }
 
-// 🟢 4. Cập nhật màu sắc nhãn: "Quá hạn" có nền đỏ chữ đỏ
-function getStatusBadgeStyle(status: string) {
-  const s = (status || "").toLowerCase();
-  
-  if (s.includes("quá hạn")) {
-    return { backgroundColor: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5" }; // 🔴 ĐỎ
-  }
-  if (s.includes("tốt nghiệp") || s.includes("hoàn thành")) {
-    return { backgroundColor: "#d1fae5", color: "#065f46", border: "1px solid #a7f3d0" }; // 🟢 XANH LÁ
-  }
-  if (s.includes("bảo vệ")) {
-    return { backgroundColor: "#e0f2fe", color: "#0369a1", border: "1px solid #bae6fd" }; // 🔵 XANH DƯƠNG
-  }
-  if (s.includes("đang học")) {
-    return { backgroundColor: "#fef3c7", color: "#92400e", border: "1px solid #fde68a" }; // 🟡 VÀNG
-  }
-  if (s.includes("thôi học") || s.includes("bỏ học")) {
-    return { backgroundColor: "#fee2e2", color: "#991b1b", border: "1px solid #fca5a5" }; // 🔴 ĐỎ
-  }
-  
-  return { backgroundColor: "#f1f5f9", color: "#475569", border: "1px solid #cbd5e1" };
+function studentOptions(students: StudentItem[], field: "tenNganh" | "lop" | "loaiChuongTrinh" | "trinhDo") {
+  const options = new Set(students.map((student) => student[field].trim()).filter(Boolean));
+  return [...options].sort((a, b) => a.localeCompare(b, "vi", { numeric: true }));
 }

@@ -173,9 +173,10 @@ const COLUMN_ALIASES: Record<string, string[]> = {
 
 interface UploadMappingProps {
   onSuccess?: (entityKey?: string) => void;
+  studentsOnly?: boolean;
 }
 
-export default function UploadMapping({ onSuccess }: UploadMappingProps) {
+export default function UploadMapping({ onSuccess, studentsOnly = false }: UploadMappingProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
@@ -185,6 +186,8 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
   const [previewRows, setPreviewRows] = useState<any[][]>([]);
   const [selectedEntity, setSelectedEntity] = useState("students");
   const [mapping, setMapping] = useState<Record<string, number>>({});
+  const [headerIndex, setHeaderIndex] = useState(0);
+  const [saving, setSaving] = useState(false);
 
   const findHeaderRowIndex = (rows: any[][]): number => {
     if (!rows || rows.length === 0) return 0;
@@ -282,7 +285,8 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
       }
       setWorkbook(wb);
       setSheetNames(wb.SheetNames);
-      loadSheet(wb, wb.SheetNames[0]);
+      const studentSheet = wb.SheetNames.find((name) => /^(hocvien|học viên|students)$/i.test(name.trim()));
+      loadSheet(wb, studentsOnly && studentSheet ? studentSheet : wb.SheetNames[0]);
     };
 
     if (isCsv) {
@@ -299,9 +303,16 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
       header: 1,
       defval: "",
     }) as any[][];
-    if (json.length === 0) return;
+    if (json.length === 0) {
+      setHeaders([]);
+      setMapping({});
+      setAllSheetRows([]);
+      setPreviewRows([]);
+      return;
+    }
 
     const headerIdx = findHeaderRowIndex(json);
+    setHeaderIndex(headerIdx);
     const headerRow = json[headerIdx] || [];
 
     const formattedHeaders = headerRow.map((h, i) => ({
@@ -336,8 +347,9 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
       detectedEntity = "students";
     }
 
-    setSelectedEntity(detectedEntity);
-    const initialMap = autoMapFields(formattedHeaders, detectedEntity);
+    const entity = studentsOnly ? "students" : detectedEntity;
+    setSelectedEntity(entity);
+    const initialMap = autoMapFields(formattedHeaders, entity);
     setMapping(initialMap);
   };
 
@@ -374,6 +386,7 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
   };
 
   const handleSave = async () => {
+    if (saving) return;
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
     const file = selectedFile || fileInput?.files?.[0];
 
@@ -389,7 +402,9 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
     formData.append("entityKey", selectedEntity);
     formData.append("sheetName", currentSheet);
     formData.append("mapping", JSON.stringify(mapping));
+    formData.append("headerIndex", String(headerIndex));
 
+    setSaving(true);
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
@@ -402,6 +417,22 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
       } catch {
         console.warn("API /api/upload không trả JSON:", text?.slice(0, 120));
         result = null;
+      }
+
+      if (selectedEntity === "students") {
+        if (!res.ok || !result?.success || !Array.isArray(result.data)) {
+          alert(result?.error || "Không thể nhập danh sách học viên.");
+          return;
+        }
+        try {
+          DB.set("students", result.data);
+        } catch (error) {
+          console.error("Không thể cập nhật bộ nhớ trình duyệt:", error);
+          DB.remove("students");
+        }
+        alert(`Đã thêm ${result.added} học viên. Bỏ qua ${result.duplicates} mã trùng và ${result.missingCode} dòng thiếu mã.`);
+        onSuccess?.("students");
+        return;
       }
 
       let finalDataToSave: any[] = [];
@@ -441,6 +472,11 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
         onSuccess(selectedEntity);
       }
     } catch (err) {
+      if (selectedEntity === "students") {
+        console.error(err);
+        alert("Không thể xác nhận kết quả nhập học viên. Hãy kiểm tra danh sách trước khi thử lại.");
+        return;
+      }
       console.error(
         "Không thể kết nối Server API, tự động lưu dữ liệu vào LocalStorage:",
         err
@@ -456,6 +492,8 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
       } else {
         alert("❌ Lỗi khi đọc dữ liệu file Excel. Vui lòng kiểm tra lại file!");
       }
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -519,7 +557,7 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
               )
             </div>
             <div className="entity-tabs">
-              {Object.keys(ENTITY_SCHEMAS).map((key) => (
+              {(studentsOnly ? ["students"] : Object.keys(ENTITY_SCHEMAS)).map((key) => (
                 <button
                   key={key}
                   className={`entity-tab ${
@@ -532,8 +570,8 @@ export default function UploadMapping({ onSuccess }: UploadMappingProps) {
               ))}
             </div>
             <div style={{ marginTop: 16 }}>
-              <button className="btn btn-primary" onClick={handleSave}>
-                💾 Lưu dữ liệu [{ENTITY_SCHEMAS[selectedEntity]?.label}]
+              <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+                {saving ? "Đang lưu..." : `Lưu dữ liệu [${ENTITY_SCHEMAS[selectedEntity]?.label}]`}
               </button>
             </div>
           </div>

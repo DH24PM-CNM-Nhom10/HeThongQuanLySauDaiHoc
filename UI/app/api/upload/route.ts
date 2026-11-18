@@ -1,21 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
-import fs from "fs";
-import path from "path";
+import { AGU_SESSION_COOKIE, readAguSession } from "../../../lib/agu-auth";
+import { ENTITY_SCHEMAS } from "../../../lib/schemas";
+import { getStore, saveStoreToFile } from "../../../lib/store";
+import { appendNewStudents } from "../../../lib/studentRecords";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const entityKey = (formData.get("entityKey") as string) || "students";
     const sheetName = formData.get("sheetName") as string;
     const mappingStr = formData.get("mapping") as string;
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) {
+      return NextResponse.json({ success: false, error: "Loại dữ liệu không hợp lệ." }, { status: 400 });
+    }
+    if (entityKey === "students" && readAguSession(req.cookies.get(AGU_SESSION_COOKIE)?.value)?.role !== "admin") {
+      return NextResponse.json({ success: false, error: "Bạn không có quyền nhập học viên." }, { status: 403 });
+    }
 
     if (!file) {
       return NextResponse.json({ success: false, error: "Chưa chọn file Excel" });
     }
 
     const mapping: Record<string, number> = mappingStr ? JSON.parse(mappingStr) : {};
+    if (entityKey === "students" && (!Number.isInteger(mapping.maHocVien) || mapping.maHocVien < 0)) {
+      return NextResponse.json({ success: false, error: "Hãy ánh xạ cột Mã học viên trước khi lưu." }, { status: 400 });
+    }
     const buffer = Buffer.from(await file.arrayBuffer());
     const workbook = XLSX.read(buffer, { type: "buffer" });
 
@@ -45,6 +56,11 @@ export async function POST(req: Request) {
         break;
       }
     }
+    const selectedHeader = formData.get("headerIndex");
+    if (entityKey === "students" && typeof selectedHeader === "string" && /^\d+$/.test(selectedHeader) &&
+        Number(selectedHeader) < rows.length) {
+      headerIdx = Number(selectedHeader);
+    }
 
     // 2. Trích xuất các dòng dữ liệu phía sau tiêu đề
     const dataRows = rows.slice(headerIdx + 1);
@@ -69,22 +85,18 @@ export async function POST(req: Request) {
     });
 
     // 3. Ghi dữ liệu vào db.json ở thư mục gốc dự án
-    const dbPath = path.join(process.cwd(), "db.json");
-    let currentDb: Record<string, any> = { students: [], teachers: [] };
-
-    if (fs.existsSync(dbPath)) {
-      try {
-        const fileContent = fs.readFileSync(dbPath, "utf-8");
-        if (fileContent.trim()) {
-          currentDb = JSON.parse(fileContent);
-        }
-      } catch (e) {
-        console.error("Lỗi đọc file db.json:", e);
+    const currentDb = getStore(true);
+    if (entityKey === "students") {
+      const { records, added, duplicates, missingCode } = appendNewStudents(currentDb.students ?? [], parsedRecords);
+      if (added > 0) {
+        currentDb.students = records;
+        saveStoreToFile(currentDb);
       }
+      return NextResponse.json({ success: true, data: records, count: records.length, added, duplicates, missingCode, entityKey });
     }
 
     currentDb[entityKey] = parsedRecords;
-    fs.writeFileSync(dbPath, JSON.stringify(currentDb, null, 2), "utf-8");
+    saveStoreToFile(currentDb);
 
     return NextResponse.json({
       success: true,
