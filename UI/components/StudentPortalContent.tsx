@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { studentStatus } from "../../shared/student-status.cjs";
 import Link from "next/link";
-import { DB, type StoredRecord } from "../lib/db";
+import { type StoredRecord } from "../lib/db";
 import styles from "./StudentPortalContent.module.css";
 import StudentCertificates from "./student-certificates/StudentCertificates";
 
@@ -47,10 +48,9 @@ function ownRecord(row: StoredRecord, code: string): boolean {
   return Boolean(key && code && normalized(key) === normalized(code));
 }
 async function collection(key: string): Promise<StoredRecord[]> {
-  const saved = DB.get(key);
-  if (saved.length) return saved;
+
   try {
-    const res = await fetch(`/api/${key}?limit=10000`, { cache: "no-store" });
+    const res = await fetch(key === "students" ? "/api/student-records/profile" : "/api/student-records/schedule", { cache: "no-store" });
     if (!res.ok) return [];
     const json: unknown = await res.json();
     let list: unknown = json;
@@ -103,7 +103,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
       const [students, classes, marks] = await Promise.all([
         collection("students"),
         section === "schedule" ? collection("schedule") : Promise.resolve([]),
-        section === "progress" ? collection("grades") : Promise.resolve([]),
+        Promise.resolve([]),
       ]);
       if (!active) return;
       const mine = students.find(row => ownRecord(row, code)) || null;
@@ -117,7 +117,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
   }, []);
 
   useEffect(() => {
-    if (section !== "grades" || !ready || user?.role !== "student") return;
+    if (!["grades", "progress"].includes(section) || !ready || user?.role !== "student") return;
     const controller = new AbortController();
     setAssignedLoading(true);
     setAssignedError("");
@@ -167,11 +167,11 @@ export default function StudentPortalContent({ section }: { section: StudentSect
   const semesters = useMemo(() => [...new Set(semesterRows.map(row => textVal(row,"hocKy","hoc_ky")).filter(Boolean))].sort().reverse(), [semesterRows]);
   const displayRows = semester === "all" ? semesterRows : semesterRows.filter(row => textVal(row,"hocKy","hoc_ky") === semester);
 
-  const scoreRows = grades.data.filter(row => textVal(row,"diemTK","diemTongKet","diem_tk") !== "");
+  const scoreRows = assignedCourses.filter(row => row.totalScore !== null);
   const status = textVal(student,"trangThai","trang_thai");
   const thesisName = textVal(student,"tenLuanVan","ten_de_tai");
   const thesisStatus = textVal(student,"trangThaiLv","trang_thai_luan_van");
-  const graduated = Boolean(textVal(student,"ngayTotNghiep","ngay_tot_nghiep")) || normalized(status).includes("tốt nghiệp");
+  const graduated = studentStatus(student || {}) === "graduated";
   const enrolled = Boolean(textVal(student,"ngayNhapHoc","ngay_nhap_hoc"));
 
   return <section className={styles.portal} aria-label={SECTION_NAMES[section]}>
@@ -235,6 +235,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           </div>}
         </div>}
         {section === "progress" && <>
+          {assignedError && <p role="alert">{assignedError}</p>}
           <div className={styles.stats}>
             <div><span>Học phần đã có điểm</span><strong>{scoreRows.length}</strong><small>Không đồng nghĩa đã tích lũy tín chỉ</small></div>
             <div><span>Trạng thái đào tạo</span><strong className={styles.statusText}>{status || "Chưa cập nhật"}</strong><small>Theo hồ sơ hiện có</small></div>
@@ -242,7 +243,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           <h2 className={styles.subTitle}>Các mốc được ghi nhận</h2>
           <ol className={styles.timeline}>
             <li><div><strong>Nhập học</strong><p>{enrolled ? `Ngày ${formatDate(textVal(student,"ngayNhapHoc","ngay_nhap_hoc"))}` : "Chưa cập nhật ngày nhập học"}</p></div></li>
-            <li><div><strong>Học các học phần</strong><p>{grades.data.length ? `Đã ghi nhận ${grades.data.length} kết quả học phần, trong đó ${scoreRows.length} học phần có điểm tổng kết.` : "Chưa có dữ liệu điểm học phần."}</p></div></li>
+            <li><div><strong>Học các học phần</strong><p>{assignedCourses.length ? `Đã ghi nhận ${assignedCourses.length} học phần, trong đó ${scoreRows.length} học phần đã công bố điểm.` : "Chưa có dữ liệu điểm học phần."}</p></div></li>
             <li><div><strong>Luận văn / Đề án</strong><p>{thesisName ? `${thesisName}${thesisStatus ? ` — ${thesisStatus}` : ""}` : "Chưa cập nhật đề tài hoặc kết quả nghiên cứu."}</p></div></li>
             <li><div><strong>Tốt nghiệp</strong><p>{graduated ? "Hồ sơ đã có thông tin tốt nghiệp." : "Chưa có thông tin công nhận tốt nghiệp."}</p></div></li>
           </ol>

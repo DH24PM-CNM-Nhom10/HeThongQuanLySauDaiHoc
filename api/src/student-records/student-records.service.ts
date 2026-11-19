@@ -2,6 +2,7 @@ import { Injectable, ServiceUnavailableException, UnauthorizedException } from '
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readStore } from '../common/data-store';
 import type { Request } from 'express';
 
 export type StudentIdentity = {
@@ -41,14 +42,7 @@ export class StudentRecordsService {
   }
 
   private students(): SourceStudent[] {
-    const file = path.resolve(process.cwd(), '../UI/db.json');
-    try {
-      const parsed: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
-      if (parsed && typeof parsed === 'object' && 'students' in parsed && Array.isArray(parsed.students)) {
-        return parsed.students as SourceStudent[];
-      }
-    } catch { /* handled below */ }
-    throw new ServiceUnavailableException('Không thể đọc danh sách học viên để xác thực');
+    return readStore().students as SourceStudent[];
   }
 
   private findStudent(code: string): StudentIdentity | null {
@@ -70,8 +64,7 @@ export class StudentRecordsService {
     const normalized = username.trim().toLowerCase();
     const suffix = normalized.endsWith('@student.agu.edu.vn') ? '@student.agu.edu.vn' :
       normalized.endsWith('@agu.edu.vn') ? '@agu.edu.vn' : '';
-    if (!suffix) throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu học viên');
-    const code = normalized.slice(0, -suffix.length);
+    const code = suffix ? normalized.slice(0, -suffix.length) : normalized;
     const key = `${ip}:${code}`;
     const now = Date.now();
     const previous = this.attempts.get(key);

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { StudentRecordsService } from './student-records.service';
+import { readStore, studentCode } from '../common/data-store';
 import { TeacherGradesService } from '../teacher-auth/teacher-grades.service';
 
 @Controller('api/student-records')
@@ -19,6 +20,29 @@ export class StudentRecordsController {
     });
     res.setHeader('Cache-Control', 'private, no-store');
     return { success: true, user };
+  }
+
+  @Get('me')
+  me(@Req() req: Request) {
+    return { success: true, user: this.auth.fromRequest(req) };
+  }
+
+  @Get('profile')
+  profile(@Req() req: Request) {
+    const user = this.auth.fromRequest(req);
+    const student = readStore().students.find(row => studentCode(row) === user.maHocVien.toUpperCase());
+    return { success: true, data: student ? [student] : [] };
+  }
+
+  @Get('schedule')
+  schedule(@Req() req: Request) {
+    const user = this.auth.fromRequest(req);
+    const store = readStore();
+    const student = store.students.find(row => studentCode(row) === user.maHocVien.toUpperCase());
+    const rows = store.schedule.filter(row => studentCode(row)
+      ? studentCode(row) === user.maHocVien.toUpperCase()
+      : Boolean(student?.lop && String(row.lop || row.classCode || "") === student.lop));
+    return { success: true, data: rows };
   }
 
   @Get('grades')

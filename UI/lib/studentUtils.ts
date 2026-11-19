@@ -1,3 +1,4 @@
+import { studentStatus } from "../../shared/student-status.cjs";
 // src/lib/studentUtils.ts
 
 /**
@@ -68,6 +69,8 @@ export function parseVNStyleDate(dateInput: any): Date | null {
  */
 export function checkIsOverdue(s: any): boolean {
   if (!s) return false;
+  const state = studentStatus(s);
+  if (["graduated", "completed", "reserved", "paused", "left", "withdrawn"].includes(state)) return false;
 
   const today = new Date().getTime();
   const tt = (s.trangThai || s.trang_thai || s.TRANG_THAI || s.status || s.STATUS || "").toString().toLowerCase().trim();

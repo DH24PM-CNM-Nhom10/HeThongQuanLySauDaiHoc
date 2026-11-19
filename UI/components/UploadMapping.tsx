@@ -359,32 +359,6 @@ export default function UploadMapping({ onSuccess, studentsOnly = false }: Uploa
     setMapping(autoMap);
   };
 
-  // Tạo sẵn dữ liệu từ Client để dự phòng lưu trực tiếp vào LocalStorage
-  const buildClientMappedData = () => {
-    if (!allSheetRows || allSheetRows.length === 0) return [];
-
-    return allSheetRows
-      .filter((row) =>
-        row.some(
-          (cell) =>
-            cell !== undefined && cell !== null && String(cell).trim() !== ""
-        )
-      )
-      .map((row, idx) => {
-        const item: Record<string, any> = { id: `item_${Date.now()}_${idx}` };
-        Object.entries(mapping).forEach(([fieldKey, colIdx]) => {
-          if (
-            colIdx !== undefined &&
-            colIdx !== null &&
-            row[colIdx] !== undefined
-          ) {
-            item[fieldKey] = row[colIdx];
-          }
-        });
-        return item;
-      });
-  };
-
   const handleSave = async () => {
     if (saving) return;
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
@@ -395,7 +369,6 @@ export default function UploadMapping({ onSuccess, studentsOnly = false }: Uploa
       return;
     }
 
-    const clientMappedData = buildClientMappedData();
 
     const formData = new FormData();
     formData.append("file", file);
@@ -419,79 +392,18 @@ export default function UploadMapping({ onSuccess, studentsOnly = false }: Uploa
         result = null;
       }
 
-      if (selectedEntity === "students") {
-        if (!res.ok || !result?.success || !Array.isArray(result.data)) {
-          alert(result?.error || "Không thể nhập danh sách học viên.");
-          return;
-        }
-        try {
-          DB.set("students", result.data);
-        } catch (error) {
-          console.error("Không thể cập nhật bộ nhớ trình duyệt:", error);
-          DB.remove("students");
-        }
-        alert(`Đã thêm ${result.added} học viên. Bỏ qua ${result.duplicates} mã trùng và ${result.missingCode} dòng thiếu mã.`);
-        onSuccess?.("students");
+      if (!res.ok || !result?.success || !Array.isArray(result.data)) {
+        alert(result?.error || "Không thể nhập dữ liệu.");
         return;
       }
+      try { DB.set(selectedEntity, result.data); }
+      catch { DB.remove(selectedEntity); }
+      alert(`Đã thêm ${result.added ?? result.count} hồ sơ. Bỏ qua ${result.duplicates ?? 0} bản trùng và ${result.missingCode ?? 0} dòng thiếu mã.`);
+      onSuccess?.(selectedEntity);
+    } catch (error) {
+      console.error(error);
+      alert("Không xác nhận được kết quả nhập dữ liệu. Hãy tải lại danh sách trước khi thử lại.");
 
-      let finalDataToSave: any[] = [];
-
-      if (result && result.success) {
-        if (Array.isArray(result.data) && result.data.length > 0) {
-          finalDataToSave = result.data;
-        } else if (Array.isArray(result) && result.length > 0) {
-          finalDataToSave = result;
-        } else if (Array.isArray(result.records) && result.records.length > 0) {
-          finalDataToSave = result.records;
-        } else {
-          finalDataToSave = clientMappedData;
-        }
-      } else {
-        console.warn(
-          "Server API không trả lại danh sách, sử dụng dữ liệu bóc tách từ Client:",
-          result?.error
-        );
-        finalDataToSave = clientMappedData;
-      }
-
-      // Lưu AN TOÀN vào LocalStorage (Đảm bảo luôn là Mảng hợp lệ)
-      if (finalDataToSave.length > 0) {
-        DB.set(selectedEntity, finalDataToSave);
-      }
-      const entityLabel =
-        ENTITY_SCHEMAS[selectedEntity]?.label || selectedEntity;
-      const totalCount =
-        finalDataToSave.length || result?.count || result?.inserted || 0;
-
-      alert(
-        `✅ Đã lưu thành công ${totalCount} bản ghi đầy đủ vào [${entityLabel}]!`
-      );
-
-      if (onSuccess) {
-        onSuccess(selectedEntity);
-      }
-    } catch (err) {
-      if (selectedEntity === "students") {
-        console.error(err);
-        alert("Không thể xác nhận kết quả nhập học viên. Hãy kiểm tra danh sách trước khi thử lại.");
-        return;
-      }
-      console.error(
-        "Không thể kết nối Server API, tự động lưu dữ liệu vào LocalStorage:",
-        err
-      );
-      if (clientMappedData.length > 0) {
-        DB.set(selectedEntity, clientMappedData);
-        const entityLabel =
-          ENTITY_SCHEMAS[selectedEntity]?.label || selectedEntity;
-        alert(
-          `✅ Đã lưu ngoại tuyến ${clientMappedData.length} bản ghi vào [${entityLabel}] (Dữ liệu LocalStorage)!`
-        );
-        if (onSuccess) onSuccess(selectedEntity);
-      } else {
-        alert("❌ Lỗi khi đọc dữ liệu file Excel. Vui lòng kiểm tra lại file!");
-      }
     } finally {
       setSaving(false);
     }

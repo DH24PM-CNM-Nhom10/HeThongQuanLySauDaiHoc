@@ -29,27 +29,7 @@ export default function ThesisProgressSection() {
     const fetchStudents = async () => {
       setLoading(true);
       try {
-        const localRecords = DB.get("students");
-        if (Array.isArray(localRecords) && localRecords.length > 0) {
-          setStudents(localRecords);
-          setLoading(false);
-          return;
-        }
-      } catch (e) {
-        console.error("Lỗi đọc LocalStorage:", e);
-      }
-
-      try {
-        const res = await fetch("/api/students?limit=2000");
-        const text = await res.text();
-        try {
-          const result = text ? JSON.parse(text) : null;
-          if (result?.success && Array.isArray(result.data)) {
-            setStudents(result.data);
-          }
-        } catch {
-          /* API không trả JSON */
-        }
+        setStudents(await DB.syncFromApi("students"));
       } catch (err) {
         console.error("Lỗi API:", err);
       } finally {
@@ -60,7 +40,7 @@ export default function ThesisProgressSection() {
     fetchStudents();
   }, []);
 
-  const today = new Date("2026-10-01").getTime();
+  const today = new Date().getTime();
 
   // ĐIỀU KIỆN LỌC CHÍNH: HỌC VIÊN ĐANG HỌC + CÒN TRONG HẠN CHO PHÉP (<= 2 NĂM QUÁ HẠN)
   const activeStudentList: ActiveStudentItem[] = students

@@ -38,10 +38,21 @@ export class TeacherAuthController {
     return { success: true, data: this.assignments.assignmentsForTeacher(identity.teacherId) };
   }
 
+  @Get('schedule')
+  scheduleForMe(@Req() req: Request) {
+    const identity = this.auth.fromRequest(req);
+    return { success: true, data: this.assignments.scheduleForTeacher(identity.teacherId) };
+  }
+
   // Giảng viên chỉ đọc/lưu điểm của những lớp học phần đã được phân công chính thức.
   @Get('gradebook/:assignmentId')
   gradebook(@Req() req: Request, @Param('assignmentId') id: string) {
     return this.grades.getGradebook(req, id);
+  }
+
+  @Post('gradebook/:assignmentId/submit')
+  submit(@Req() req: Request, @Param('assignmentId') id: string, @Body() body: { revision?: number }) {
+    return this.grades.submit(req, id, body.revision);
   }
 
   @Put('gradebook/:assignmentId')

@@ -30,15 +30,18 @@ export class EntitiesService {
   }
 
   create(entityKey: string, payload: any) {
-    const list = this.storeService.getEntityData(entityKey);
+    const store = this.storeService.getStore();
+    const list = store[entityKey] || [];
     const newItem = { id: Date.now().toString(), ...payload };
     list.unshift(newItem);
-    this.saveAll(entityKey, list);
+    store[entityKey] = list;
+    this.storeService.saveStoreToFile(store);
     return newItem;
   }
 
   update(entityKey: string, id: string, payload: any) {
-    const list = this.storeService.getEntityData(entityKey);
+    const store = this.storeService.getStore();
+    const list = store[entityKey] || [];
     const index = list.findIndex(
       (i) => i.id === id || i.maHocVien === id || i.shcc === id,
     );
@@ -46,14 +49,17 @@ export class EntitiesService {
       throw new NotFoundException(`Không tìm thấy bản ghi để cập nhật`);
     }
     list[index] = { ...list[index], ...payload };
-    this.saveAll(entityKey, list);
+    store[entityKey] = list;
+    this.storeService.saveStoreToFile(store);
     return list[index];
   }
 
   delete(entityKey: string, id: string) {
-    let list = this.storeService.getEntityData(entityKey);
+    const store = this.storeService.getStore();
+    let list = store[entityKey] || [];
     list = list.filter((i) => i.id !== id && i.maHocVien !== id && i.shcc !== id);
-    this.saveAll(entityKey, list);
+    store[entityKey] = list;
+    this.storeService.saveStoreToFile(store);
     return { success: true };
   }
 }

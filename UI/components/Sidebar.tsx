@@ -24,11 +24,13 @@ const adminGroups = [
     items: [
       { href: "/assignment", label: "Phân công giảng dạy" },
       { href: "/thesis", label: "Tiến độ luận văn" },
+      { href: "/admin/diem", label: "Duyệt và công bố điểm" },
     ],
   },
   {
     label: "Dữ liệu",
-    items: [{ href: "/upload", label: "Nhập và ánh xạ dữ liệu" }],
+    items: [{ href: "/upload", label: "Nhập và ánh xạ dữ liệu" },
+      { href: "/admin/danh-muc", label: "Danh mục đào tạo" }],
   },
   {
     label: "Trang công khai",
@@ -55,12 +57,13 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
   const groups = role === "teacher"
     ? [{ label: "Giảng dạy", items: [
         { href: "/", label: "Cổng thông tin" },
-        { href: "/grades", label: "Quản lý điểm số" },
+        { href: "/giang-vien/tra-cuu-diem", label: "Bảng điểm" },
       ] }]
     : role === "training_office"
       ? [{ label: "Phòng đào tạo", items: [
           { href: "/", label: "Cổng thông tin" },
           { href: "/assignment", label: "Phân công giảng dạy" },
+          { href: "/phong-dao-tao/duyet-diem", label: "Duyệt và công bố điểm" },
         ] }]
       : isStudent ? [{ label: "", items: menuStudent }] : adminGroups;
   const [isOpen, setIsOpen] = useState(false);

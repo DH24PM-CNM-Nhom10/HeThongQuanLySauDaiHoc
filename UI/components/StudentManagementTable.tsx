@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, type FormEvent } from "react";
+import type { CatalogEntry } from "../../shared/system-store.cjs";
+import { studentStatus } from "../../shared/student-status.cjs";
 import { DB } from "../lib/db";
 import { ENTITY_SCHEMAS } from "../lib/schemas";
 import { parseVNStyleDate } from "../lib/studentUtils";
@@ -29,6 +31,7 @@ const statusOptions = [
   { key: "reserved", label: "Bảo lưu" },
   { key: "paused", label: "Tạm dừng" },
   { key: "left", label: "Thôi học" },
+  { key: "completed", label: "Hoàn thành" },
 ];
 
 const thesisFields = fields.filter(({ key }) => detailOnlyFields.has(key) && key !== "email");
@@ -95,17 +98,7 @@ function mapStudent(record: Record<string, unknown>): StudentItem {
   return student;
 }
 
-function statusKey(status: string) {
-  const value = status.trim().toLowerCase();
-  if (value.includes("quá hạn")) return "overdue";
-  if (["xóa tên", "xoá tên"].includes(value)) return "withdrawn";
-  if (["thôi học", "bỏ học"].includes(value)) return "left";
-  if (value === "bảo lưu") return "reserved";
-  if (value === "tạm dừng") return "paused";
-  if (["đã tốt nghiệp", "tốt nghiệp", "đã hoàn thành", "hoàn thành"].includes(value)) return "graduated";
-  if (value === "đang học") return "studying";
-  return undefined;
-}
+function statusKey(status: string) { return studentStatus({ trangThai: status }); }
 
 function renderValue(student: StudentItem, key: string) {
   const value = student[key] || "—";
@@ -126,6 +119,8 @@ export default function StudentManagementTable() {
   const [classFilter, setClassFilter] = useState("");
 
   const [editing, setEditing] = useState<StudentItem | null>(null);
+  const [catalogs, setCatalogs] = useState<CatalogEntry[]>([]);
+  const [selectedClass, setSelectedClass] = useState("");
   const [selectedMajorCode, setSelectedMajorCode] = useState("");
   const [advisors, setAdvisors] = useState<string[]>([]);
   const [advisorMessage, setAdvisorMessage] = useState("");
@@ -148,6 +143,9 @@ export default function StudentManagementTable() {
         records.push(...data);
         totalPages = result?.pagination?.totalPages ?? 1;
       }
+      const catalogResponse = await fetch("/api/catalogs", { cache: "no-store" });
+      if (!catalogResponse.ok) throw new Error("Không tải được danh mục đào tạo.");
+      setCatalogs((await catalogResponse.json()).data);
       setStudents(records.map(mapStudent));
       setServerReady(true);
       if (refreshCache) {
@@ -191,19 +189,14 @@ export default function StudentManagementTable() {
     return () => controller.abort();
   }, [editOpen]);
 
-  const classOptions = useMemo(() => studentOptions(students, "lop"), [students]);
-  const majorCatalog = useMemo(() => {
-    const catalog = new Map<string, string>();
-    for (const { maNganh, tenNganh } of students) {
-      if (maNganh && tenNganh && maNganh !== "-" && tenNganh !== "-" && !catalog.has(maNganh)) {
-        catalog.set(maNganh, tenNganh);
-      }
-    }
-    return new Map([...catalog].sort(([a], [b]) => a.localeCompare(b, "vi", { numeric: true })));
-  }, [students]);
+  const classOptions = useMemo(() => [...new Set(catalogs.filter(row => row.kind === "class").map(row => row.code))]
+    .sort((a, b) => a.localeCompare(b, "vi")), [catalogs]);
+  const majorCatalog = useMemo(() => new Map(catalogs.filter(row => row.kind === "major")
+    .map(row => [row.code, row.name || row.code])), [catalogs]);
 
   function openEditor(student: StudentItem) {
     setMessage("");
+    setSelectedClass(student.lop ?? "");
     setSelectedMajorCode(student.maNganh ?? "");
     setEditing(student);
   }
@@ -265,7 +258,7 @@ export default function StudentManagementTable() {
 
   function renderEditField({ key, label }: (typeof fields)[number], student: StudentItem) {
     if (key === "loaiChuongTrinh" || key === "trinhDo") {
-      const choices = studentOptions(students, key);
+      const choices = catalogs.filter(row => row.kind === (key === "loaiChuongTrinh" ? "program" : "level")).map(row => row.code);
       return (
         <label key={key}>{label}
           <select name={key} defaultValue={student[key] ?? ""}>
@@ -278,7 +271,11 @@ export default function StudentManagementTable() {
     if (key === "lop") {
       return (
         <label key={key}>{label}
-          <select name={key} required defaultValue={student[key] ?? ""}>
+          <select name={key} required value={selectedClass} onChange={event => {
+            setSelectedClass(event.target.value);
+            const majors = catalogs.filter(row => row.kind === "class" && row.code === event.target.value);
+            setSelectedMajorCode(majors.length === 1 ? majors[0].majorCode || "" : "");
+          }}>
             <option value="">Chọn lớp</option>
             {classOptions.map((className) => <option key={className} value={className}>{className}</option>)}
           </select>
@@ -290,7 +287,7 @@ export default function StudentManagementTable() {
         <label key={key}>{label}
           <select name={key} required value={selectedMajorCode} onChange={(event) => setSelectedMajorCode(event.target.value)}>
             <option value="">Chọn mã ngành</option>
-            {[...majorCatalog.keys()].map((code) => <option key={code} value={code}>{code}</option>)}
+            {[...majorCatalog.keys()].filter(code => !selectedClass || catalogs.some(row => row.kind === "class" && row.code === selectedClass && row.majorCode === code)).map((code) => <option key={code} value={code}>{code}</option>)}
           </select>
         </label>
       );

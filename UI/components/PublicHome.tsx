@@ -7,8 +7,10 @@ import styles from "./PublicHome.module.css";
 import PublicAccountMenu from "./PublicAccountMenu";
 import StudentPortalContent, { type StudentSection } from "./StudentPortalContent";
 import TeacherPortalContent from "./TeacherPortalContent";
+import TeacherSchedule from "./TeacherSchedule";
 import TeacherGradebook from "./TeacherGradebook";
 import TrainingOfficeAssignmentReadonly from "./TrainingOfficeAssignmentReadonly";
+import { verifySession, logoutSessions } from "../lib/session-client";
 import { useRouter } from "next/navigation";
 
 // Có thể thay bằng /images/logo-agu.jpg khi lưu logo vào public/images.
@@ -16,7 +18,7 @@ const AGU_LOGO_URL =
   "https://upload.wikimedia.org/wikipedia/commons/4/42/Logoagunew2026.jpg";
 const SO_THONG_BAO_TRANG_CHU = 5;
 
-type PublicPage = "home" | "notices" | "programs" | "contact" | "about" | "teacher-profile" | "teacher-grades" | "office-assign" | StudentSection;
+type PublicPage = "home" | "notices" | "programs" | "contact" | "about" | "teacher-profile" | "teacher-grades" | "teacher-schedule" | "office-assign" | StudentSection;
 
 const publicLinks = [
   { href: "/", label: "Trang chủ", page: "home" },
@@ -29,7 +31,8 @@ const teacherLinks = [
   { href: "/", label: "Trang chủ", page: "home" },
   { href: "/thong-bao", label: "Thông báo", page: "notices" },
   { href: "/giang-vien/thong-tin", label: "Thông tin giảng viên", page: "teacher-profile" },
-  { href: "/giang-vien/tra-cuu-diem", label: "Tra cứu bảng điểm", page: "teacher-grades" },
+  { href: "/giang-vien/thoi-khoa-bieu", label: "Thời khóa biểu", page: "teacher-schedule" },
+  { href: "/giang-vien/tra-cuu-diem", label: "Bảng điểm", page: "teacher-grades" },
   { href: "/gioi-thieu", label: "Giới thiệu", page: "about" },
   { href: "/lien-he", label: "Liên hệ", page: "contact" },
 ] as const;
@@ -121,52 +124,20 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const [timKiem, setTimKiem] = useState("");
 
   useEffect(() => {
-    try {
-      const value = localStorage.getItem("currentUser");
-      const parsed: unknown = value ? JSON.parse(value) : null;
-      if (parsed && typeof parsed === "object" && "role" in parsed &&
-          (parsed.role === "student" || parsed.role === "admin" || parsed.role === "teacher" || parsed.role === "training_office")) {
-        setUser(parsed as SessionUser);
-        if (parsed.role === "teacher") {
-          void fetch("/api/teacher-auth/me", { cache: "no-store", credentials: "same-origin" })
-            .then(async (response) => {
-              if (!response.ok) throw new Error("Teacher session expired");
-              const result: { user?: SessionUser } = await response.json();
-              if (result.user?.role !== "teacher") throw new Error("Invalid teacher role");
-              localStorage.setItem("currentUser", JSON.stringify(result.user));
-              setUser(result.user);
-              setTeacherVerified(true);
-            })
-            .catch(() => {
-              localStorage.removeItem("currentUser");
-              setUser(null);
-              setTeacherVerified(false);
-            });
-        } else if (parsed.role === "training_office") {
-          void fetch("/api/training-office/me", { cache: "no-store", credentials: "same-origin" })
-            .then(async response => {
-              if (!response.ok) throw new Error("Office session expired");
-              const result: { user?: SessionUser } = await response.json();
-              if (result.user?.role !== "training_office") throw new Error("Invalid office role");
-              localStorage.setItem("currentUser", JSON.stringify(result.user));
-              setUser(result.user);
-              setOfficeVerified(true);
-            }).catch(() => {
-              localStorage.removeItem("currentUser");
-              setUser(null);
-              setOfficeVerified(false);
-            });
-        }
-      } else {
-        setUser(null);
-        setTeacherVerified(false);
-        setOfficeVerified(false);
-      }
-    } catch { setUser(null); setTeacherVerified(false); setOfficeVerified(false); }
-
+    let active = true;
+    const sync = () => void verifySession().then(session => {
+      if (!active) return;
+      setUser(session);
+      setTeacherVerified(session?.role === "teacher");
+      setOfficeVerified(session?.role === "training_office");
+    }).catch(() => { if (active) setUser(null); });
+    sync();
+    window.addEventListener("agu-auth-changed", sync);
+    return () => { active = false; window.removeEventListener("agu-auth-changed", sync); };
   }, [page]);
 
   const isTeacherProfile = page === "teacher-profile";
+  const isTeacherSchedule = page === "teacher-schedule";
   const isTeacherGrades = page === "teacher-grades";
   const isOfficeAssignment = page === "office-assign";
   // Trang chủ của giảng viên vẫn hiển thị thông báo như cổng thông tin chung.
@@ -264,7 +235,16 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         if (!data.user || data.user.role !== "teacher") throw new Error("Invalid teacher response");
         session = data.user;
       } else if (isAdmin) {
-        session = { role: "admin", maHocVien: "admin", hoTen: "Admin Phòng Đào tạo", email: "admin@agu.edu.vn" };
+        const response = await fetch("/api/auth/login", {
+          method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: inputUser, password }),
+        });
+        const data = await response.json();
+        if (!response.ok || data.user?.role !== "admin") {
+          setLoginError(data.message || "Không thể đăng nhập quản trị viên.");
+          return;
+        }
+        session = data.user;
       } else {
         // Đăng nhập học viên DEMO có cookie xác thực trên Backend để đọc điểm riêng tư.
         const response = await fetch("/api/student-records/login", {
@@ -282,6 +262,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         if (!data.user || data.user.role !== "student") throw new Error("Invalid student response");
         session = data.user;
       }
+      await logoutSessions(session.role);
       localStorage.setItem("currentUser", JSON.stringify(session));
       localStorage.removeItem("aguAuthSource");
       window.dispatchEvent(new Event("agu-auth-changed"));
@@ -301,15 +282,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   };
 
   const handleLogout = async () => {
-    if (user?.role === "teacher" || user?.role === "training_office") {
-      const url = user.role === "teacher" ? "/api/teacher-auth/logout" : "/api/training-office/logout";
-      try { await fetch(url, { method: "POST", credentials: "same-origin" }); }
-      catch { /* Clear local UI if backend unavailable. */ }
-    }
-    if (user?.role === "student") {
-      try { await fetch("/api/student-records/logout", { method: "POST", credentials: "same-origin" }); }
-      catch { /* Vẫn cho phép đăng xuất giao diện khi Backend ngắt kết nối. */ }
-    }
+    await logoutSessions();
     localStorage.removeItem("currentUser");
     localStorage.removeItem("aguAuthSource");
     window.dispatchEvent(new Event("agu-auth-changed"));
@@ -408,9 +381,9 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                 {user?.role === "training_office" ? "Đang xác thực tài khoản Phòng đào tạo..." : "Vui lòng đăng nhập bằng tài khoản Phòng đào tạo để xem các phân công đã lưu."}
               </section>
             )
-          ) : isTeacherProfile || isTeacherGrades ? (
+          ) : isTeacherProfile || isTeacherGrades || isTeacherSchedule ? (
             teacherVerified && user?.role === "teacher" ? (
-              isTeacherGrades ? <TeacherGradebook readOnly /> : <TeacherPortalContent user={{ ...user, role: "teacher" }} section="profile" />
+              isTeacherSchedule ? <TeacherSchedule /> : isTeacherGrades ? <TeacherGradebook /> : <TeacherPortalContent user={{ ...user, role: "teacher" }} section="profile" />
             ) : (
               <section className={styles.infoPanel} style={{ padding: 28 }} aria-live="polite">
                 {user?.role === "teacher" ? "Đang xác thực tài khoản giảng viên..." : "Vui lòng đăng nhập bằng tài khoản giảng viên để xem thông tin."}

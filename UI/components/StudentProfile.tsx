@@ -166,7 +166,7 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProfileData = () => {
+    const loadProfileData = async () => {
       setLoading(true);
       try {
         const savedUserStr = localStorage.getItem("currentUser");
@@ -175,7 +175,8 @@ export default function StudentProfile({ studentId: propStudentId }: StudentProf
         const userRole = currentUser?.role === "admin" ? "admin" : "student";
         setRole(userRole);
 
-        const data = DB.get("students") || [];
+        const data = userRole === "admin" ? await DB.syncFromApi("students")
+          : (await (await fetch("/api/student-records/profile", { cache: "no-store" })).json()).data || [];
         setAllStudents(data);
 
         if (data.length > 0) {

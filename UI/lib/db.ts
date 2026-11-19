@@ -26,29 +26,21 @@ export const DB = {
   },
 
   async syncFromApi(key: string) {
-    if (typeof window === "undefined") return [];
-    try {
-      const res = await fetch(`/api/${key}?limit=10000`);
-      const text = await res.text();
-      let json: unknown = null;
-      try {
-        json = text ? JSON.parse(text) : null;
-      } catch {
-        return this.get(key);
-      }
-
-      // CHỈ đè dữ liệu vào LocalStorage nếu API trả về mảng CÓ DỮ LIỆU (> 0 bản ghi)
-      if (isStoredRecord(json) && json.success === true && Array.isArray(json.data)) {
-        const records = json.data.filter(isStoredRecord);
-        if (records.length > 0) {
-          this.set(key, records);
-          return records;
-        }
-      }
-    } catch (e) {
-      console.error(`Lỗi đồng bộ ${key} từ API:`, e);
-    }
-    return this.get(key);
+    const all: StoredRecord[] = [];
+    let page = 1;
+    let totalPages = 1;
+    do {
+      const response = await fetch(`/api/${key}?limit=2000&page=${page}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Không tải được ${key} (HTTP ${response.status}).`);
+      const result = await response.json();
+      const records = Array.isArray(result) ? result : result.data;
+      if (!Array.isArray(records)) throw new Error("Dữ liệu không hợp lệ.");
+      all.push(...records.filter(isStoredRecord));
+      totalPages = result.pagination?.totalPages ?? 1;
+      page++;
+    } while (page <= totalPages);
+    try { this.set(key, all); } catch { this.remove(key); }
+    return all;
   },
 
   // TỰ ĐỘNG ĐỒNG BỘ TOÀN BỘ DANH MỤC TỪ SERVER VỀ LOCALSTORAGE

@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { TeacherGradesService } from '../teacher-auth/teacher-grades.service';
 import { TrainingOfficeService } from './training-office.service';
 
 @Controller('api/training-office')
 export class TrainingOfficeController {
-  constructor(private readonly office: TrainingOfficeService) {}
+  constructor(private readonly office: TrainingOfficeService, private readonly grades: TeacherGradesService) {}
   @Post('login')
   login(@Body() body: { username?: string; password?: string }, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { identity, session } = this.office.login(body?.username, body?.password, req.ip ?? 'unknown');
@@ -19,6 +20,15 @@ export class TrainingOfficeController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie(this.office.cookieName(), { sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
     return { success: true };
+  }
+  @Get('gradebooks')
+  gradebooks(@Req() req: Request) {
+    this.office.fromRequest(req);
+    return this.grades.listForReview();
+  }
+  @Post('gradebooks/:id')
+  review(@Req() req: Request, @Param('id') id: string, @Body() body: { action?: string; revision?: number; reason?: string }) {
+    return this.grades.review(req, id, body);
   }
   @Get('catalog')
   catalog(@Req() req: Request) { return this.office.catalog(req); }

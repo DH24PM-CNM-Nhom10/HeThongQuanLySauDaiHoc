@@ -1,10 +1,14 @@
+import { requireAdmin } from "../../../lib/admin-api";
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
-import { memoryStore } from "../../../lib/store";
+import { getStore } from "../../../lib/store";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
 
 export async function GET(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
+    const memoryStore = getStore();
     const { searchParams } = new URL(req.url);
     const entityKey = searchParams.get("entity");
 

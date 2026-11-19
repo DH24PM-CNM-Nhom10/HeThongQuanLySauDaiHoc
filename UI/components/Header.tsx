@@ -3,6 +3,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { logoutSessions } from "../lib/session-client";
 import Link from "next/link";
 
 export default function Header() {
@@ -32,15 +33,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = async () => {
-    if (currentUser?.role === "teacher" || currentUser?.role === "training_office") {
-      const endpoint = currentUser.role === "teacher" ? "/api/teacher-auth/logout" : "/api/training-office/logout";
-      try { await fetch(endpoint, { method: "POST", credentials: "same-origin" }); }
-      catch { /* Xóa trạng thái UI ngay cả khi Backend tạm thời không kết nối. */ }
-    }
-    if (currentUser?.role === "student") {
-      try { await fetch("/api/student-records/logout", { method: "POST", credentials: "same-origin" }); }
-      catch { /* Đăng xuất giao diện kể cả khi Backend tạm ngắt. */ }
-    }
+    await logoutSessions();
     localStorage.removeItem("currentUser");
     setIsDropdownOpen(false);
     router.push("/");

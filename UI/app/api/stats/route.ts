@@ -1,13 +1,17 @@
+import { requireAdmin } from "../../../lib/admin-api";
 import { NextResponse } from "next/server";
-import { memoryStore } from "../../../lib/store";
+import { getStore } from "../../../lib/store";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
+    const memoryStore = getStore();
     const stats = {
       studentsCount: memoryStore.students?.length || 0,
       teachersCount: memoryStore.teachers?.length || 0,
-      assignmentsCount: memoryStore.assignments?.length || 0,
-      gradesCount: memoryStore.grades?.length || 0,
+      assignmentsCount: memoryStore.teachingAssignments.length,
+      gradesCount: memoryStore.gradebooks.reduce((count, book) => count + (book.publishedScores?.length || 0), 0),
       thesisCount: memoryStore.thesis?.length || 0,
       scheduleCount: memoryStore.schedule?.length || 0,
     };

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { scryptSync, timingSafeEqual } from "node:crypto";
 import { getStore } from "../../../../lib/store";
 import {
   AGU_SESSION_COOKIE,
@@ -13,7 +14,7 @@ export const runtime = "nodejs";
 // TÀI KHOẢN THỬ NGHIỆM CHO MÔI TRƯỜNG PHÁT TRIỂN.
 // Đăng nhập thật cần bảng tài khoản (mật khẩu hash) hoặc SSO của trường.
 export async function POST(request: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" && !process.env.AGU_ADMIN_PASSWORD_HASH) {
     return NextResponse.json(
       { message: "Chưa cấu hình hệ thống xác thực chính thức." },
       { status: 503 },
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Vui lòng nhập tài khoản và mật khẩu hợp lệ." }, { status: 400 });
   }
 
-  const adminName = process.env.AGU_DEMO_ADMIN_USERNAME ?? "";
+  const adminName = process.env.AGU_ADMIN_USERNAME || process.env.AGU_DEMO_ADMIN_USERNAME || "";
   const adminPass = process.env.AGU_DEMO_ADMIN_PASSWORD ?? "";
   const studentName = process.env.AGU_DEMO_STUDENT_USERNAME ?? "";
   const studentPass = process.env.AGU_DEMO_STUDENT_PASSWORD ?? "";
@@ -43,9 +44,17 @@ export async function POST(request: NextRequest) {
   }
 
   let user: AguUser | null = null;
-  if (adminName && adminPass && username.toLowerCase() === adminName.toLowerCase() && safeEqual(password, adminPass)) {
+  const encoded = process.env.AGU_ADMIN_PASSWORD_HASH || "";
+  const [algorithm, salt, expectedHash] = encoded.split(":");
+  let validAdminPassword = false;
+  if (algorithm === "scrypt" && /^[a-f0-9]{32}$/.test(salt || "") && /^[a-f0-9]{128}$/.test(expectedHash || "")) {
+    validAdminPassword = timingSafeEqual(scryptSync(password, Buffer.from(salt, "hex"), 64), Buffer.from(expectedHash, "hex"));
+  } else if (process.env.NODE_ENV !== "production" && adminPass) {
+    validAdminPassword = safeEqual(password, adminPass);
+  }
+  if (adminName && username.toLowerCase() === adminName.toLowerCase() && validAdminPassword) {
     user = { role: "admin", hoTen: "Quản lý Phòng Đào tạo" };
-  } else if (studentName && studentPass && username.toLowerCase() === studentName.toLowerCase() && safeEqual(password, studentPass)) {
+  } else if (process.env.NODE_ENV !== "production" && studentName && studentPass && username.toLowerCase() === studentName.toLowerCase() && safeEqual(password, studentPass)) {
     const lookup = (process.env.AGU_DEMO_STUDENT_CODE ?? studentName).trim().toLowerCase();
     const students = getStore().students ?? [];
     const found = students.find((row) =>
@@ -75,7 +84,7 @@ export async function POST(request: NextRequest) {
     path: "/",
     httpOnly: true,
     sameSite: "lax",
-    secure: false, // API demo chi hoat dong o development/test
+    secure: process.env.NODE_ENV === "production",
     maxAge: AGU_SESSION_MAX_AGE,
   });
   return response;

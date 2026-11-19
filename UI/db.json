@@ -12424,5 +12424,513 @@
       "id": "id_1794660321348_286",
       "tenLuanVan": "Ghi chú: Dữ liệu được sắp xếp theo tiêu chí năm xuất bản"
     }
+  ],
+  "schedule": [],
+  "grades": [],
+  "assignments": [],
+  "teachingAssignments": [
+    {
+      "id": "f5e4c3b4-d04c-4089-b9ec-759f11f8a65e",
+      "teacherId": "D4300313.080901",
+      "teacherName": "Huỳnh Lý Thanh Nhàn",
+      "department": "Bộ môn Kỹ thuật phần mềm - Khoa CNTT",
+      "classCode": "CH13CNTT",
+      "courseCode": "COS720",
+      "courseName": "Chuyên đề nông nghiệp thông minh",
+      "schoolYear": "2027-2028",
+      "semester": "2",
+      "trainingTrack": "nghien_cuu",
+      "admissionYear": 2026,
+      "programSemester": 4,
+      "majorCode": "8480201",
+      "majorName": "Công nghệ thông tin",
+      "createdAt": "2026-11-18T13:33:04.345Z",
+      "createdBy": "phongdaotao@agu.edu.vn",
+      "openingConfirmedAt": "2026-11-18T13:33:04.345Z"
+    },
+    {
+      "id": "87bb1c09-c438-4bcd-adc8-0f8262e25298",
+      "teacherId": "D4300313.111201",
+      "teacherName": "Châu Ngân Khánh",
+      "department": "Bộ môn Công nghệ thông tin - Khoa CNTT",
+      "classCode": "CH13CNTT",
+      "courseCode": "COS703",
+      "courseName": "Phương pháp NCKH trong CNTT",
+      "schoolYear": "2026-2027",
+      "semester": "2",
+      "trainingTrack": "nghien_cuu",
+      "admissionYear": 2026,
+      "programSemester": 2,
+      "majorCode": "8480201",
+      "majorName": "Công nghệ thông tin",
+      "createdAt": "2026-11-18T13:33:04.345Z",
+      "createdBy": "phongdaotao@agu.edu.vn",
+      "openingConfirmedAt": "2026-11-18T13:33:04.345Z"
+    }
+  ],
+  "teacherGrades": [],
+  "gradebooks": [
+    {
+      "assignmentId": "f5e4c3b4-d04c-4089-b9ec-759f11f8a65e",
+      "revision": 0,
+      "status": "draft",
+      "roster": [
+        {
+          "maHocVien": "IFT726001",
+          "hoTen": "Lê Hiệp Nguyên",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726002",
+          "hoTen": "Trần Nguyễn Minh Thiên",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726003",
+          "hoTen": "Bùi Quân Bảo",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726004",
+          "hoTen": "Đặng Tôn Gia Bảo",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726005",
+          "hoTen": "Mai Nhật Đăng",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726006",
+          "hoTen": "Phạm Thị Mộng Điềm",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726007",
+          "hoTen": "Chau Đặng Trung Hưng",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726008",
+          "hoTen": "Nguyễn Phạm Khánh Linh",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726009",
+          "hoTen": "Đặng Thị Thảo Loan",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726010",
+          "hoTen": "Nguyễn Hoài Nam",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726011",
+          "hoTen": "Huỳnh Thị Mỹ Ngọc",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726012",
+          "hoTen": "Lê Ánh Nguyệt",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726013",
+          "hoTen": "Phan Hồng Tuyết Nhung",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726014",
+          "hoTen": "Cù Minh Tài",
+          "lop": "CH13CNTT"
+        }
+      ],
+      "scores": [],
+      "updatedAt": "2026-11-18T13:33:04.345Z"
+    },
+    {
+      "assignmentId": "87bb1c09-c438-4bcd-adc8-0f8262e25298",
+      "revision": 0,
+      "status": "draft",
+      "roster": [
+        {
+          "maHocVien": "IFT726001",
+          "hoTen": "Lê Hiệp Nguyên",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726002",
+          "hoTen": "Trần Nguyễn Minh Thiên",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726003",
+          "hoTen": "Bùi Quân Bảo",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726004",
+          "hoTen": "Đặng Tôn Gia Bảo",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726005",
+          "hoTen": "Mai Nhật Đăng",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726006",
+          "hoTen": "Phạm Thị Mộng Điềm",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726007",
+          "hoTen": "Chau Đặng Trung Hưng",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726008",
+          "hoTen": "Nguyễn Phạm Khánh Linh",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726009",
+          "hoTen": "Đặng Thị Thảo Loan",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726010",
+          "hoTen": "Nguyễn Hoài Nam",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726011",
+          "hoTen": "Huỳnh Thị Mỹ Ngọc",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726012",
+          "hoTen": "Lê Ánh Nguyệt",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726013",
+          "hoTen": "Phan Hồng Tuyết Nhung",
+          "lop": "CH13CNTT"
+        },
+        {
+          "maHocVien": "IFT726014",
+          "hoTen": "Cù Minh Tài",
+          "lop": "CH13CNTT"
+        }
+      ],
+      "scores": [],
+      "updatedAt": "2026-11-18T13:33:04.345Z"
+    }
+  ],
+  "gradeHistory": [],
+  "studentHistory": [],
+  "catalogs": [
+    {
+      "id": "major:9620110",
+      "kind": "major",
+      "code": "9620110",
+      "name": "Khoa học cây trồng"
+    },
+    {
+      "id": "class:NCS02KHCT:9620110",
+      "kind": "class",
+      "code": "NCS02KHCT",
+      "majorCode": "9620110"
+    },
+    {
+      "id": "program:Chương trình tiến sĩ",
+      "kind": "program",
+      "code": "Chương trình tiến sĩ",
+      "name": "Chương trình tiến sĩ"
+    },
+    {
+      "id": "level:Tiến sĩ",
+      "kind": "level",
+      "code": "Tiến sĩ",
+      "name": "Tiến sĩ"
+    },
+    {
+      "id": "major:8480201",
+      "kind": "major",
+      "code": "8480201",
+      "name": "Công nghệ thông tin"
+    },
+    {
+      "id": "class:CH12CNTT:8480201",
+      "kind": "class",
+      "code": "CH12CNTT",
+      "majorCode": "8480201"
+    },
+    {
+      "id": "program:Chương trình thạc sĩ định hướng ứng dụng",
+      "kind": "program",
+      "code": "Chương trình thạc sĩ định hướng ứng dụng",
+      "name": "Chương trình thạc sĩ định hướng ứng dụng"
+    },
+    {
+      "id": "level:Thạc sĩ",
+      "kind": "level",
+      "code": "Thạc sĩ",
+      "name": "Thạc sĩ"
+    },
+    {
+      "id": "major:8540101",
+      "kind": "major",
+      "code": "8540101",
+      "name": "Công nghệ thực phẩm"
+    },
+    {
+      "id": "class:CH12CNTP:8540101",
+      "kind": "class",
+      "code": "CH12CNTP",
+      "majorCode": "8540101"
+    },
+    {
+      "id": "major:8420201",
+      "kind": "major",
+      "code": "8420201",
+      "name": "Công nghệ sinh học"
+    },
+    {
+      "id": "class:CH12CNSH:8420201",
+      "kind": "class",
+      "code": "CH12CNSH",
+      "majorCode": "8420201"
+    },
+    {
+      "id": "major:8620110",
+      "kind": "major",
+      "code": "8620110",
+      "name": "Khoa học cây trồng"
+    },
+    {
+      "id": "class:CH12KHCT:8620110",
+      "kind": "class",
+      "code": "CH12KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "major:8620105",
+      "kind": "major",
+      "code": "8620105",
+      "name": "Chăn nuôi"
+    },
+    {
+      "id": "class:CH12CN:8620105",
+      "kind": "class",
+      "code": "CH12CN",
+      "majorCode": "8620105"
+    },
+    {
+      "id": "program:Chương trình thạc sĩ định hướng nghiên cứu",
+      "kind": "program",
+      "code": "Chương trình thạc sĩ định hướng nghiên cứu",
+      "name": "Chương trình thạc sĩ định hướng nghiên cứu"
+    },
+    {
+      "id": "major:8850101",
+      "kind": "major",
+      "code": "8850101",
+      "name": "Quản lý tài nguyên và môi trường"
+    },
+    {
+      "id": "class:CH12QLMT:8850101",
+      "kind": "class",
+      "code": "CH12QLMT",
+      "majorCode": "8850101"
+    },
+    {
+      "id": "major:8140114",
+      "kind": "major",
+      "code": "8140114",
+      "name": "Quản lý giáo dục"
+    },
+    {
+      "id": "class:CH12QLGD:8140114",
+      "kind": "class",
+      "code": "CH12QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH11CNSH:8420201",
+      "kind": "class",
+      "code": "CH11CNSH",
+      "majorCode": "8420201"
+    },
+    {
+      "id": "class:CH11KHCT:8620110",
+      "kind": "class",
+      "code": "CH11KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH11QLMT:8850101",
+      "kind": "class",
+      "code": "CH11QLMT",
+      "majorCode": "8850101"
+    },
+    {
+      "id": "class:CH11QLGD:8140114",
+      "kind": "class",
+      "code": "CH11QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH10CNSH:8420201",
+      "kind": "class",
+      "code": "CH10CNSH",
+      "majorCode": "8420201"
+    },
+    {
+      "id": "class:CH10CNSH:8140114",
+      "kind": "class",
+      "code": "CH10CNSH",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH10QLGD:8140114",
+      "kind": "class",
+      "code": "CH10QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH10KHCT:8620110",
+      "kind": "class",
+      "code": "CH10KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH09CNSH:8420201",
+      "kind": "class",
+      "code": "CH09CNSH",
+      "majorCode": "8420201"
+    },
+    {
+      "id": "class:CH09KHCT:8620110",
+      "kind": "class",
+      "code": "CH09KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH09QLGD:8140114",
+      "kind": "class",
+      "code": "CH09QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH5QLGD:8140114",
+      "kind": "class",
+      "code": "CH5QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH5QM:8850101",
+      "kind": "class",
+      "code": "CH5QM",
+      "majorCode": "8850101"
+    },
+    {
+      "id": "class:CH4CN:8620105",
+      "kind": "class",
+      "code": "CH4CN",
+      "majorCode": "8620105"
+    },
+    {
+      "id": "class:CH4KHCT:8620110",
+      "kind": "class",
+      "code": "CH4KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH4QLGD:8140114",
+      "kind": "class",
+      "code": "CH4QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "class:CH3KHCT:8620110",
+      "kind": "class",
+      "code": "CH3KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH2KHCT:8620110",
+      "kind": "class",
+      "code": "CH2KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH1KHCT:8620110",
+      "kind": "class",
+      "code": "CH1KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:CH13QLGD:8140114",
+      "kind": "class",
+      "code": "CH13QLGD",
+      "majorCode": "8140114"
+    },
+    {
+      "id": "major:8440103",
+      "kind": "major",
+      "code": "8440103",
+      "name": "Vật lý lý thuyết và Vật lý toán"
+    },
+    {
+      "id": "class:CH13VLLT:8440103",
+      "kind": "class",
+      "code": "CH13VLLT",
+      "majorCode": "8440103"
+    },
+    {
+      "id": "major:8140110",
+      "kind": "major",
+      "code": "8140110",
+      "name": "Lý luận và Phương pháp dạy học"
+    },
+    {
+      "id": "class:CH13PPDH:8140110",
+      "kind": "class",
+      "code": "CH13PPDH",
+      "majorCode": "8140110"
+    },
+    {
+      "id": "major:8140111",
+      "kind": "major",
+      "code": "8140111",
+      "name": "Lý luận và phương pháp dạy học môn tiếng Anh"
+    },
+    {
+      "id": "class:CH13PPTA:8140111",
+      "kind": "class",
+      "code": "CH13PPTA",
+      "majorCode": "8140111"
+    },
+    {
+      "id": "class:CH13CNTT:8480201",
+      "kind": "class",
+      "code": "CH13CNTT",
+      "majorCode": "8480201"
+    },
+    {
+      "id": "class:CH13KHCT:8620110",
+      "kind": "class",
+      "code": "CH13KHCT",
+      "majorCode": "8620110"
+    },
+    {
+      "id": "class:TS02KHCT:9620110",
+      "kind": "class",
+      "code": "TS02KHCT",
+      "majorCode": "9620110"
+    }
   ]
 }

@@ -66,33 +66,11 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      let localData = getDataRecords(DB.get(entityKey));
-
-      if (!localData || localData.length === 0) {
-        const res = await fetch(`/api/${entityKey}`);
-        if (res.ok) {
-          const text = await res.text();
-          try {
-            const json: unknown = text ? JSON.parse(text) : null;
-            if (Array.isArray(json)) {
-              localData = getDataRecords(json);
-            } else if (isDataRecord(json)) {
-              localData = getDataRecords(json.data ?? json.records);
-            }
-          } catch {
-            localData = [];
-          }
-        }
-      }
-
+      const localData = getDataRecords(await DB.syncFromApi(entityKey));
       setData(localData);
     } catch (err) {
       console.error(`Lỗi khi tải dữ liệu ${entityKey}:`, err);
-      try {
-        setData(getDataRecords(DB.get(entityKey)));
-      } catch {
-        setData([]);
-      }
+      setData([]);
     } finally {
       setLoading(false);
     }

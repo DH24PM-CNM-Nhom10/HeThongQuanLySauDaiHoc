@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, ServiceUnavailableException } from '
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readStore } from '../common/data-store';
 import type { Request } from 'express';
 
 export type TeacherIdentity = {
@@ -143,39 +144,12 @@ export class TeacherAuthService {
   // Cùng nguồn dữ liệu mà script seed-teacher-accounts.cjs đang sử dụng.
   getOwnProfile(req: Request): TeacherProfile {
     const identity = this.fromRequest(req);
-    const paths = [
-      path.resolve(process.cwd(), '../UI/db.json'),
-      path.join(process.cwd(), 'db.json'),
-    ];
-
-    for (const file of paths) {
-      if (!fs.existsSync(file)) continue;
-      let raw: unknown;
-      try {
-        raw = JSON.parse(fs.readFileSync(file, 'utf8'));
-      } catch {
-        continue;
-      }
-      if (!raw || typeof raw !== 'object' || !('teachers' in raw)) continue;
-      const teachers = (raw as { teachers?: unknown }).teachers;
-      if (!Array.isArray(teachers)) continue;
-      const teacher = teachers.find((row: unknown) => {
-        if (!row || typeof row !== 'object') return false;
-        const data = row as TeacherSourceRecord;
-        // Không dùng họ tên làm khóa tra cứu vì có thể trùng người.
-        return String(data.shcc || data.id || '') === identity.teacherId;
-      }) as TeacherSourceRecord | undefined;
-      if (!teacher) continue;
+    const teacher = readStore().teachers.find(row => String(row.shcc || row.id || '') === identity.teacherId) as TeacherSourceRecord | undefined;
+    if (teacher) {
       const value = (input: unknown): string | undefined =>
         typeof input === 'string' && input.trim() ? input.trim() : undefined;
-      return {
-        ...identity,
-        gioiTinh: value(teacher.gioitinh),
-        donVi: value(teacher.t_dvi),
-        trinhDoChuyenMon: value(teacher.t_tdcmon),
-        hocHam: value(teacher.t_hham),
-        chuyenMonDaoTao: value(teacher.t_cmdtao),
-      };
+      return { ...identity, gioiTinh: value(teacher.gioitinh), donVi: value(teacher.t_dvi),
+        trinhDoChuyenMon: value(teacher.t_tdcmon), hocHam: value(teacher.t_hham), chuyenMonDaoTao: value(teacher.t_cmdtao) };
     }
     // Vẫn cho phép xem dữ liệu phiên nếu hồ sơ nguồn chưa tồn tại.
     return identity;

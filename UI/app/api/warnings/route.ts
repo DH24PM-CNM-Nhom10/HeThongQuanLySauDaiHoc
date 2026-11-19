@@ -1,8 +1,12 @@
+import { requireAdmin } from "../../../lib/admin-api";
 import { NextRequest, NextResponse } from "next/server";
-import { memoryStore } from "../../../lib/store";
+import { getStore } from "../../../lib/store";
 
 export async function GET(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
+    const memoryStore = getStore();
     const students = memoryStore["students"] || [];
     const thesisList = memoryStore["thesis"] || [];
 

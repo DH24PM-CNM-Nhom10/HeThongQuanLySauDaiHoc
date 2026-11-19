@@ -1,5 +1,7 @@
+import { validateStudentRecord } from "../../../lib/student-validation";
 import { NextRequest, NextResponse } from "next/server";
 import { getStore, saveStoreToFile } from "../../../lib/store";
+import { requireAdmin } from "../../../lib/admin-api";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
 import { AGU_SESSION_COOKIE, readAguSession } from "../../../lib/agu-auth";
 import { appendNewStudents, studentCode } from "../../../lib/studentRecords";
@@ -18,12 +20,15 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ entity: string }> }
 ) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
     // Giải quyết params để tương thích cả Next.js 14 & 15
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) return studentError("Loại dữ liệu không hợp lệ.", 400);
 
-    if (!entityKey) {
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) {
       return NextResponse.json({ success: false, error: "Thiếu entityKey" }, { status: 400 });
     }
 
@@ -31,6 +36,9 @@ export async function GET(
     const search = searchParams.get("search") || "";
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
+    if (!Number.isInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1 || limit > 10000) {
+      return studentError("Trang và số dòng không hợp lệ.", 400);
+    }
 
     // Luôn lấy store mới nhất từ db.json
     const currentStore = getStore(entityKey === "students");
@@ -65,9 +73,12 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ entity: string }> }
 ) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) return studentError("Loại dữ liệu không hợp lệ.", 400);
 
     if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const body = await req.json();
@@ -77,9 +88,12 @@ export async function POST(
       if (!body || typeof body !== "object" || Array.isArray(body) || !studentCode(body) || !String(body.hoTen ?? "").trim()) {
         return studentError("Cần nhập mã và họ tên học viên.", 400);
       }
+      const invalid = validateStudentRecord(body, currentStore.catalogs, currentStore.teachers);
+      if (invalid) return studentError(invalid, 400);
       const result = appendNewStudents(currentStore.students ?? [], [body]);
       if (result.duplicates) return studentError("Mã học viên đã tồn tại.", 409);
       currentStore.students = result.records;
+      currentStore.studentHistory.push({ action: "create", code: studentCode(body), at: new Date().toISOString(), actor: "admin", after: body });
       saveStoreToFile(currentStore);
       return NextResponse.json({ success: true, data: body });
     }
@@ -108,9 +122,12 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ entity: string }> }
 ) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) return studentError("Loại dữ liệu không hợp lệ.", 400);
 
     if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const updatedRecord = await req.json();
@@ -128,6 +145,9 @@ export async function PUT(
       if (!matches.length) return studentError("Không tìm thấy học viên.", 404);
       if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
       const record = { ...matches[0], ...updatedRecord };
+      const invalid = validateStudentRecord(record, currentStore.catalogs, currentStore.teachers, matches[0]);
+      if (invalid) return studentError(invalid, 400);
+      currentStore.studentHistory.push({ action: "update", code, at: new Date().toISOString(), actor: "admin", before: matches[0], after: record });
       list[list.indexOf(matches[0])] = record;
       saveStoreToFile(currentStore);
       return NextResponse.json({ success: true, data: record });
@@ -165,9 +185,12 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ entity: string }> }
 ) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
+    if (!Object.hasOwn(ENTITY_SCHEMAS, entityKey)) return studentError("Loại dữ liệu không hợp lệ.", 400);
 
     if (studentMutationDenied(req, entityKey)) return studentError("Bạn không có quyền quản lý học viên.", 403);
     const { searchParams } = new URL(req.url);
@@ -187,7 +210,11 @@ export async function DELETE(
       const matches = list.filter((item) => studentCode(item) === code);
       if (!code || !matches.length) return studentError("Không tìm thấy học viên.", 404);
       if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
+      if (currentStore.gradebooks.some(book => book.roster?.some((row: any) => studentCode(row) === code))) {
+        return studentError("Học viên đã có lớp học phần. Hãy cập nhật trạng thái thay vì xóa hồ sơ.", 409);
+      }
       currentStore.students = list.filter((item) => item !== matches[0]);
+      currentStore.studentHistory.push({ action: "delete", code, at: new Date().toISOString(), actor: "admin", before: matches[0] });
       saveStoreToFile(currentStore);
       return NextResponse.json({ success: true });
     }

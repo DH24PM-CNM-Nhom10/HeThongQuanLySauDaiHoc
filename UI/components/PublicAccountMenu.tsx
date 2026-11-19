@@ -21,7 +21,6 @@ type Props = {
 
 const managementRoute: Record<string, string> = {
   admin: "/admin",
-  teacher: "/grades",
   training_office: "/assignment",
 };
 

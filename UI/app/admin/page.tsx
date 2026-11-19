@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { DB } from "../../lib/db";
-import { checkIsOverdue } from "../../lib/studentUtils";
+import { studentStatus } from "../../../shared/student-status.cjs";
+
 import styles from "./Dashboard.module.css";
 
-type Student = Parameters<typeof checkIsOverdue>[0];
-type Counts = { total: number; studying: number; graduated: number; overdue: number; withdrawn: number };
+type Student = Record<string, unknown>;
+type Counts = Record<string, number>;
 
 const statusColumns = [
   { key: "studying", label: "Đang học" },
   { key: "graduated", label: "Đã tốt nghiệp" },
   { key: "overdue", label: "Quá hạn" },
   { key: "withdrawn", label: "Xóa tên" },
+  { key: "reserved", label: "Bảo lưu" },
+  { key: "paused", label: "Tạm dừng" },
+  { key: "left", label: "Thôi học" },
+  { key: "completed", label: "Hoàn thành" },
+  { key: "other", label: "Chưa xác định / Khác" },
 ] as const;
 
 const numberFormat = new Intl.NumberFormat("vi-VN");
@@ -22,33 +27,14 @@ const percentFormat = new Intl.NumberFormat("vi-VN", {
 });
 
 function emptyCounts(): Counts {
-  return { total: 0, studying: 0, graduated: 0, overdue: 0, withdrawn: 0 };
-}
-
-function getStatus(student: Student) {
-  const status = String(
-    student.trangThai || student.trang_thai || student.TRANG_THAI || student.status || student.STATUS || "",
-  ).trim().toLowerCase();
-  if (status === "xóa tên" || status === "xoá tên") return "withdrawn";
-  if (status === "đã tốt nghiệp" || status === "tốt nghiệp") return "graduated";
-  if (status === "quá hạn" || checkIsOverdue(student)) return "overdue";
-  const graduated =
-    student.category === "GRADUATED" ||
-    status.includes("tốt nghiệp") ||
-    status.includes("bảo vệ") ||
-    status.includes("hoàn thành") ||
-    student.daBaoVe === true ||
-    (student.ngayTotNghiep && student.ngayTotNghiep !== "-") ||
-    (student.ngayBaoVe && student.ngayBaoVe !== "-");
-
-  return graduated ? "graduated" : "studying";
+  return Object.fromEntries([["total", 0], ...statusColumns.map(({ key }) => [key, 0])]);
 }
 
 function summarize(students: Student[]) {
   const totals = emptyCounts();
   for (const student of students) {
     totals.total++;
-    totals[getStatus(student)]++;
+    totals[studentStatus(student)]++;
   }
 
   return totals;
@@ -63,16 +49,6 @@ export default function Dashboard() {
 
     async function loadDashboardData() {
       try {
-        const cached = DB.get("students");
-        if (Array.isArray(cached) && cached.length > 0) {
-          setStudents(cached);
-          return;
-        }
-      } catch (cause) {
-        console.error("Lỗi đọc dữ liệu lưu cục bộ:", cause);
-      }
-
-      try {
         const records: Student[] = [];
         let page = 1;
         let totalPages = 1;
@@ -80,7 +56,7 @@ export default function Dashboard() {
         do {
           const response = await fetch(
             `/api/students?limit=2000&page=${page}`,
-            { signal: controller.signal },
+            { signal: controller.signal, cache: "no-store" },
           );
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -106,8 +82,9 @@ export default function Dashboard() {
   }, []);
 
   const totals = useMemo(() => summarize(students ?? []), [students]);
+  const visibleStatuses = statusColumns.filter(({ key }) => totals[key] > 0);
   let segmentEnd = 0;
-  const segments = statusColumns.map(({ key }) => {
+  const segments = visibleStatuses.map(({ key }) => {
     const start = segmentEnd;
     const share = totals.total ? totals[key] / totals.total : 0;
     segmentEnd += share * 100;
@@ -132,7 +109,7 @@ export default function Dashboard() {
         <>
           <dl className={styles.metrics} aria-label="Tổng hợp học viên">
             <div><dt>Tổng học viên</dt><dd>{numberFormat.format(totals.total)}</dd></div>
-            {statusColumns.map(({ key, label }) => (
+            {visibleStatuses.map(({ key, label }) => (
               <div key={key} data-status={key}>
                 <dt>{label}</dt>
                 <dd>{numberFormat.format(totals[key])}</dd>
@@ -154,7 +131,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <ul className={styles.breakdown} aria-label="Tỷ lệ học viên theo trạng thái">
-                {statusColumns.map(({ key, label }) => (
+                {visibleStatuses.map(({ key, label }) => (
                   <li key={key} data-status={key}>
                     <span>{label}</span>
                     <strong>{percentFormat.format(totals[key] / totals.total)}</strong>

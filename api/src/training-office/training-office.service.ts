@@ -2,6 +2,8 @@ import { BadRequestException, ConflictException, Injectable, UnauthorizedExcepti
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readStore, saveStore, projectRoot } from '../common/data-store';
+import { assignmentRoster } from '../common/enrollment-roster';
 import type { Request } from 'express';
 
 type OfficeAccount = { username: string; displayName: string; role: 'training_office'; passwordHash: string; active: boolean };
@@ -133,13 +135,8 @@ export class TrainingOfficeService {
   }
 
   private source() {
-    const p = path.resolve(process.cwd(), '../UI/db.json');
-    if (!fs.existsSync(p)) throw new ServiceUnavailableException('Thiếu UI/db.json – chưa có dữ liệu bộ môn và lớp');
-    let raw: unknown;
-    try { raw = JSON.parse(fs.readFileSync(p, 'utf8')); } catch { throw new ServiceUnavailableException('Không đọc được UI/db.json'); }
-    if (!raw || typeof raw !== 'object') throw new ServiceUnavailableException('Dữ liệu nguồn không hợp lệ');
-    const obj = raw as { teachers?: unknown; students?: unknown };
-    return { teachers: (Array.isArray(obj.teachers) ? obj.teachers : []) as Teacher[], students: (Array.isArray(obj.students) ? obj.students : []) as Student[] };
+    const store = readStore();
+    return { teachers: store.teachers as Teacher[], students: store.students as Student[] };
   }
 
   catalog(req: Request) {
@@ -208,9 +205,7 @@ export class TrainingOfficeService {
   }
 
   private readAssignments(): TeachingAssignment[] {
-    if (!fs.existsSync(this.assignmentPath)) return [];
-    try { const raw: unknown = JSON.parse(fs.readFileSync(this.assignmentPath, 'utf8')); return Array.isArray(raw) ? raw as TeachingAssignment[] : []; }
-    catch { throw new ServiceUnavailableException('Không đọc được dữ liệu phân công'); }
+    return readStore().teachingAssignments as TeachingAssignment[];
   }
 
   assignments(req: Request) {
@@ -232,8 +227,57 @@ export class TrainingOfficeService {
         b.semester.localeCompare(a.semester) || a.courseCode.localeCompare(b.courseCode));
   }
 
+  scheduleForTeacher(teacherId: string) {
+    const store = readStore();
+    const assignments = store.teachingAssignments as TeachingAssignment[];
+    const text = (value: unknown) => String(value ?? '').trim();
+    const matches = (slot: Record<string, unknown>, assignment: TeachingAssignment) => {
+      const assignmentId = text(slot.assignmentId || slot.maPhanCong);
+      if (assignmentId) return assignmentId === assignment.id;
+      const course = text(slot.courseCode || slot.maMon || slot.ma_mon).toUpperCase();
+      const classCode = text(slot.classCode || slot.lop || slot.maLop);
+      const teacher = text(slot.teacherId || slot.maGV || slot.ma_giang_vien);
+      const year = text(slot.schoolYear || slot.namHoc || slot.nam_hoc).replace(/[–—]/g, '-').replace(/\s/g, '');
+      const semester = text(slot.semester || slot.hocKy || slot.hoc_ky);
+      return Boolean(course && (classCode || teacher)) &&
+        course === assignment.courseCode.toUpperCase() &&
+        (!classCode || classCode === assignment.classCode) &&
+        (!teacher || teacher === assignment.teacherId) &&
+        (!year || year === assignment.schoolYear) &&
+        (!semester || semester === assignment.semester);
+    };
+    return assignments.filter(assignment => assignment.teacherId === teacherId).flatMap(assignment => {
+      const slots = store.schedule.filter(slot => {
+        const candidates = assignments.filter(row => matches(slot, row));
+        return candidates.length === 1 && candidates[0].id === assignment.id;
+      });
+      return (slots.length ? slots : [null]).map((slot, index) => ({
+        id: assignment.id + ':' + index,
+        assignmentId: assignment.id,
+        courseCode: assignment.courseCode,
+        courseName: assignment.courseName,
+        classCode: assignment.classCode,
+        schoolYear: assignment.schoolYear,
+        semester: assignment.semester,
+        time: slot ? text(slot.thoiGian || slot.time || slot.thoi_gian) : '',
+        room: slot ? text(slot.phong || slot.room) : '',
+        hasSchedule: Boolean(slot),
+        dayOfWeek: slot?.dayOfWeek ?? slot?.weekday ?? null,
+        thu: slot?.thu ?? null,
+        startPeriod: slot?.startPeriod ?? slot?.tietBatDau ?? slot?.tiet_bat_dau ?? null,
+        endPeriod: slot?.endPeriod ?? slot?.tietKetThuc ?? slot?.tiet_ket_thuc ?? null,
+        periodCount: slot?.periodCount ?? slot?.soTiet ?? null,
+        date: slot?.date ?? slot?.ngayHoc ?? slot?.ngay_hoc ?? '',
+        startDate: slot?.startDate ?? slot?.ngayBatDau ?? '',
+        endDate: slot?.endDate ?? slot?.ngayKetThuc ?? '',
+      }));
+    }).sort((a, b) => b.schoolYear.localeCompare(a.schoolYear) ||
+      a.semester.localeCompare(b.semester) || a.classCode.localeCompare(b.classCode, 'vi') ||
+      a.courseCode.localeCompare(b.courseCode, 'vi'));
+  }
+
   private curriculum(): CourseReference[] {
-    const filename = path.resolve(process.cwd(), '../UI/data/agu_masters_curriculum.json');
+    const filename = path.join(projectRoot(), 'UI/data/agu_masters_curriculum.json');
     if (!fs.existsSync(filename)) throw new ServiceUnavailableException('Thiếu danh mục học phần UI/data/agu_masters_curriculum.json');
     try {
       const parsed: unknown = JSON.parse(fs.readFileSync(filename, 'utf8'));
@@ -259,7 +303,8 @@ export class TrainingOfficeService {
     const teacherIndex = new Map(teachers.map(t => [t.id, t]));
     const classIndex = new Map(classes.map(c => [c.code, c]));
     const courses = this.curriculum();
-    const existing = this.readAssignments();
+    const store = readStore();
+    const existing = store.teachingAssignments as TeachingAssignment[];
     const keys = new Set(existing.map(r => `${r.schoolYear}|${r.semester}|${r.classCode}|${r.courseCode.toUpperCase()}`));
     const stamp = new Date().toISOString();
     const additions: TeachingAssignment[] = [];
@@ -305,13 +350,12 @@ export class TrainingOfficeService {
       });
     }
 
-    const temp = `${this.assignmentPath}.tmp`;
-    try {
-      fs.writeFileSync(temp, JSON.stringify([...existing, ...additions], null, 2), { mode: 0o600 });
-      fs.renameSync(temp, this.assignmentPath);
-    } catch {
-      throw new ServiceUnavailableException('Không ghi được phân công vào kho dữ liệu Backend');
+    store.teachingAssignments = [...existing, ...additions];
+    for (const row of additions) {
+      store.gradebooks.push({ assignmentId: row.id, revision: 0, status: 'draft',
+        roster: assignmentRoster(row, store.students), scores: [], updatedAt: stamp });
     }
+    saveStore(store);
     return { success: true, count: additions.length, data: additions };
   }
 
@@ -320,25 +364,17 @@ export class TrainingOfficeService {
   deleteAssignment(req: Request, id: string) {
     this.fromRequest(req);
     if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id)) throw new BadRequestException('Mã phân công không hợp lệ');
-    const rows = this.readAssignments();
+    const store = readStore();
+    const rows = store.teachingAssignments;
     if (!rows.some(row => row.id === id)) throw new NotFoundException('Không tìm thấy phân công');
-    // Không cho thu hồi lớp đã nhập điểm để tránh bảng điểm mồ côi.
-    const gradesPath = path.join(process.cwd(), '.teacher-grades.local.json');
-    if (fs.existsSync(gradesPath)) {
-      let gradeRows: unknown;
-      try { gradeRows = JSON.parse(fs.readFileSync(gradesPath, 'utf8')); }
-      catch { throw new ServiceUnavailableException('Không đọc được dữ liệu điểm số để kiểm tra thu hồi'); }
-      if (!Array.isArray(gradeRows)) throw new ServiceUnavailableException('Dữ liệu điểm số không hợp lệ');
-      if (gradeRows.some((grade: unknown) => grade && typeof grade === 'object' &&
-        (grade as { assignmentId?: unknown }).assignmentId === id)) {
-        throw new ConflictException('Không thể hủy phân công đã có điểm. Cần xử lý bảng điểm trước.');
-      }
+    const book = store.gradebooks.find(row => row.assignmentId === id);
+    if (book?.scores?.length || book?.publishedScores?.length ||
+        store.teacherGrades.some(row => row.assignmentId === id)) {
+      throw new ConflictException('Không thể hủy phân công đã có điểm. Cần xử lý bảng điểm trước.');
     }
-    const temp = `${this.assignmentPath}.tmp`;
-    try {
-      fs.writeFileSync(temp, JSON.stringify(rows.filter(row => row.id !== id), null, 2), { mode: 0o600 });
-      fs.renameSync(temp, this.assignmentPath);
-    } catch { throw new ServiceUnavailableException('Không hủy được phân công'); }
+    store.teachingAssignments = rows.filter(row => row.id !== id);
+    store.gradebooks = store.gradebooks.filter(row => row.assignmentId !== id);
+    saveStore(store);
     return { success: true, deletedId: id };
   }
 

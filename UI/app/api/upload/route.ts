@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "../../../lib/admin-api";
 import * as XLSX from "xlsx";
 import { AGU_SESSION_COOKIE, readAguSession } from "../../../lib/agu-auth";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
@@ -6,6 +7,8 @@ import { getStore, saveStoreToFile } from "../../../lib/store";
 import { appendNewStudents } from "../../../lib/studentRecords";
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
@@ -72,6 +75,7 @@ export async function POST(req: NextRequest) {
       let hasData = false;
 
       Object.entries(mapping).forEach(([fieldKey, colIdx]) => {
+        if (!ENTITY_SCHEMAS[entityKey].fields.some(field => field.key === fieldKey) || !Number.isInteger(colIdx) || colIdx < 0) return;
         const val = row[colIdx];
         if (val !== undefined && val !== null && String(val).trim() !== "") {
           record[fieldKey] = String(val).trim();
@@ -95,15 +99,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, data: records, count: records.length, added, duplicates, missingCode, entityKey });
     }
 
-    currentDb[entityKey] = parsedRecords;
+    const records = [...(currentDb[entityKey] || [])];
+    const keyOf = (record: Record<string, unknown>) => {
+      if (entityKey === "teachers") return String(record.shcc || record.id || "").trim().toUpperCase();
+      return JSON.stringify(Object.keys(record).filter(key => key !== "id").sort().map(key => [key, record[key]]));
+    };
+    const known = new Set(records.map(keyOf));
+    let added = 0;
+    let duplicates = 0;
+    for (const record of parsedRecords) {
+      const key = keyOf(record);
+      if (known.has(key)) { duplicates++; continue; }
+      known.add(key);
+      records.push(record);
+      added++;
+    }
+    currentDb[entityKey] = records;
     saveStoreToFile(currentDb);
+    return NextResponse.json({ success: true, data: records, count: records.length, added, duplicates, missingCode: 0, entityKey });
 
-    return NextResponse.json({
-      success: true,
-      data: parsedRecords,
-      count: parsedRecords.length,
-      entityKey,
-    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message });
   }

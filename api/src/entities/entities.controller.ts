@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Logger, BadRequestException, UseGuards } from '@nestjs/common';
+import { AdminSessionGuard } from '../common/admin-session.guard';
 import { EntitiesService } from './entities.service';
 
 @Controller('api')
+@UseGuards(AdminSessionGuard)
 export class EntitiesController {
   private readonly logger = new Logger(EntitiesController.name);
 
@@ -9,17 +11,29 @@ export class EntitiesController {
 
   @Get(':entity')
   getAll(@Param('entity') entity: string, @Query('limit') limit?: string) {
+    this.validateEntity(entity);
     const parsedLimit = limit ? parseInt(limit, 10) : undefined;
     return this.entitiesService.findAll(entity, parsedLimit);
   }
 
   @Get(':entity/:id')
   getOne(@Param('entity') entity: string, @Param('id') id: string) {
+    this.validateEntity(entity);
     return this.entitiesService.findOne(entity, id);
+  }
+
+  private validateEntity(entity: string, mutation = false) {
+    if (!["students", "teachers", "thesis", "assignments", "grades", "schedule"].includes(entity)) {
+      throw new BadRequestException("Loại dữ liệu không hợp lệ");
+    }
+    if (mutation && ["students", "grades", "assignments"].includes(entity)) {
+      throw new BadRequestException("Hãy sử dụng nghiệp vụ quản lý học viên, điểm hoặc phân công tương ứng");
+    }
   }
 
   @Post(':entity')
   create(@Param('entity') entity: string, @Body() body: any) {
+    this.validateEntity(entity, true);
     this.logger.log(`[POST /api/${entity}] Đã nhận payload từ UploadMapping`);
 
     let itemsToSave: any[] | null = null;
@@ -79,11 +93,13 @@ export class EntitiesController {
 
   @Put(':entity/:id')
   update(@Param('entity') entity: string, @Param('id') id: string, @Body() body: any) {
+    this.validateEntity(entity, true);
     return this.entitiesService.update(entity, id, body);
   }
 
   @Delete(':entity/:id')
   remove(@Param('entity') entity: string, @Param('id') id: string) {
+    this.validateEntity(entity, true);
     return this.entitiesService.delete(entity, id);
   }
 }
