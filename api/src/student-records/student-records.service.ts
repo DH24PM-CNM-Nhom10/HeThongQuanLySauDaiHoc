@@ -2,13 +2,13 @@ import { Injectable, ServiceUnavailableException, UnauthorizedException } from '
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { readStore } from '../common/data-store';
+import { readStore, studentCode } from '../common/data-store';
 import type { Request } from 'express';
 
 export type StudentIdentity = {
   role: 'student'; maHocVien: string; hoTen: string; email: string;
 };
-type SourceStudent = { maHocVien?: unknown; hoTen?: unknown; email?: unknown };
+type SourceStudent = Record<string, unknown>;
 type Session = { sub: string; exp: number };
 const COOKIE = 'agu_student_grades_session';
 const MAX_AGE_SECONDS = 8 * 60 * 60;
@@ -46,10 +46,17 @@ export class StudentRecordsService {
   }
 
   private findStudent(code: string): StudentIdentity | null {
-    const student = this.students().find(item => String(item.maHocVien || '').trim().toLowerCase() === code.toLowerCase());
-    if (!student) return null;
-    const maHocVien = String(student.maHocVien || '').trim();
-    return { role: 'student', maHocVien, hoTen: String(student.hoTen || 'Học viên').trim(),
+    const input = code.trim().toLowerCase();
+    const matches = this.students().filter(item => {
+      const id = studentCode(item).toLowerCase();
+      const email = String(item.email || item.Email || '').trim().toLowerCase();
+      return Boolean(id && (input === id || input === email ||
+        input === id + '@student.agu.edu.vn' || input === id + '@agu.edu.vn'));
+    });
+    if (matches.length !== 1) return null;
+    const student = matches[0];
+    const maHocVien = String(student.maHocVien || student.ma_hoc_vien || student.MA_HOC_VIEN || student.mahv || '').trim();
+    return { role: 'student', maHocVien, hoTen: String(student.hoTen || student.ho_ten || student.HO_TEN || 'Học viên').trim(),
       email: String(student.email || `${maHocVien}@student.agu.edu.vn`) };
   }
 
@@ -62,9 +69,7 @@ export class StudentRecordsService {
       throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu học viên');
     }
     const normalized = username.trim().toLowerCase();
-    const suffix = normalized.endsWith('@student.agu.edu.vn') ? '@student.agu.edu.vn' :
-      normalized.endsWith('@agu.edu.vn') ? '@agu.edu.vn' : '';
-    const code = suffix ? normalized.slice(0, -suffix.length) : normalized;
+    const code = normalized;
     const key = `${ip}:${code}`;
     const now = Date.now();
     const previous = this.attempts.get(key);

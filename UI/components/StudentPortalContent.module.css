@@ -33,3 +33,18 @@
 .gradePending { color: #697d99; white-space: nowrap; }
 .gradeError { margin: 0; padding: 14px 16px; border: 1px solid #f1c4ba; background: #fff6f3; color: #af3e30; border-radius: 9px; }
 @media (max-width: 650px) { .assignedGradeSection { padding: 14px; } .assignedGradeToolbar select { min-width: 0; width: 100%; } }
+
+
+.gradeTitle {
+  margin: 0 0 16px;
+  color: #173d59;
+  font-size: 22px;
+}
+.assignedGradeTable .semesterHeading th {
+  padding: 10px 12px;
+  border-top: 1px solid #c4d9df;
+  border-bottom: 1px solid #c4d9df;
+  background: #e5f1f3;
+  color: #17566b;
+  font-size: 13px;
+}

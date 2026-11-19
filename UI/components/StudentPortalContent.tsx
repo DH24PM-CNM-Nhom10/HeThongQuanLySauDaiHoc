@@ -119,6 +119,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
   useEffect(() => {
     if (!["grades", "progress"].includes(section) || !ready || user?.role !== "student") return;
     const controller = new AbortController();
+    setAssignedTerm("all");
     setAssignedLoading(true);
     setAssignedError("");
     setAssignedCourses([]);
@@ -141,10 +142,31 @@ export default function StudentPortalContent({ section }: { section: StudentSect
     return () => controller.abort();
   }, [ready, section, user?.role, user?.maHocVien]);
 
-  const availableTerms = useMemo(() => [...new Set(assignedCourses.map(row => `${row.schoolYear}|${row.semester}`))]
-    .sort((a, b) => b.split("|")[0].localeCompare(a.split("|")[0]) || Number(a.split("|")[1]) - Number(b.split("|")[1])), [assignedCourses]);
-  const visibleAssigned = assignedTerm === "all" ? assignedCourses : assignedCourses.filter(
-    row => `${row.schoolYear}|${row.semester}` === assignedTerm);
+  const semesterGroups = useMemo(() => {
+    const groups = new Map<string, { key: string; schoolYear: string; semester: string; rows: CourseGrade[] }>();
+    for (const row of assignedCourses) {
+      const key = JSON.stringify([row.schoolYear, row.semester]);
+      const group = groups.get(key) ?? { key, schoolYear: row.schoolYear, semester: row.semester, rows: [] };
+      group.rows.push(row);
+      groups.set(key, group);
+    }
+    return [...groups.values()]
+      .sort((a, b) => b.schoolYear.localeCompare(a.schoolYear, "vi", { numeric: true }) ||
+        a.semester.localeCompare(b.semester, "vi", { numeric: true }))
+      .map(group => ({
+        ...group,
+        rows: [...group.rows].sort((a, b) => a.courseCode.localeCompare(b.courseCode, "vi", { numeric: true })),
+      }));
+  }, [assignedCourses]);
+  const visibleGroups = useMemo(() => {
+    let offset = 0;
+    return semesterGroups.filter(group => assignedTerm === "all" || group.key === assignedTerm).map(group => {
+      const result = { ...group, offset };
+      offset += group.rows.length;
+      return result;
+    });
+  }, [semesterGroups, assignedTerm]);
+  const visibleCourseCount = visibleGroups.reduce((count, group) => count + group.rows.length, 0);
 
   const code = String(user?.maHocVien || "");
   const myClass = textVal(student, "lop", "maLop", "lopHoc");
@@ -200,37 +222,42 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           </> : <Empty title="Chưa có thời khóa biểu" description="Hiện chưa có lịch học liên kết với mã học viên, lớp hoặc ngành của bạn. Khi dữ liệu lịch được cập nhật, thông tin sẽ xuất hiện tại đây."/>}
         </>}
         {section === "grades" && <div className={styles.assignedGradeSection}>
+          <h1 className={styles.gradeTitle}>Bảng điểm học viên</h1>
           <div className={styles.assignedGradeToolbar}>
-            <label htmlFor="assignedTerm">Năm học / Học kỳ</label>
-            <select id="assignedTerm" value={assignedTerm} onChange={e => setAssignedTerm(e.target.value)}>
+            <label htmlFor="assignedTerm">Học kỳ xem điểm</label>
+            <select id="assignedTerm" disabled={assignedLoading || !semesterGroups.length} value={assignedTerm} onChange={e => setAssignedTerm(e.target.value)}>
               <option value="all">Tất cả học kỳ</option>
-              {availableTerms.map(term => {
-                const [schoolYear, semester] = term.split("|");
-                return <option key={term} value={term}>{schoolYear} · Học kỳ {semester}</option>;
-              })}
+              {semesterGroups.map(group => (
+                <option key={group.key} value={group.key}>Học kỳ {group.semester} · Năm học {group.schoolYear}</option>
+              ))}
             </select>
-            <span className={styles.assignedCount}>{visibleAssigned.length} học phần</span>
+            <span className={styles.assignedCount}>{visibleCourseCount} học phần</span>
           </div>
           {assignedLoading ? <div className={styles.loading}>Đang tải bảng điểm...</div> :
           assignedError ? <p className={styles.gradeError} role="alert">{assignedError}</p> :
-          assignedCourses.length === 0 ? <Empty title="Chưa có học phần được phân công" description="Chưa có phân công giảng dạy nào được lưu cho lớp của bạn."/> :
+          assignedCourses.length === 0 ? <Empty title="Chưa có bảng điểm" description="Khi lớp học phần được ghi nhận, bạn có thể xem kết quả đã công bố tại đây."/> :
           <div className={styles.assignedGradeScroll}>
             <table className={styles.assignedGradeTable}>
               <thead><tr>
-                <th>STT</th><th>Học phần</th><th>Lớp / Học kỳ</th><th>Giảng viên</th>
+                <th scope="col">STT</th><th scope="col">Học phần</th><th scope="col">Lớp</th><th scope="col">Giảng viên</th>
                 <th>Quá trình</th><th>Thi kết thúc</th><th>Tổng kết</th><th>Điểm chữ</th><th>Trạng thái</th>
               </tr></thead>
-              <tbody>{visibleAssigned.map((row, index) => <tr key={row.assignmentId}>
-                <td>{index + 1}</td>
-                <td><strong>{row.courseName}</strong><small>{row.courseCode}</small></td>
-                <td><strong>{row.classCode}</strong><small>{row.schoolYear} · Học kỳ {row.semester}</small></td>
-                <td>{row.teacherName}</td>
-                <td>{scoreCell(row.processScore)}</td>
-                <td>{scoreCell(row.examScore)}</td>
-                <td><strong>{row.totalScore == null ? "—" : row.totalScore.toFixed(2)}</strong></td>
-                <td><strong>{row.letterGrade || "—"}</strong></td>
-                <td><span className={row.status === "da_co_diem" ? styles.gradeCompleted : styles.gradePending}>{gradeStatus(row.status)}</span></td>
-              </tr>)}</tbody>
+              {visibleGroups.map(group => <tbody key={group.key}>
+                {assignedTerm === "all" && <tr className={styles.semesterHeading}>
+                  <th colSpan={9} scope="rowgroup">Học kỳ {group.semester} · Năm học {group.schoolYear}</th>
+                </tr>}
+                {group.rows.map((row, index) => <tr key={row.assignmentId}>
+                  <td>{group.offset + index + 1}</td>
+                  <td><strong>{row.courseName}</strong><small>{row.courseCode}</small></td>
+                  <td>{row.classCode}</td>
+                  <td>{row.teacherName}</td>
+                  <td>{scoreCell(row.processScore)}</td>
+                  <td>{scoreCell(row.examScore)}</td>
+                  <td><strong>{row.totalScore == null ? "—" : row.totalScore.toFixed(2)}</strong></td>
+                  <td><strong>{row.letterGrade || "—"}</strong></td>
+                  <td><span className={row.status === "da_co_diem" ? styles.gradeCompleted : styles.gradePending}>{gradeStatus(row.status)}</span></td>
+                </tr>)}
+              </tbody>)}
             </table>
           </div>}
         </div>}

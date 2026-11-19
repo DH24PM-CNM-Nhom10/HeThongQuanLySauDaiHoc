@@ -125,12 +125,21 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
 
   useEffect(() => {
     let active = true;
-    const sync = () => void verifySession().then(session => {
-      if (!active) return;
-      setUser(session);
-      setTeacherVerified(session?.role === "teacher");
-      setOfficeVerified(session?.role === "training_office");
-    }).catch(() => { if (active) setUser(null); });
+    let latestCheck = 0;
+    const sync = () => {
+      const check = ++latestCheck;
+      void verifySession().then(session => {
+        if (!active || check !== latestCheck) return;
+        setUser(session);
+        setTeacherVerified(session?.role === "teacher");
+        setOfficeVerified(session?.role === "training_office");
+      }).catch(error => {
+        if (active && check === latestCheck) {
+          setUser(null);
+          setLoginError(error instanceof Error ? error.message : "Không kiểm tra được phiên đăng nhập.");
+        }
+      });
+    };
     sync();
     window.addEventListener("agu-auth-changed", sync);
     return () => { active = false; window.removeEventListener("agu-auth-changed", sync); };
@@ -252,13 +261,11 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: inputUser, password }),
         });
+        const data = await response.json();
         if (!response.ok) {
-          setLoginError(response.status === 401
-            ? "Tài khoản hoặc mật khẩu học viên không đúng."
-            : "Không đăng nhập được học viên. Vui lòng kiểm tra Backend.");
+          setLoginError(typeof data.message === "string" ? data.message : "Không đăng nhập được học viên.");
           return;
         }
-        const data: { user?: SessionUser } = await response.json();
         if (!data.user || data.user.role !== "student") throw new Error("Invalid student response");
         session = data.user;
       }

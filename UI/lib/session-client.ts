@@ -13,15 +13,21 @@ const endpoints = {
 };
 
 export async function verifySession(): Promise<SessionUser | null> {
+  const snapshot = localStorage.getItem("currentUser");
   let cached: SessionUser | null = null;
-  try { cached = JSON.parse(localStorage.getItem("currentUser") || "null"); } catch {}
+  try { cached = JSON.parse(snapshot || "null"); } catch {}
   if (!cached || !Object.hasOwn(endpoints, cached.role)) return null;
   const response = await fetch(endpoints[cached.role] + "/me", { cache: "no-store", credentials: "same-origin" });
+  if (localStorage.getItem("currentUser") !== snapshot) return verifySession();
   if (!response.ok) {
+    if (response.status !== 401 && response.status !== 403) {
+      throw new Error("Không kiểm tra được phiên đăng nhập. Vui lòng thử lại.");
+    }
     localStorage.removeItem("currentUser");
     return null;
   }
   const result = await response.json();
+  if (localStorage.getItem("currentUser") !== snapshot) return verifySession();
   if (result.user?.role !== cached.role) {
     localStorage.removeItem("currentUser");
     return null;
@@ -31,7 +37,7 @@ export async function verifySession(): Promise<SessionUser | null> {
 }
 
 export async function logoutSessions(keepRole?: SessionUser["role"]) {
+  if (!keepRole) localStorage.removeItem("currentUser");
   await Promise.all(Object.entries(endpoints).filter(([role]) => role !== keepRole)
     .map(([, endpoint]) => fetch(endpoint + "/logout", { method: "POST", credentials: "same-origin" }).catch(() => null)));
-  if (!keepRole) localStorage.removeItem("currentUser");
 }

@@ -44,6 +44,9 @@ async function run() {
   assert.equal((await auth.POST(request("POST", { username: "admin", password: "wrong" }))).status, 401);
   const loggedIn = await auth.POST(request("POST", { username: "admin", password: "fixture-password" }));
   assert.equal(loggedIn.status, 200);
+  for (const username of ["admin@agu.edu.vn", "admin@student.agu.edu.vn"]) {
+    assert.equal((await auth.POST(request("POST", { username, password: "fixture-password" }))).status, 200);
+  }
   cookie = loggedIn.headers.get("set-cookie").split(";")[0];
   assert.equal((await crud.GET(request("GET"), params)).status, 200);
   const invalid = { maHocVien: "S2", hoTen: "Mới", lop: "L2", maNganh: "M1", tenNganh: "Ngành" };

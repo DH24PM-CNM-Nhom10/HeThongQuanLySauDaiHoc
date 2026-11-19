@@ -52,7 +52,11 @@ export async function POST(request: NextRequest) {
   } else if (process.env.NODE_ENV !== "production" && adminPass) {
     validAdminPassword = safeEqual(password, adminPass);
   }
-  if (adminName && username.toLowerCase() === adminName.toLowerCase() && validAdminPassword) {
+  const normalizedUsername = username.toLowerCase();
+  const adminAliases = adminName.toLowerCase() === "admin"
+    ? ["admin", "admin@agu.edu.vn", "admin@student.agu.edu.vn"]
+    : [adminName.toLowerCase()];
+  if (adminName && adminAliases.includes(normalizedUsername) && validAdminPassword) {
     user = { role: "admin", hoTen: "Quản lý Phòng Đào tạo" };
   } else if (process.env.NODE_ENV !== "production" && studentName && studentPass && username.toLowerCase() === studentName.toLowerCase() && safeEqual(password, studentPass)) {
     const lookup = (process.env.AGU_DEMO_STUDENT_CODE ?? studentName).trim().toLowerCase();
