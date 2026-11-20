@@ -36,7 +36,15 @@ student's CMND/CCCD as the initial password. New teacher accounts use the
 normalized name at `@teacher.agu.edu.vn` as the username and the teacher code
 as the initial password. Both roles must change the initial password at
 `/doi-mat-khau` before accessing their portal; new passwords must be 8–128
-characters. Seeding does not reset credentials for accounts that already exist.
+characters. A student needs a CMND/CCCD value in their record for first login;
+students with existing accounts must use their changed password. Seeding does
+not reset credentials for accounts that already exist.
+
+On the first teacher login, the backend creates the account from the matching
+teacher record in `UI/db.json`; no account seed command is required. This writes
+only the private, ignored `api/.teacher-accounts.local.json` file and does not
+modify the source data. Usernames are generated from the teacher's normalized
+name, and the initial password is the teacher code.
 
 First, run the development server:
 

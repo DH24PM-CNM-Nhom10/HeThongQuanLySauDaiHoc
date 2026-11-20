@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const apiRoot = path.resolve(__dirname, '..');
+const { nextTeacherUsername } = require(path.resolve(apiRoot, '../shared/teacher-account-username.cjs'));
 const accountsPath = path.join(apiRoot, '.teacher-accounts.local.json');
 const uiDbPath = path.resolve(apiRoot, '../UI/db.json');
 const apiDbPath = path.join(apiRoot, 'db.json');
@@ -19,10 +20,6 @@ if (!Array.isArray(teachers) || teachers.length === 0) {
   console.error('Không tìm thấy giảng viên. Hãy kiểm tra UI/db.json hoặc api/db.json');
   process.exit(1);
 }
-const slugify = (s) => String(s ?? '')
-  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  .replace(/đ/g, 'd').replace(/Đ/g, 'D')
-  .toLowerCase().replace(/[^a-z0-9]/g, '');
 const old = fs.existsSync(accountsPath) ? readJson(accountsPath) : [];
 if (!Array.isArray(old)) throw new Error('File tài khoản giảng viên không đúng định dạng');
 const accounts = [...old];
@@ -38,11 +35,8 @@ for (const teacher of teachers) {
     continue;
   }
   if (knownIds.has(teacherId)) continue;
-  const base = slugify(teacher.hoten);
-  if (!base) continue;
-  let name = base, n = 2;
-  while (used.has(`${name}@teacher.agu.edu.vn`)) name = `${base}${n++}`;
-  const username = `${name}@teacher.agu.edu.vn`;
+  const username = nextTeacherUsername(teacher.hoten, used);
+  if (!username) continue;
   const password = teacherId;
   const salt = crypto.randomBytes(16);
   const passwordHash = `scrypt$${salt.toString('hex')}$${crypto.scryptSync(password, salt, 64).toString('hex')}`;
@@ -56,7 +50,6 @@ for (const teacher of teachers) {
     sessionVersion: 0,
     active: true,
   });
-  used.add(username);
   knownIds.add(teacherId);
   created++;
 }

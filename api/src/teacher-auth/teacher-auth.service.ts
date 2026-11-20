@@ -3,6 +3,7 @@ import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { projectRoot, readStore } from '../common/data-store';
+import { nextTeacherUsername } from '../../../shared/teacher-account-username.cjs';
 import type { Request } from 'express';
 
 export type TeacherIdentity = {
@@ -104,6 +105,41 @@ export class TeacherAuthService {
     return crypto.timingSafeEqual(hash, expected);
   }
 
+  private hashPassword(password: string): string {
+    const salt = crypto.randomBytes(16);
+    return `scrypt$${salt.toString('hex')}$${crypto.scryptSync(password, salt, 64).toString('hex')}`;
+  }
+
+  private matchesInitialPassword(password: string, initialPassword: string): boolean {
+    const candidate = Buffer.from(password, 'utf8');
+    const expected = Buffer.from(initialPassword, 'utf8');
+    return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
+  }
+
+  private accountFromSource(username: string, accounts: TeacherAccount[]): TeacherAccount | null {
+    const existingIds = new Set(accounts.map(account => account.teacherId));
+    const usedUsernames = new Set(accounts.map(account => account.username.toLowerCase()));
+    const teachers = readStore().teachers as TeacherSourceRecord[];
+    for (const teacher of teachers) {
+      const teacherId = String(teacher.shcc || teacher.id || '').trim();
+      const hoTen = String(teacher.hoten || '').trim();
+      if (!teacherId || !hoTen || existingIds.has(teacherId)) continue;
+      const generatedUsername = nextTeacherUsername(hoTen, usedUsernames);
+      if (generatedUsername.toLowerCase() !== username) continue;
+      return {
+        teacherId,
+        hoTen,
+        username: generatedUsername,
+        ...(teacher.shcc ? { shcc: String(teacher.shcc) } : {}),
+        passwordHash: '',
+        mustChangePassword: true,
+        sessionVersion: 0,
+        active: true,
+      };
+    }
+    return null;
+  }
+
   login(username: unknown, password: unknown, clientAddress: string): { identity: TeacherIdentity; session: string } {
     if (typeof username !== 'string' || typeof password !== 'string' || username.length > 200 || password.length > 200 || !username.trim() || !password) {
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
@@ -115,7 +151,17 @@ export class TeacherAuthService {
     if (current && current.count >= 5 && now < current.until) {
       throw new UnauthorizedException('Đăng nhập thất bại quá nhiều lần; thử lại sau 15 phút');
     }
-    const account = this.accounts().find((item) => item.username === normalized && item.active);
+    const accounts = this.accounts();
+    let account = accounts.find((item) => item.username === normalized && item.active);
+    if (!account && process.env.NODE_ENV !== 'production') {
+      const candidate = this.accountFromSource(normalized, accounts);
+      if (candidate && this.matchesInitialPassword(password, candidate.teacherId)) {
+        candidate.passwordHash = this.hashPassword(candidate.teacherId);
+        accounts.push(candidate);
+        this.saveAccounts(accounts);
+        account = candidate;
+      }
+    }
     if (!account || !this.matchesPassword(password, account.passwordHash)) {
       const count = current && now < current.until ? current.count + 1 : 1;
       this.failures.set(throttleKey, { count, until: now + 15 * 60_000 });
@@ -164,8 +210,7 @@ export class TeacherAuthService {
     if (!account || !this.matchesPassword(currentPassword, account.passwordHash)) {
       throw new UnauthorizedException('Mật khẩu hiện tại không đúng.');
     }
-    const salt = crypto.randomBytes(16);
-    account.passwordHash = `scrypt$${salt.toString('hex')}$${crypto.scryptSync(newPassword, salt, 64).toString('hex')}`;
+    account.passwordHash = this.hashPassword(newPassword);
     account.mustChangePassword = false;
     const sessionVersion = (account.sessionVersion ?? 0) + 1;
     account.sessionVersion = sessionVersion;
