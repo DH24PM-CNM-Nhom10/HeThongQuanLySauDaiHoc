@@ -1,10 +1,10 @@
-// UI/components/Header.tsx
+
 "use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 import { logoutSessions } from "../lib/session-client";
-import Link from "next/link";
 
 export default function Header() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function Header() {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("currentUser");
+
     if (savedUser) {
       try {
         setCurrentUser(JSON.parse(savedUser));
@@ -23,13 +24,19 @@ export default function Header() {
     }
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -42,35 +49,56 @@ export default function Header() {
   const isAdmin = currentUser?.role === "admin";
   const isTeacher = currentUser?.role === "teacher";
   const isOffice = currentUser?.role === "training_office";
-  const displayName = currentUser?.hoTen || (isAdmin ? "Admin Phòng Đào tạo" : currentUser?.maHocVien || "Học viên");
-  const avatarChar = displayName.trim().charAt(0).toUpperCase() || "U";
+
+  const displayName =
+    currentUser?.hoTen ||
+    (isAdmin
+      ? "Admin Phòng Đào tạo"
+      : isOffice
+      ? "Phòng Đào tạo"
+      : currentUser?.maHocVien || "Học viên");
+
+  const avatarChar =
+    displayName.trim().charAt(0).toUpperCase() || "U";
 
   return (
     <div className="header-bar">
       <div className="header-left">
         <button
+          type="button"
           className="btn-icon"
           title="Thu gọn/Mở rộng menu"
           onClick={() => {
             const el = document.getElementById("sidebar");
             if (!el) return;
+
             const next = !el.classList.contains("open");
+
             el.classList.toggle("open", next);
             el.classList.toggle("collapsed", !next);
+
             window.dispatchEvent(
-              new CustomEvent("sidebar-toggle", { detail: { open: next } })
+              new CustomEvent("sidebar-toggle", {
+                detail: { open: next },
+              })
             );
           }}
         >
           ☰
         </button>
-        <h1 className="page-title">Quản lý đào tạo sau đại học</h1>
+
+        <h1 className="page-title">
+          Quản lý đào tạo sau đại học
+        </h1>
       </div>
 
       <div className="header-right">
         {currentUser && (
-          <div ref={dropdownRef} style={{ position: "relative" }}>
-            {/* Khối Avatar & Họ tên */}
+          <div
+            ref={dropdownRef}
+            style={{ position: "relative" }}
+          >
+            {/* Avatar & Thông tin tài khoản */}
             <div
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               style={{
@@ -80,7 +108,9 @@ export default function Header() {
                 cursor: "pointer",
                 padding: "6px 12px",
                 borderRadius: "8px",
-                backgroundColor: isDropdownOpen ? "#f1f5f9" : "transparent",
+                backgroundColor: isDropdownOpen
+                  ? "#f1f5f9"
+                  : "transparent",
                 transition: "all 0.15s ease",
                 userSelect: "none",
               }}
@@ -90,84 +120,178 @@ export default function Header() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: isAdmin ? "#2563eb" : "#7c3aed",
+                  backgroundColor: isAdmin
+                    ? "#2563eb"
+                    : "#7c3aed",
                   color: "#ffffff",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontWeight: 700,
                   fontSize: "15px",
+                  flexShrink: 0,
                 }}
               >
                 {avatarChar}
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
-                <span style={{ fontSize: "13.5px", fontWeight: 600, color: "#0f172a" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "left",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13.5px",
+                    fontWeight: 600,
+                    color: "#0f172a",
+                  }}
+                >
                   {displayName}
                 </span>
-                <span style={{ fontSize: "11px", color: "#64748b" }}>
-                  {isAdmin ? "Quản trị viên" : isOffice ? "Phòng đào tạo" : isTeacher ? `Mã GV: ${currentUser.shcc || currentUser.teacherId || "Chưa cập nhật"}` : `Mã HV: ${currentUser.maHocVien}` }
+
+                <span
+                  style={{
+                    fontSize: "11px",
+                    color: "#64748b",
+                  }}
+                >
+                  {isAdmin
+                    ? "Quản trị viên"
+                    : isOffice
+                    ? "Phòng đào tạo"
+                    : isTeacher
+                    ? `Mã GV: ${
+                        currentUser.shcc ||
+                        currentUser.teacherId ||
+                        "Chưa cập nhật"
+                      }`
+                    : `Mã HV: ${currentUser.maHocVien}`}
                 </span>
               </div>
 
-              <span style={{ fontSize: "10px", color: "#64748b", marginLeft: "4px" }}>
+              <span
+                style={{
+                  fontSize: "10px",
+                  color: "#64748b",
+                  marginLeft: "4px",
+                }}
+              >
                 {isDropdownOpen ? "▲" : "▼"}
               </span>
             </div>
 
-            {/* Dropdown Menu Tinh Gọn */}
+            {/* Menu tài khoản đồng bộ với trang chủ */}
             {isDropdownOpen && (
               <div
                 style={{
                   position: "absolute",
                   right: 0,
                   top: "calc(100% + 8px)",
-                  width: "220px",
+                  width: "min(355px, calc(100vw - 24px))",
                   backgroundColor: "#ffffff",
                   borderRadius: "12px",
-                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-                  border: "1px solid #e2e8f0",
-                  padding: "6px",
+                  boxShadow:
+                    "0 12px 28px rgba(20, 40, 75, 0.15)",
+                  border: "1px solid #e3e8f0",
+                  padding: "12px",
                   zIndex: 1000,
                 }}
               >
-                {/* Tiêu đề Profile */}
-                <div style={{ padding: "8px 10px", borderBottom: "1px solid #f1f5f9", marginBottom: "4px" }}>
-                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#0f172a" }}>
+                {/* Thông tin tài khoản */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                    padding: "9px 10px 12px",
+                  }}
+                >
+                  <strong
+                    style={{
+                      fontSize: "13.5px",
+                      fontWeight: 750,
+                      color: "#173153",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
                     {displayName}
-                  </div>
-                  <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>
-                    {isAdmin ? "Phòng Đào tạo Sau Đại học" : isOffice ? (currentUser.username || "Phòng đào tạo") : isTeacher ? (currentUser.username || "Tài khoản giảng viên") : `MSHV: ${currentUser.maHocVien}` }
-                  </div>
+                  </strong>
+
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      color: "#7186a2",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {isAdmin
+                      ? "Phòng Đào tạo Sau Đại học"
+                      : isOffice
+                      ? currentUser.username || "Phòng đào tạo"
+                      : isTeacher
+                      ? currentUser.username ||
+                        "Tài khoản giảng viên"
+                      : `MSHV: ${currentUser.maHocVien}`}
+                  </span>
                 </div>
 
-                {/* 2. Đăng xuất */}
-                <div style={{ borderTop: "1px solid #f1f5f9", marginTop: "4px", paddingTop: "4px" }}>
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      padding: "8px 10px",
-                      fontSize: "13px",
-                      color: "#a43b13",
-                      backgroundColor: "#fbe1d5",
-                      border: "none",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      fontWeight: 600,
-                      textAlign: "left",
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f6c7b3")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fbe1d5")}
-                  >
-                    <span>🚪</span>
-                    <span>Đăng xuất</span>
-                  </button>
-                </div>
+                {/* Đường phân cách */}
+                <div
+                  style={{
+                    height: "1px",
+                    backgroundColor: "#e9edf3",
+                    margin: "1px 0 8px",
+                  }}
+                />
+
+                {/* Nút Đăng xuất */}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={{
+                    width: "100%",
+                    minHeight: "54px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: "12px",
+                    padding: "12px 15px",
+                    borderRadius: "9px",
+                    border: "1px solid #f0aa82",
+                    backgroundColor: "#fce2d1",
+                    color: "#b74416",
+                    fontSize: "15px",
+                    fontWeight: 500,
+                    fontFamily: "inherit",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition:
+                      "background-color 0.2s ease, border-color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#fbd4bd";
+                    e.currentTarget.style.borderColor =
+                      "#e89a6c";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#fce2d1";
+                    e.currentTarget.style.borderColor =
+                      "#f0aa82";
+                  }}
+                >
+                  <LogOut
+                    size={18}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                    style={{ flexShrink: 0 }}
+                  />
+                  <span>Đăng xuất</span>
+                </button>
               </div>
             )}
           </div>

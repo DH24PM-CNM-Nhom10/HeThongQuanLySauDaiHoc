@@ -12,7 +12,7 @@ interface ThongBaoRow extends RowDataPacket {
     ten_file: string;
     duong_dan_file: string;
     ngay_dang: string;
-    trang_thai: number;
+    trang_thai: 'nhap' | 'da_dang';
 }
 
 export async function GET(request: NextRequest) {
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         ) AS ngay_dang,
         trang_thai
       FROM thong_bao
-      WHERE trang_thai = 1
+      WHERE trang_thai = 'da_dang'
       ORDER BY
         ngay_dang DESC,
         ma_thong_bao DESC
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
             ten_file: row.ten_file,
             duong_dan_file: row.duong_dan_file,
             ngay_dang: row.ngay_dang,
-            trang_thai: Number(row.trang_thai),
+            trang_thai: row.trang_thai,
         }));
 
         return NextResponse.json(
