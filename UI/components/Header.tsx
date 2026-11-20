@@ -2,12 +2,13 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logoutSessions } from "../lib/session-client";
 import Link from "next/link";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,10 +34,16 @@ export default function Header() {
   }, []);
 
   const handleLogout = async () => {
+    const destination =
+      currentUser?.role === "admin" || currentUser?.role === "training_office"
+        ? "/admin"
+        : "/";
     await logoutSessions();
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("aguAuthSource");
     setIsDropdownOpen(false);
-    router.push("/");
+    if (pathname === destination) window.dispatchEvent(new Event("agu-auth-changed"));
+    router.replace(destination);
   };
 
   const isAdmin = currentUser?.role === "admin";

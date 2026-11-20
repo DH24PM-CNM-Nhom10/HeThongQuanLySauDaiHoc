@@ -2,6 +2,33 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+The Next.js app serves database-backed API routes, including `/api/thong-bao`.
+Configure its MySQL connection in `UI/.env.local` (this is separate from
+`api/.env`):
+
+```dotenv
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=quan_ly_dao_tao_sdh
+```
+
+You can use [`.env.example`](./.env.example) as a template. Set the values to
+match your MySQL server and database, then restart the Next.js dev server so it
+loads the configuration. Do not commit `.env.local`.
+
+Admin and Training Office sign in at `http://localhost:3000/admin`. Admin opens
+the dashboard there; Training Office is sent to `/assignment`. Students and
+teachers use the shared portal and sign in at `http://localhost:3000/`.
+
+New student accounts use the student code as the username and the
+student's CMND/CCCD as the initial password. New teacher accounts use the
+normalized name at `@teacher.agu.edu.vn` as the username and the teacher code
+as the initial password. Both roles must change the initial password at
+`/doi-mat-khau` before accessing their portal; new passwords must be 8–128
+characters. Seeding does not reset credentials for accounts that already exist.
+
 First, run the development server:
 
 ```bash

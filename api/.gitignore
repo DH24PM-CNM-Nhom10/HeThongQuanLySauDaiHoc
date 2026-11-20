@@ -76,3 +76,5 @@ teacher-credentials.local.csv
 .teacher-grades.local.json.tmp
 # Local student demo session signing key
 .student-auth-secret
+.student-accounts.local.json*
+.student-auth-backups/

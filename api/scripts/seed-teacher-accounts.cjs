@@ -4,7 +4,6 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const apiRoot = path.resolve(__dirname, '..');
 const accountsPath = path.join(apiRoot, '.teacher-accounts.local.json');
-const csvPath = path.join(apiRoot, 'teacher-credentials.local.csv');
 const uiDbPath = path.resolve(apiRoot, '../UI/db.json');
 const apiDbPath = path.join(apiRoot, 'db.json');
 const isDemo = process.argv.includes('--demo');
@@ -29,33 +28,44 @@ if (!Array.isArray(old)) throw new Error('File tài khoản giảng viên không
 const accounts = [...old];
 const used = new Set(accounts.map((a) => String(a.username).toLowerCase()));
 const knownIds = new Set(accounts.map((a) => String(a.teacherId)));
-const csv = [['Họ tên','Mã SHCC','Tên đăng nhập','Mật khẩu mới']];
 let created = 0;
-for (const [i, teacher] of teachers.entries()) {
+let skippedWithoutCode = 0;
+for (const teacher of teachers) {
   if (!teacher || !teacher.hoten) continue;
-  const teacherId = String(teacher.shcc || teacher.id || `teacher-${i + 1}`);
+  const teacherId = String(teacher.shcc || teacher.id || '').trim();
+  if (!teacherId) {
+    skippedWithoutCode++;
+    continue;
+  }
   if (knownIds.has(teacherId)) continue;
   const base = slugify(teacher.hoten);
   if (!base) continue;
   let name = base, n = 2;
   while (used.has(`${name}@teacher.agu.edu.vn`)) name = `${base}${n++}`;
   const username = `${name}@teacher.agu.edu.vn`;
-  const password = isDemo ? name : crypto.randomBytes(12).toString('base64url');
+  const password = teacherId;
   const salt = crypto.randomBytes(16);
   const passwordHash = `scrypt$${salt.toString('hex')}$${crypto.scryptSync(password, salt, 64).toString('hex')}`;
-  accounts.push({ teacherId, hoTen: teacher.hoten, shcc: String(teacher.shcc || ''), username, passwordHash, active: true });
+  accounts.push({
+    teacherId,
+    hoTen: teacher.hoten,
+    shcc: String(teacher.shcc || ''),
+    username,
+    passwordHash,
+    mustChangePassword: true,
+    sessionVersion: 0,
+    active: true,
+  });
   used.add(username);
   knownIds.add(teacherId);
-  csv.push([teacher.hoten, String(teacher.shcc || ''), username, password]);
   created++;
 }
 if (created) {
   fs.writeFileSync(accountsPath, JSON.stringify(accounts, null, 2), { mode: 0o600 });
-  const esc = (s) => `"${String(s).replaceAll('"', '""')}"`;
-  fs.writeFileSync(csvPath, '\ufeff' + csv.map((row) => row.map(esc).join(',')).join('\r\n'), { mode: 0o600 });
 }
 console.log(`Giảng viên nguồn: ${teachers.length}; tài khoản đã có: ${old.length}; tạo mới: ${created}; tổng: ${accounts.length}`);
-if (created) console.log(`Đã xuất tài khoản MỚI vào: ${csvPath}`);
-if (!created) console.log('Không tạo lại mật khẩu của tài khoản đã tồn tại. Nếu quên mật khẩu, cần chức năng reset có kiểm soát.');
+if (created) console.log('Tài khoản mới dùng mã giảng viên làm mật khẩu khởi tạo và phải đổi mật khẩu ở lần đăng nhập đầu.');
+if (skippedWithoutCode) console.log(`Bỏ qua ${skippedWithoutCode} giảng viên không có mã giảng viên.`);
+if (!created) console.log('Không tạo lại mật khẩu của tài khoản đã tồn tại.');
 if (isDemo) console.warn('CẢNH BÁO: chế độ --demo dùng mật khẩu dễ đoán, chỉ chạy cục bộ với dữ liệu giả lập.');
-console.log('Không được commit file .teacher-accounts.local.json hay teacher-credentials.local.csv.');
+console.log('Không được commit file .teacher-accounts.local.json.');

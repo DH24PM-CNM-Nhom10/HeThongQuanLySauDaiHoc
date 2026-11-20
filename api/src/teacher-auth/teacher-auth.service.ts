@@ -1,8 +1,8 @@
-import { Injectable, UnauthorizedException, ServiceUnavailableException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { readStore } from '../common/data-store';
+import { projectRoot, readStore } from '../common/data-store';
 import type { Request } from 'express';
 
 export type TeacherIdentity = {
@@ -10,6 +10,7 @@ export type TeacherIdentity = {
   teacherId: string;
   hoTen: string;
   username: string;
+  mustChangePassword: boolean;
   shcc?: string;
 };
 
@@ -38,17 +39,19 @@ type TeacherAccount = {
   username: string;
   shcc?: string;
   passwordHash: string;
+  mustChangePassword?: boolean;
+  sessionVersion?: number;
   active: boolean;
 };
 
-type SessionPayload = { sub: string; exp: number };
+type SessionPayload = { sub: string; exp: number; v?: number };
 const COOKIE_NAME = 'agu_teacher_session';
 const SESSION_SECONDS = 8 * 60 * 60;
 
 @Injectable()
 export class TeacherAuthService {
-  private readonly accountsFile = path.join(process.cwd(), '.teacher-accounts.local.json');
-  private readonly secretFile = path.join(process.cwd(), '.teacher-auth-secret');
+  private readonly accountsFile = path.join(projectRoot(), 'api', '.teacher-accounts.local.json');
+  private readonly secretFile = path.join(projectRoot(), 'api', '.teacher-auth-secret');
   private secret: Buffer | null = null;
   private readonly failures = new Map<string, { count: number; until: number }>();
 
@@ -59,6 +62,17 @@ export class TeacherAuthService {
       return Array.isArray(parsed) ? parsed as TeacherAccount[] : [];
     } catch {
       throw new ServiceUnavailableException('Không đọc được kho tài khoản giảng viên');
+    }
+  }
+
+  private saveAccounts(accounts: TeacherAccount[]) {
+    fs.mkdirSync(path.dirname(this.accountsFile), { recursive: true, mode: 0o700 });
+    const temporary = `${this.accountsFile}.${crypto.randomUUID()}.tmp`;
+    try {
+      fs.writeFileSync(temporary, JSON.stringify(accounts, null, 2) + '\n', { mode: 0o600, flag: 'wx' });
+      fs.renameSync(temporary, this.accountsFile);
+    } finally {
+      if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
     }
   }
 
@@ -109,11 +123,25 @@ export class TeacherAuthService {
     }
     this.failures.delete(throttleKey);
     const identity = this.publicIdentity(account);
-    return { identity, session: this.sign({ sub: account.teacherId, exp: Math.floor(now / 1000) + SESSION_SECONDS }) };
+    return {
+      identity,
+      session: this.sign({
+        sub: account.teacherId,
+        exp: Math.floor(now / 1000) + SESSION_SECONDS,
+        v: account.sessionVersion ?? 0,
+      }),
+    };
   }
 
   private publicIdentity(account: TeacherAccount): TeacherIdentity {
-    return { role: 'teacher', teacherId: account.teacherId, hoTen: account.hoTen, username: account.username, ...(account.shcc ? { shcc: account.shcc } : {}) };
+    return {
+      role: 'teacher',
+      teacherId: account.teacherId,
+      hoTen: account.hoTen,
+      username: account.username,
+      mustChangePassword: Boolean(account.mustChangePassword),
+      ...(account.shcc ? { shcc: account.shcc } : {}),
+    };
   }
 
   private sign(payload: SessionPayload): string {
@@ -122,7 +150,37 @@ export class TeacherAuthService {
     return `${body}.${mac}`;
   }
 
-  fromRequest(req: Request): TeacherIdentity {
+  changePassword(req: Request, currentPassword: unknown, newPassword: unknown) {
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' ||
+      newPassword.trim().length < 8 || newPassword.length > 128) {
+      throw new BadRequestException('Mật khẩu mới phải có ít nhất 8 ký tự và không quá 128 ký tự.');
+    }
+    if (currentPassword === newPassword) {
+      throw new BadRequestException('Mật khẩu mới phải khác mật khẩu hiện tại.');
+    }
+    const identity = this.fromRequest(req, true);
+    const accounts = this.accounts();
+    const account = accounts.find(item => item.teacherId === identity.teacherId && item.active);
+    if (!account || !this.matchesPassword(currentPassword, account.passwordHash)) {
+      throw new UnauthorizedException('Mật khẩu hiện tại không đúng.');
+    }
+    const salt = crypto.randomBytes(16);
+    account.passwordHash = `scrypt$${salt.toString('hex')}$${crypto.scryptSync(newPassword, salt, 64).toString('hex')}`;
+    account.mustChangePassword = false;
+    const sessionVersion = (account.sessionVersion ?? 0) + 1;
+    account.sessionVersion = sessionVersion;
+    this.saveAccounts(accounts);
+    return {
+      identity: this.publicIdentity(account),
+      session: this.sign({
+        sub: account.teacherId,
+        exp: Math.floor(Date.now() / 1000) + SESSION_SECONDS,
+        v: sessionVersion,
+      }),
+    };
+  }
+
+  fromRequest(req: Request, allowPasswordChange = false): TeacherIdentity {
     const rawCookie = (req.headers.cookie ?? '').split(';').map((entry) => entry.trim()).find((part) => part.startsWith(`${COOKIE_NAME}=`));
     if (!rawCookie) throw new UnauthorizedException('Giảng viên chưa đăng nhập');
     const token = rawCookie.slice(COOKIE_NAME.length + 1);
@@ -137,6 +195,10 @@ export class TeacherAuthService {
     if (!payload || typeof payload.sub !== 'string' || typeof payload.exp !== 'number' || payload.exp <= Date.now() / 1000) throw new UnauthorizedException('Phiên đăng nhập hết hạn');
     const account = this.accounts().find((item) => item.teacherId === payload.sub && item.active);
     if (!account) throw new UnauthorizedException('Tài khoản không tồn tại hoặc đã khóa');
+    if ((payload.v ?? 0) !== (account.sessionVersion ?? 0)) throw new UnauthorizedException('Phiên đăng nhập đã hết hạn');
+    if (account.mustChangePassword && !allowPasswordChange) {
+      throw new ForbiddenException('Bạn phải đổi mật khẩu trước khi sử dụng hệ thống.');
+    }
     return this.publicIdentity(account);
   }
 

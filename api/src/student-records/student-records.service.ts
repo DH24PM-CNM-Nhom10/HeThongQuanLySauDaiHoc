@@ -1,24 +1,29 @@
-import { Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { readStore, studentCode } from '../common/data-store';
+import { projectRoot, readStore, studentCode } from '../common/data-store';
 import type { Request } from 'express';
 
 export type StudentIdentity = {
-  role: 'student'; maHocVien: string; hoTen: string; email: string;
+  role: 'student'; maHocVien: string; hoTen: string; email: string; mustChangePassword: boolean;
 };
 type SourceStudent = Record<string, unknown>;
-type Session = { sub: string; exp: number };
+type StudentAccount = {
+  maHocVien: string;
+  passwordHash: string;
+  mustChangePassword: boolean;
+  sessionVersion: number;
+  active: boolean;
+};
+type Session = { sub: string; exp: number; v?: number };
 const COOKIE = 'agu_student_grades_session';
 const MAX_AGE_SECONDS = 8 * 60 * 60;
 
-/** Xác thực chỉ phục vụ tài khoản học viên DEMO theo quy tắc mật khẩu = mã học viên.
- * Cần thay bằng hệ thống định danh thực trước khi triển khai với dữ liệu thật.
- */
 @Injectable()
 export class StudentRecordsService {
-  private readonly secretFile = path.join(process.cwd(), '.student-auth-secret');
+  private readonly accountsFile = path.join(projectRoot(), 'api', '.student-accounts.local.json');
+  private readonly secretFile = path.join(projectRoot(), 'api', '.student-auth-secret');
   private secret: Buffer | null = null;
   private readonly attempts = new Map<string, { count: number; until: number }>();
 
@@ -45,19 +50,85 @@ export class StudentRecordsService {
     return readStore().students as SourceStudent[];
   }
 
-  private findStudent(code: string): StudentIdentity | null {
+  private findStudent(code: string): SourceStudent | null {
     const input = code.trim().toLowerCase();
-    const matches = this.students().filter(item => {
-      const id = studentCode(item).toLowerCase();
-      const email = String(item.email || item.Email || '').trim().toLowerCase();
-      return Boolean(id && (input === id || input === email ||
-        input === id + '@student.agu.edu.vn' || input === id + '@agu.edu.vn'));
-    });
+    const matches = this.students().filter(item => studentCode(item).toLowerCase() === input);
     if (matches.length !== 1) return null;
-    const student = matches[0];
-    const maHocVien = String(student.maHocVien || student.ma_hoc_vien || student.MA_HOC_VIEN || student.mahv || '').trim();
-    return { role: 'student', maHocVien, hoTen: String(student.hoTen || student.ho_ten || student.HO_TEN || 'Học viên').trim(),
-      email: String(student.email || `${maHocVien}@student.agu.edu.vn`) };
+    return matches[0];
+  }
+
+  private identity(student: SourceStudent, mustChangePassword: boolean): StudentIdentity {
+    const maHocVien = studentCode(student);
+    return {
+      role: 'student',
+      maHocVien,
+      hoTen: String(student.hoTen || student.ho_ten || student.HO_TEN || 'Học viên').trim(),
+      email: String(student.email || `${maHocVien}@student.agu.edu.vn`),
+      mustChangePassword,
+    };
+  }
+
+  private initialPassword(student: SourceStudent): string {
+    const value = student.cccd ?? student.CCCD ?? student.cmnd ?? student.CMND ??
+      student.soCCCD ?? student.soCMND;
+    if (typeof value === 'string') return value.trim();
+    return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0
+      ? String(value)
+      : '';
+  }
+
+  private accounts(): StudentAccount[] {
+    if (!fs.existsSync(this.accountsFile)) return [];
+    try {
+      const parsed: unknown = JSON.parse(fs.readFileSync(this.accountsFile, 'utf8'));
+      if (Array.isArray(parsed)) return parsed as StudentAccount[];
+    } catch {
+      throw new ServiceUnavailableException('Không đọc được kho tài khoản học viên');
+    }
+    throw new ServiceUnavailableException('Kho tài khoản học viên không đúng định dạng');
+  }
+
+  private saveAccounts(accounts: StudentAccount[]) {
+    fs.mkdirSync(path.dirname(this.accountsFile), { recursive: true, mode: 0o700 });
+    const temporary = `${this.accountsFile}.${crypto.randomUUID()}.tmp`;
+    try {
+      fs.writeFileSync(temporary, JSON.stringify(accounts, null, 2), { mode: 0o600, flag: 'wx' });
+      fs.renameSync(temporary, this.accountsFile);
+    } finally {
+      if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
+    }
+  }
+
+  private hashPassword(password: string): string {
+    const salt = crypto.randomBytes(16);
+    return `scrypt$${salt.toString('hex')}$${crypto.scryptSync(password, salt, 64).toString('hex')}`;
+  }
+
+  private matchesPassword(password: string, encoded: string): boolean {
+    const [algorithm, salt, digest, ...extra] = encoded.split('$');
+    if (algorithm !== 'scrypt' || extra.length ||
+      !/^[a-f0-9]{32}$/.test(salt || '') || !/^[a-f0-9]{128}$/.test(digest || '')) return false;
+    const expected = Buffer.from(digest, 'hex');
+    return crypto.timingSafeEqual(
+      crypto.scryptSync(password, Buffer.from(salt, 'hex'), 64),
+      expected,
+    );
+  }
+
+  private matchesInitialPassword(password: string, initialPassword: string): boolean {
+    const candidate = Buffer.from(password, 'utf8');
+    const expected = Buffer.from(initialPassword, 'utf8');
+    return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
+  }
+
+  private createSession(maHocVien: string, sessionVersion: number): string {
+    const content = Buffer.from(JSON.stringify({
+      sub: maHocVien,
+      exp: Math.floor(Date.now() / 1000) + MAX_AGE_SECONDS,
+      v: sessionVersion,
+    } satisfies Session)).toString('base64url');
+    const mac = crypto.createHmac('sha256', this.secretKey()).update(content).digest('base64url');
+    return `${content}.${mac}`;
   }
 
   login(username: unknown, password: unknown, ip: string) {
@@ -75,21 +146,61 @@ export class StudentRecordsService {
     const previous = this.attempts.get(key);
     if (previous && previous.until > now && previous.count >= 5) throw new UnauthorizedException('Tài khoản bị tạm khóa 15 phút');
     const student = code ? this.findStudent(code) : null;
-    // Chỉ áp dụng cho DEMO: mật khẩu được đặt là mã học viên.
-    const ok = student && password === student.maHocVien;
-    if (!ok) {
+    const maHocVien = student ? studentCode(student) : '';
+    const accounts = this.accounts();
+    let account = accounts.find(item => item.maHocVien.toUpperCase() === maHocVien);
+    const firstPassword = !account && student ? this.initialPassword(student) : '';
+    const valid = student && (account
+      ? account.active && this.matchesPassword(password, account.passwordHash)
+      : Boolean(firstPassword) && this.matchesInitialPassword(password, firstPassword));
+    if (!valid || !account && !firstPassword) {
       this.attempts.set(key, { count: previous && previous.until > now ? previous.count + 1 : 1,
         until: now + 15 * 60_000 });
       throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu học viên');
     }
+    if (!account && student) {
+      account = {
+        maHocVien,
+        passwordHash: this.hashPassword(firstPassword),
+        mustChangePassword: true,
+        sessionVersion: 0,
+        active: true,
+      };
+      accounts.push(account);
+      this.saveAccounts(accounts);
+    }
     this.attempts.delete(key);
-    const content = Buffer.from(JSON.stringify({ sub: student.maHocVien,
-      exp: Math.floor(now / 1000) + MAX_AGE_SECONDS } satisfies Session)).toString('base64url');
-    const mac = crypto.createHmac('sha256', this.secretKey()).update(content).digest('base64url');
-    return { user: student, session: `${content}.${mac}` };
+    return {
+      user: this.identity(student, Boolean(account?.mustChangePassword)),
+      session: this.createSession(maHocVien, account?.sessionVersion ?? 0),
+    };
   }
 
-  fromRequest(req: Request): StudentIdentity {
+  changePassword(req: Request, currentPassword: unknown, newPassword: unknown) {
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' ||
+      newPassword.trim().length < 8 || newPassword.length > 128) {
+      throw new BadRequestException('Mật khẩu mới phải có ít nhất 8 ký tự và không quá 128 ký tự.');
+    }
+    if (currentPassword === newPassword) {
+      throw new BadRequestException('Mật khẩu mới phải khác mật khẩu hiện tại.');
+    }
+    const identity = this.fromRequest(req, true);
+    const accounts = this.accounts();
+    const account = accounts.find(item => item.maHocVien.toUpperCase() === identity.maHocVien.toUpperCase() && item.active);
+    if (!account || !this.matchesPassword(currentPassword, account.passwordHash)) {
+      throw new UnauthorizedException('Mật khẩu hiện tại không đúng.');
+    }
+    account.passwordHash = this.hashPassword(newPassword);
+    account.mustChangePassword = false;
+    account.sessionVersion = (account.sessionVersion ?? 0) + 1;
+    this.saveAccounts(accounts);
+    return {
+      user: { ...identity, mustChangePassword: false },
+      session: this.createSession(identity.maHocVien, account.sessionVersion),
+    };
+  }
+
+  fromRequest(req: Request, allowPasswordChange = false): StudentIdentity {
     const raw = (req.headers.cookie || '').split(';').map(v => v.trim())
       .find(v => v.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
     if (!raw) throw new UnauthorizedException('Học viên cần đăng nhập lại');
@@ -110,6 +221,13 @@ export class StudentRecordsService {
     }
     const student = this.findStudent(payload.sub);
     if (!student) throw new UnauthorizedException('Không tìm thấy tài khoản học viên');
-    return student;
+    const account = this.accounts().find(item => item.maHocVien === studentCode(student) && item.active);
+    if (!account || (payload.v ?? 0) !== (account.sessionVersion ?? 0)) {
+      throw new UnauthorizedException('Phiên đăng nhập đã hết hạn');
+    }
+    if (account.mustChangePassword && !allowPasswordChange) {
+      throw new ForbiddenException('Bạn phải đổi mật khẩu trước khi sử dụng hệ thống.');
+    }
+    return this.identity(student, Boolean(account.mustChangePassword));
   }
 }
