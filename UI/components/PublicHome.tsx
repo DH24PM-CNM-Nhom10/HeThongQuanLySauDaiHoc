@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import styles from "./PublicHome.module.css";
 import PublicAccountMenu from "./PublicAccountMenu";
+import OfficeNoticeInline from "./OfficeNoticeInline";
 import StudentPortalContent, { type StudentSection } from "./StudentPortalContent";
 import TeacherPortalContent from "./TeacherPortalContent";
 import TeacherSchedule from "./TeacherSchedule";
@@ -61,6 +62,7 @@ const studentLinks = [
 type ThongBao = {
   ma_thong_bao: number;
   tieu_de: string;
+  noi_dung?: string;
   ten_file: string;
   duong_dan_file: string;
   ngay_dang: string;
@@ -98,6 +100,7 @@ function chuanHoaThongBao(raw: unknown): ThongBao | null {
   return {
     ma_thong_bao: id,
     tieu_de: row.tieu_de,
+    noi_dung: typeof row.noi_dung === "string" ? row.noi_dung : "",
     ten_file: typeof row.ten_file === "string" ? row.ten_file : "",
     duong_dan_file:
       typeof row.duong_dan_file === "string" ? row.duong_dan_file : "",
@@ -122,6 +125,9 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const [dangTai, setDangTai] = useState(false);
   const [loiThongBao, setLoiThongBao] = useState("");
   const [timKiem, setTimKiem] = useState("");
+  const [noticePage, setNoticePage] = useState(1);
+  const [selectedNotice, setSelectedNotice] = useState<ThongBao | null>(null);
+  const [officeReload, setOfficeReload] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -175,6 +181,43 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         }
         if (!Array.isArray(rows)) throw new Error("API trả về dữ liệu không phải danh sách thông báo.");
         const items = rows.map(chuanHoaThongBao).filter((item): item is ThongBao => item !== null);
+
+        try {
+          const extraResponse = await fetch(
+            "/api/office-notices/public",
+            {
+              signal: controller.signal,
+              cache: "no-store",
+            }
+          );
+
+          if (extraResponse.ok) {
+            const extra = await extraResponse.json();
+
+            if (Array.isArray(extra.data)) {
+              const officeItems: ThongBao[] = extra.data.map(
+                (row: Record<string, unknown>) => ({
+                  ma_thong_bao: Number(row.ma_thong_bao) + 1000000000,
+                  tieu_de: String(row.tieu_de || ""),
+                  noi_dung: String(row.noi_dung || ""),
+                  ten_file: String(row.ten_file || ""),
+                  duong_dan_file: String(row.duong_dan_file || ""),
+                  ngay_dang: String(row.ngay_dang || ""),
+                  trang_thai: 1,
+                })
+              );
+
+              items.push(...officeItems);
+            }
+          }
+        } catch (error) {
+          if (controller.signal.aborted) return;
+          console.warn(
+            "Không tải được thông báo Phòng đào tạo",
+            error
+          );
+        }
+
         if (!controller.signal.aborted) setDanhSach(items);
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -186,7 +229,8 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
     }
     void taiThongBao();
     return () => controller.abort();
-  }, [isNoticePage, page]);
+  }, [isNoticePage, page, officeReload]);
+
 
   const ketQua = useMemo(() => {
     const keyword = timKiem.trim().toLocaleLowerCase("vi");
@@ -198,8 +242,11 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         (new Date(b.ngay_dang).getTime() || 0) - (new Date(a.ngay_dang).getTime() || 0) ||
         b.ma_thong_bao - a.ma_thong_bao);
   }, [danhSach, page, timKiem]);
-  const hienThi = page === "home" ? ketQua.slice(0, SO_THONG_BAO_TRANG_CHU) : ketQua;
-
+  const totalNoticePages = Math.max(1, Math.ceil(ketQua.length / 10));
+  const currentNoticePage = Math.min(noticePage, totalNoticePages);
+  const hienThi = page === "home"
+    ? ketQua.slice(0, SO_THONG_BAO_TRANG_CHU)
+    : ketQua.slice((currentNoticePage - 1) * 10, currentNoticePage * 10);
   const handleInlineLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (loggingIn) return;
@@ -410,6 +457,45 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   {!!timKiem && <button type="button" className={styles.clearSearch} onClick={() => setTimKiem("")} aria-label="Xóa tìm kiếm">Xóa</button>}
                 </div>
               )}
+              {page === "notices" && officeVerified &&
+               user?.role === "training_office" && (
+              <OfficeNoticeInline
+               onChanged={() => setOfficeReload(x => x + 1)}
+              />
+              )}
+
+              {selectedNotice && (
+                <div className={styles.officeNoticeDetail}>
+                  <button
+                    type="button"
+                      onClick={() => setSelectedNotice(null)}
+                    >
+                      ← Quay lại danh sách
+                    </button>
+
+                    <h2>{selectedNotice.tieu_de}</h2>
+
+                    <p>{dinhDangNgay(selectedNotice.ngay_dang)}</p>
+
+                    <div className={styles.officeNoticeContent}>
+                      {selectedNotice.noi_dung ||
+                        "Không có nội dung chi tiết."}
+                    </div>
+
+                    {linkTaiLieuHopLe(selectedNotice.duong_dan_file) && (
+                      <a
+                        href={
+                          linkTaiLieuHopLe(selectedNotice.duong_dan_file)!
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Xem tệp đính kèm
+                      </a>
+                    )}
+                  </div>
+                )}
+
               <div className={styles.noticeList}>
                 {dangTai ? (
                   <div className={styles.emptyState}><strong>Đang tải thông báo...</strong></div>
@@ -424,9 +510,13 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                       <div className={styles.noticeBody}>
                         <div className={styles.noticeTitleRow}>
                           {index === 0 && !timKiem && <span className={styles.newFlag}>MỚI NHẤT</span>}
-                          {url ? (
-                            <a href={url} target="_blank" rel="noopener noreferrer" className={styles.noticeTitle}>{item.tieu_de}</a>
-                          ) : <strong className={styles.noticeTitle}>{item.tieu_de}</strong>}
+                          <button
+                           type="button"
+                            className={styles.officeNoticeTitle}
+                           onClick={() => setSelectedNotice(item)}
+                          >
+                          {item.tieu_de}
+                          </button>
                         </div>
                         <div className={styles.noticeMeta}>
                           <span>{dinhDangNgay(item.ngay_dang)}</span>
@@ -450,6 +540,29 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   <Link href="/thong-bao">Xem tất cả thông báo</Link>
                 ) : <span>Đang hiển thị {ketQua.length} thông báo{timKiem ? ` phù hợp trong ${danhSach.length} bản ghi` : ""}.</span>}
               </div>
+
+{page === "notices" && totalNoticePages > 1 && (
+  <div className={styles.officeNoticePagination}>
+    <button
+      type="button"
+      disabled={currentNoticePage === 1}
+      onClick={() =>
+        setNoticePage(p => Math.max(1, p - 1))
+      }
+    >
+      Trước
+    </button>
+
+    <span>
+      Trang {currentNoticePage}/{totalNoticePages}
+    </span>
+
+    <button
+      type="button"
+      disabled={currentNoticePage === totalNoticePages}
+      onClick={() =>
+        setNoticePage(p => Math.min(totalNoticePages, p + 1) )}> Sau </button></div> )}
+
             </section>
           ) : isStudentPage ? (
             user?.role === "student" ? <StudentPortalContent section={page as StudentSection} /> : (
