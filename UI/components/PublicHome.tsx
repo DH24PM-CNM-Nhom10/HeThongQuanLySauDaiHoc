@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { ArrowUpRight, Globe, GraduationCap, MapPin, Menu, Phone, X } from "lucide-react";
+import Image from "next/image";
 import styles from "./PublicHome.module.css";
 import PublicAccountMenu from "./PublicAccountMenu";
 import OfficeNoticeInline from "./OfficeNoticeInline";
@@ -574,7 +575,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
               </section>
             )
           ) : (
-            <section className={styles.infoPanel} aria-label={page === "programs" ? "Chương trình đào tạo" : page === "contact" ? "Liên hệ" : "Giới thiệu"}>
+            <section className={page === "programs" ? styles.infoPanel : undefined} aria-label={page === "programs" ? "Chương trình đào tạo" : page === "contact" ? "Liên hệ" : "Giới thiệu"}>
               {page === "programs" && (
                 <div className={styles.emptyInfo}>
                   <strong>Chưa có tài liệu chương trình đào tạo được đăng tải</strong>
@@ -582,17 +583,139 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                 </div>
               )}
               {page === "contact" && (
-                <div className={styles.infoLinkCard}>
-                  <strong>Website Trường Đại học An Giang</strong>
-                  <span>Xem các kênh liên hệ do nhà trường công bố.</span>
-                  <a href="https://www.agu.edu.vn/" target="_blank" rel="noopener noreferrer">Truy cập website trường</a>
+                <div className={styles.infoContent}>
+                  <header className={styles.infoHero}>
+                    <div className={styles.infoHeroText}>
+                      <h1>Thông tin liên hệ</h1>
+                      <p>
+                        Liên hệ Phòng Quản lý Khoa học và Đào tạo Sau đại học để
+                        hỏi về tuyển sinh, hồ sơ hoặc thủ tục học vụ.
+                      </p>
+                      <a className={styles.infoAction} href="tel:+842966256565">
+                        <Phone size={17} aria-hidden="true" /> Gọi văn phòng
+                      </a>
+                    </div>
+                    <figure className={styles.infoPhoto}>
+                      <Image
+                        src="https://www.agu.edu.vn/assets/frontend/images/phattrienbenvung/no-luc-cai-thien-tinh-hinh-giao-thong/h3.jpg"
+                        alt="Cổng chính Trường Đại học An Giang"
+                        fill
+                        preload
+                        unoptimized
+                      />
+                      <figcaption>
+                        <a href="https://www.agu.edu.vn/vi/phat-trien-ben-vung/no-luc-cai-thien-tinh-hinh-giao-thong">
+                          Ảnh: Trường Đại học An Giang
+                        </a>
+                      </figcaption>
+                    </figure>
+                  </header>
+                  <div className={styles.infoGrid}>
+                    <section className={styles.infoLinkCard}>
+                      <h2>
+                        <MapPin aria-hidden="true" /> Văn phòng và điện thoại
+                      </h2>
+                      <address>
+                        Lầu 2, Khu Hiệu bộ, Trường Đại học An Giang, số 18 Ung
+                        Văn Khiêm, phường Long Xuyên, tỉnh An Giang.
+                      </address>
+                      <p>
+                        <a href="tel:+842966256565">(0296) 625 6565</a> · Máy lẻ
+                        1720
+                      </p>
+                      <a href="https://www.google.com/maps/search/?api=1&query=Tr%C6%B0%E1%BB%9Dng%20%C4%90%E1%BA%A1i%20h%E1%BB%8Dc%20An%20Giang%2C%2018%20Ung%20V%C4%83n%20Khi%C3%AAm">
+                        Xem đường đi trên Google Maps
+                      </a>
+                      <a href="https://pgd.agu.edu.vn/storage/844bb3d7f10387d705c2dfb6d17d6b03.pdf">
+                        Xem thông tin liên hệ trong thông báo của Trường (PDF)
+                      </a>
+                    </section>
+                    <section className={styles.infoLinkCard}>
+                      <h2>
+                        <Globe aria-hidden="true" /> Kênh thông tin chính thức
+                      </h2>
+                      <p>
+                        Tra cứu điều kiện dự tuyển, thành phần hồ sơ và thời hạn
+                        nộp theo thông báo của từng đợt.
+                      </p>
+                      <a href="https://pgd.agu.edu.vn/">
+                        Website Phòng Quản lý Khoa học và Đào tạo Sau đại học
+                      </a>
+                      <a href="https://tuyensinh.agu.edu.vn/">
+                        Cổng tuyển sinh Trường Đại học An Giang
+                      </a>
+                      <a href="https://www.agu.edu.vn/">
+                        Website Trường Đại học An Giang
+                      </a>
+                    </section>
+                  </div>
                 </div>
               )}
               {page === "about" && (
-                <div className={styles.infoLinkCard}>
-                  <strong>Cổng thông tin đào tạo sau đại học</strong>
-                  <span>Hỗ trợ tra cứu thông báo, hồ sơ, thời khóa biểu, bảng điểm và tiến độ học tập.</span>
-                  <Link href="/thong-bao">Đến danh sách thông báo</Link>
+                <div className={styles.infoContent}>
+                  <header className={styles.infoHero}>
+                    <div className={styles.infoHeroText}>
+                      <h1>Giới thiệu Trường Đại học An Giang</h1>
+                      <p>
+                        Trường Đại học An Giang là cơ sở giáo dục đại học công
+                        lập, thành lập ngày 30/12/1999 và trở thành trường thành
+                        viên của Đại học Quốc gia Thành phố Hồ Chí Minh vào ngày
+                        13/8/2019. Trường đào tạo nguồn nhân lực, nghiên cứu
+                        khoa học và chuyển giao công nghệ phục vụ sự phát triển
+                        của Đồng bằng sông Cửu Long.
+                      </p>
+                      <a
+                        className={styles.infoAction}
+                        href="https://rmgo.agu.edu.vn/sites/default/files/Brochure_Vi_Full.pdf"
+                      >
+                        Tìm hiểu về Trường (PDF){" "}
+                        <ArrowUpRight size={17} aria-hidden="true" />
+                      </a>
+                    </div>
+                    <figure className={styles.infoPhoto}>
+                      <Image
+                        src="https://www.agu.edu.vn/assets/frontend/images/poster.png"
+                        alt="Toàn cảnh khuôn viên Trường Đại học An Giang nhìn từ trên cao"
+                        fill
+                        preload
+                        unoptimized
+                      />
+                      <figcaption>
+                        <a href="https://www.agu.edu.vn/en/about/an-giang-university-song">
+                          Ảnh: Trường Đại học An Giang
+                        </a>
+                      </figcaption>
+                    </figure>
+                  </header>
+                  <div className={styles.infoGrid}>
+                    <section className={styles.infoLinkCard}>
+                      <h2>
+                        <GraduationCap aria-hidden="true" /> Đào tạo sau đại học
+                      </h2>
+                      <p>
+                        Trường tổ chức đào tạo trình độ thạc sĩ và tiến sĩ. Ứng
+                        viên có thể tra cứu ngành tuyển sinh, điều kiện dự tuyển
+                        và lịch nộp hồ sơ theo từng đợt trên cổng tuyển sinh của
+                        Trường.
+                      </p>
+                      <a href="https://tuyensinh.agu.edu.vn/">
+                        Tra cứu thông tin tuyển sinh
+                      </a>
+                    </section>
+                    <section className={styles.infoLinkCard}>
+                      <h2>
+                        <Globe aria-hidden="true" /> Cổng thông tin dành cho học
+                        viên
+                      </h2>
+                      <p>
+                        Học viên có thể xem thông báo đào tạo và đăng nhập để
+                        tra cứu hồ sơ, thời khóa biểu, bảng điểm và tiến độ học
+                        tập.
+                      </p>
+                      <Link href="/thong-bao">Xem thông báo đào tạo</Link>
+                      <Link href="/lien-he">Liên hệ hỗ trợ</Link>
+                    </section>
+                  </div>
                 </div>
               )}
             </section>

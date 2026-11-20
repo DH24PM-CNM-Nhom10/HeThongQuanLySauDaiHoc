@@ -567,6 +567,42 @@ a.noticeTitle:hover {
   text-decoration: underline;
 }
 
+.infoContent { display: grid; gap: 16px; color: #34546b; line-height: 1.65; }
+.infoHero { display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 12px; background: #123f60; }
+.infoHeroText { padding: clamp(22px, 3.2vw, 42px); color: #e7f2fa; align-self: center; }
+.infoContent h1 { color: #fff; font-size: clamp(26px, 3.4vw, 44px); font-weight: 800; line-height: 1.13; margin: 0 0 14px; text-wrap: balance; }
+.infoContent h2 { display: flex; align-items: center; gap: 10px; color: #225371; font-size: 17px; font-weight: 750; margin: 0; }
+.infoContent h2 svg { flex: 0 0 auto; width: 22px; color: #147187; }
+.infoContent p, .infoContent address { margin: 0; font-size: 14px; font-style: normal; }
+.infoContent a { color: #1b698a; font-weight: 750; text-decoration: underline; overflow-wrap: anywhere; }
+.infoContent a:focus-visible { outline: 3px solid #55aeca; outline-offset: 3px; }
+.infoContent a.infoAction { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 18px; padding: 8px 14px; border-radius: 6px; background: #fff; color: #123f60; text-decoration: none; }
+.infoContent a.infoAction:hover { background: #dceff7; }
+.infoPhoto { position: relative; min-height: 250px; margin: 0; background: #1b516d; }
+.infoPhoto img { object-fit: cover; }
+.infoPhoto figcaption { position: absolute; right: 10px; bottom: 10px; padding: 3px 8px; border-radius: 4px; background: #102c40eb; font-size: 11px; }
+.infoPhoto figcaption a { color: #fff; }
+.infoGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.infoGrid .infoLinkCard { max-width: none; background: #fff; box-shadow: 0 2px 12px #153e5a0a; }
+.infoGrid .infoLinkCard:hover { border-color: #a4c5d4; }
+@media (max-width: 760px) {
+  .infoHero { grid-template-columns: 1fr; }
+  .infoPhoto { min-height: 0; aspect-ratio: 16 / 9; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .infoHeroText, .infoGrid .infoLinkCard { animation: infoAppear 420ms ease-out both; }
+  .infoGrid .infoLinkCard:nth-child(2) { animation-delay: 75ms; }
+  .infoPhoto img { animation: infoPhotoAppear 560ms ease-out both; }
+  .infoGrid .infoLinkCard, .infoAction { transition: border-color 160ms ease, background-color 160ms ease; }
+}
+@keyframes infoAppear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes infoPhotoAppear {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}
 .footer {
   background: #173d5a;
   color: #c9dfe9;
