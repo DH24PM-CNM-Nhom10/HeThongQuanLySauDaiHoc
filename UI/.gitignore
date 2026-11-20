@@ -42,3 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 .admin-credentials.local.txt
+.agu-session-secret

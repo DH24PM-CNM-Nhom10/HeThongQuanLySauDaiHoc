@@ -16,11 +16,20 @@ DB_NAME=quan_ly_dao_tao_sdh
 
 You can use [`.env.example`](./.env.example) as a template. Set the values to
 match your MySQL server and database, then restart the Next.js dev server so it
-loads the configuration. Do not commit `.env.local`.
+loads the configuration. In development, the session signing key is generated
+and saved locally on first use; no `AGU_SESSION_SECRET` setup is required.
+Production servers must configure a private `AGU_SESSION_SECRET` of at least
+32 characters. Do not commit `.env.local` or `.agu-session-secret`.
 
 Admin and Training Office sign in at `http://localhost:3000/admin`. Admin opens
 the dashboard there; Training Office is sent to `/assignment`. Students and
 teachers use the shared portal and sign in at `http://localhost:3000/`.
+
+For local development, the fixed demo accounts are `admin` / `admin` (Admin)
+and `phongdaotao@agu.edu.vn` / `phongdaotao` (Training Office). These demo
+credentials are disabled in production; configure `AGU_ADMIN_USERNAME` and
+`AGU_ADMIN_PASSWORD_HASH`, and seed a separate Training Office account before
+deployment.
 
 New student accounts use the student code as the username and the
 student's CMND/CCCD as the initial password. New teacher accounts use the
