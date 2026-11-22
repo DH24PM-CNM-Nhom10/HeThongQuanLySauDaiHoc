@@ -1696,3 +1696,16 @@ INSERT INTO `luan_van_thu_vien` (`nhan_de`, `tac_gia`, `giang_vien_huong_dan`, `
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+
+-- Dumping structure for table quan_ly_dao_tao_sdh.thong_bao
+CREATE TABLE IF NOT EXISTS `thong_bao` (
+  `ma_thong_bao` int unsigned NOT NULL AUTO_INCREMENT,
+  `tieu_de` varchar(255) NOT NULL,
+  `noi_dung` text NOT NULL,
+  `ten_file` varchar(255) NOT NULL DEFAULT '',
+  `duong_dan_file` varchar(1024) NOT NULL DEFAULT '',
+  `ngay_dang` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `trang_thai` enum('nhap','da_dang') NOT NULL DEFAULT 'nhap',
+  PRIMARY KEY (`ma_thong_bao`),
+  KEY `idx_thong_bao_public_date` (`trang_thai`, `ngay_dang`, `ma_thong_bao`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
