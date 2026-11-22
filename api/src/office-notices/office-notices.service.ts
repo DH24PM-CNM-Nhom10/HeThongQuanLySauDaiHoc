@@ -9,7 +9,7 @@ export class OfficeNoticesService {
     return this.pool ??= createPool({host: process.env.DB_HOST || 'localhost', port: Number(process.env.DB_PORT || 3306), user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: process.env.DB_NAME, waitForConnections: true, connectionLimit: 5, timezone: '+07:00'});
   }
   async list(all = false) {
-    const [rows] = await this.db().query<RowDataPacket[]>(`SELECT ma_thong_bao, tieu_de, noi_dung, ten_file, duong_dan_file, DATE_FORMAT(ngay_dang,'%Y-%m-%dT%H:%i:%s') AS ngay_dang, trang_thai FROM office_notices ${all ? '' : "WHERE trang_thai='da_dang'"} ORDER BY ngay_dang DESC, ma_thong_bao DESC LIMIT 10000`);
+    const [rows] = await this.db().query<RowDataPacket[]>(`SELECT ma_thong_bao, tieu_de, noi_dung, ten_file, duong_dan_file, DATE_FORMAT(ngay_dang,'%Y-%m-%dT%H:%i:%s') AS ngay_dang, trang_thai FROM thong_bao ${all ? '' : "WHERE trang_thai='da_dang'"} ORDER BY ngay_dang DESC, ma_thong_bao DESC LIMIT 10000`);
     return rows;
   }
   validate(raw: unknown): OfficeNoticeInput {
@@ -23,11 +23,11 @@ export class OfficeNoticesService {
     return {tieu_de, noi_dung, ten_file, duong_dan_file, trang_thai};
   }
   async create(b: OfficeNoticeInput) {
-    const [r] = await this.db().execute<ResultSetHeader>('INSERT INTO office_notices(tieu_de,noi_dung,ten_file,duong_dan_file,trang_thai) VALUES(?,?,?,?,?)',[b.tieu_de,b.noi_dung,b.ten_file,b.duong_dan_file,b.trang_thai]);
+    const [r] = await this.db().execute<ResultSetHeader>('INSERT INTO thong_bao(tieu_de,noi_dung,ten_file,duong_dan_file,trang_thai) VALUES(?,?,?,?,?)',[b.tieu_de,b.noi_dung,b.ten_file,b.duong_dan_file,b.trang_thai]);
     return {ma_thong_bao:r.insertId};
   }
   async update(id: number, b: OfficeNoticeInput) {
-    const [r] = await this.db().execute<ResultSetHeader>('UPDATE office_notices SET tieu_de=?,noi_dung=?,ten_file=?,duong_dan_file=?,trang_thai=? WHERE ma_thong_bao=?',[b.tieu_de,b.noi_dung,b.ten_file,b.duong_dan_file,b.trang_thai,id]);
+    const [r] = await this.db().execute<ResultSetHeader>('UPDATE thong_bao SET tieu_de=?,noi_dung=?,ten_file=?,duong_dan_file=?,trang_thai=? WHERE ma_thong_bao=?',[b.tieu_de,b.noi_dung,b.ten_file,b.duong_dan_file,b.trang_thai,id]);
     if (!r.affectedRows) throw new NotFoundException('Không tìm thấy thông báo');
     return {ma_thong_bao:id};
   }
