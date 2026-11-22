@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import styles from "./PublicAccountMenu.module.css";
+import { LogOut } from "lucide-react";
 
 type AccountUser = {
   role: "admin" | "student" | "teacher" | "training_office";
@@ -90,10 +91,13 @@ export default function PublicAccountMenu({ user, onLogout }: Props) {
             <button
               type="button"
               className={styles.logoutButton}
-              onClick={() => { setOpen(false); void onLogout(); }}
+              onClick={() => {
+                setOpen(false);
+                void onLogout();
+              }}
             >
-              <span aria-hidden="true">↪</span>
-              Đăng xuất
+              <LogOut size={18} strokeWidth={2} aria-hidden="true" />
+              <span>Đăng xuất</span>
             </button>
           </div>
         )}

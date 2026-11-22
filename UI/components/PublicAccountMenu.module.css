@@ -8,7 +8,11 @@
   transition: background-color .15s, border-color .15s, box-shadow .15s;
 }
 .managementButton:hover { background: #dcecf8; border-color: #8eb6d7; color: #123e63; text-decoration: none; }
-.managementButton:focus-visible, .accountTrigger:focus-visible, .logoutButton:focus-visible { outline: 3px solid #83b7e8; outline-offset: 2px; }
+.managementButton:focus-visible,
+.accountTrigger:focus-visible {
+  outline: 3px solid #83b7e8;
+  outline-offset: 2px;
+}
 .account { position: relative; min-width: 0; }
 .accountTrigger {
   display: flex; align-items: center; gap: 11px; min-height: 50px;
@@ -26,24 +30,71 @@
 .accountText strong { font-size: 13px; font-weight: 750; line-height: 1.35; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .accountText small { color: #6c80a0; font-size: 11px; line-height: 1.35; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .arrow { color: #647694; margin-left: 3px; font-size: 15px; }
+
 .dropdown {
-  position: absolute; z-index: 100; top: calc(100% + 8px); right: 0;
-  width: min(285px, 90vw); padding: 10px; border-radius: 12px;
-  border: 1px solid #e3e8f0; background: #fff;
-  box-shadow: 0 12px 28px rgba(20, 40, 75, .15);
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 8px);
+  right: 0;
+
+  width: min(355px, calc(100vw - 24px));
+  padding: 12px;
+  border-radius: 12px;
+
+  border: 1px solid #e3e8f0;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(20, 40, 75, 0.15);
 }
 .dropdownProfile { display: flex; flex-direction: column; gap: 5px; padding: 9px 10px 12px; }
 .dropdownProfile strong { font-size: 13.5px; color: #173153; font-weight: 750; overflow-wrap: anywhere; }
 .dropdownProfile span { font-size: 12px; color: #7186a2; overflow-wrap: anywhere; }
 .menuDivider { height: 1px; background: #e9edf3; margin: 1px 0 8px; }
 .logoutButton {
-  width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 10px;
-  padding: 10px 12px; border-radius: 7px; border: 1px solid #e4ac96;
-  background: #fbe1d5; color: #a83c19; font-size: 13px; font-weight: 750;
-  text-align: left; cursor: pointer; transition: background-color .15s;
+  width: 100%;
+  min-height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+
+  padding: 12px 15px;
+  border-radius: 9px;
+  border: 1px solid #f0aa82;
+
+  background: #fce2d1;
+  color: #b74416;
+
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
-.logoutButton:hover { background: #f5cdbd; color: #923313; }
-.logoutButton:active { background: #edbba7; }
+.logoutButton:hover {
+  background: #fbd4bd;
+  border-color: #e89a6c;
+  color: #a63c12;
+}
+
+.logoutButton:active {
+  background: #f4c5a9;
+}
+
+.logoutButton:focus-visible {
+  outline: 2px solid #c45a25;
+  outline-offset: 2px;
+}
+.logoutButton svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: inherit;
+}
 @media (max-width: 690px) {
   .headerActions { gap: 7px; }
   .managementButton { padding: 8px 10px; font-size: 11px; }

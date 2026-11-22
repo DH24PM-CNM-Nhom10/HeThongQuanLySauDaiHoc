@@ -120,6 +120,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const [logoBiLoi, setLogoBiLoi] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
   const [danhSach, setDanhSach] = useState<ThongBao[]>([]);
@@ -369,13 +370,13 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
           </Link>
 
           <div className={styles.headerAccount}>
-            {user ? (
-              (user.role === "teacher" || user.role === "training_office") ? (
+            {user ? ((user.role === "admin" ||
+                      user.role === "teacher" ||
+                      user.role === "training_office") ? (
                 <PublicAccountMenu user={user} onLogout={handleLogout} />
               ) : (
                 <div className={styles.welcomeBar}>
                 <span>Xin chào, <strong>{user.hoTen || "Người dùng"}</strong></span>
-                {user.role === "admin" && <Link href="/admin" className={styles.adminLink}>Quản trị</Link>}
                 <button type="button" onClick={handleLogout} className={styles.signOut}>Đăng xuất</button>
               </div>
               )
@@ -390,8 +391,44 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   </div>
                   <div className={styles.loginField}>
                     <label htmlFor="inline-password">Mật khẩu</label>
-                    <input id="inline-password" type="password" autoComplete="current-password" placeholder="Mật khẩu"
-                      value={password} onChange={(event) => { setPassword(event.target.value); setLoginError(""); }} required />
+
+                    <div style={{ position: "relative", width: "100%" }}>
+                      <input
+                        id="inline-password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        placeholder="Mật khẩu"
+                        value={password}
+                        onChange={(event) => {
+                          setPassword(event.target.value);
+                          setLoginError("");
+                        }}
+                        style={{ paddingRight: "65px" }}
+                        required
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(value => !value)}
+                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        aria-pressed={showPassword}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          border: "none",
+                          background: "transparent",
+                          color: "#315f87",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          padding: "6px 4px"
+                        }}
+                      >
+                        {showPassword ? "Ẩn" : "Hiện"}
+                      </button>
+                    </div>
                   </div>
                   <button type="submit" disabled={loggingIn}>{loggingIn ? "Đang kiểm tra..." : "Đăng nhập"}</button>
                 </form>
