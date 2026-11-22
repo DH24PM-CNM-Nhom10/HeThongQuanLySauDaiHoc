@@ -330,7 +330,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       if (window.location.pathname === "/") router.refresh();
       else router.replace("/");
     } catch {
-      setLoginError("Không thể đọc dữ liệu đăng nhập. Vui lòng kiểm tra máy chủ hoặc thử lại.");
+      setLoginError("Không kết nối được máy chủ đăng nhập. Vui lòng kiểm tra máy chủ API ở cổng 3001 đang chạy và thử lại.");
     } finally {
       setLoggingIn(false);
     }
