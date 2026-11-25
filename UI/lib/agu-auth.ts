@@ -1,6 +1,8 @@
 
 // Dùng ở server (Route Handlers) - không import vào Client Components.
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
 export const AGU_SESSION_COOKIE = "agu_session";
 export const AGU_SESSION_MAX_AGE = 60 * 60 * 8; // 8 giờ
@@ -29,17 +31,25 @@ const ALLOWED_ROLES: AguUser["role"][] = [
 
 function getSecret() {
   const secret = process.env.AGU_SESSION_SECRET ?? "";
-
-  if (
-    secret.length < 32 ||
-    secret.startsWith("THAY_BANG_")
-  ) {
-    throw new Error(
-      "Thiếu AGU_SESSION_SECRET (tối thiểu 32 ký tự) trong .env.local"
-    );
+  if (secret) {
+    if (secret.length < 32 || secret.startsWith("THAY_BANG_")) {
+      throw new Error("AGU_SESSION_SECRET phải dài ít nhất 32 ký tự");
+    }
+    return secret;
+  }
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Thiếu AGU_SESSION_SECRET trên máy chủ production");
   }
 
-  return secret;
+  const secretPath = path.join(process.cwd(), ".agu-session-secret");
+  try {
+    writeFileSync(secretPath, randomBytes(32).toString("base64url"), { flag: "wx", mode: 0o600 });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+  }
+  const localSecret = readFileSync(secretPath, "utf8").trim();
+  if (localSecret.length < 32) throw new Error("Khóa phiên local không hợp lệ");
+  return localSecret;
 }
 
 function sign(payload: string): string {

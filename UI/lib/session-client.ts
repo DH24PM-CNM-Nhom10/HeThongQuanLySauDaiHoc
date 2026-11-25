@@ -3,6 +3,7 @@
 export type SessionUser = {
   role: "admin" | "student" | "teacher" | "training_office";
   hoTen?: string; maHocVien?: string; teacherId?: string; username?: string; email?: string; shcc?: string;
+  mustChangePassword?: boolean;
 };
 
 const endpoints = {

@@ -24,7 +24,22 @@ export class TeacherAuthController {
 
   @Get('me')
   me(@Req() req: Request) {
-    return { success: true, user: this.auth.fromRequest(req) };
+    return { success: true, user: this.auth.fromRequest(req, true) };
+  }
+
+  @Post('change-password')
+  changePassword(
+    @Req() req: Request,
+    @Body() body: { currentPassword?: string; newPassword?: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = this.auth.changePassword(req, body?.currentPassword, body?.newPassword);
+    res.cookie(this.auth.cookieName(), result.session, {
+      httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production',
+      path: '/', maxAge: this.auth.cookieMaxAgeMs(),
+    });
+    res.setHeader('Cache-Control', 'private, no-store');
+    return { success: true, user: result.identity };
   }
 
   @Get('profile')

@@ -32,11 +32,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Vui lòng nhập tài khoản và mật khẩu hợp lệ." }, { status: 400 });
   }
 
-  const adminName = process.env.AGU_ADMIN_USERNAME || process.env.AGU_DEMO_ADMIN_USERNAME || "";
-  const adminPass = process.env.AGU_DEMO_ADMIN_PASSWORD ?? "";
+  const isProduction = process.env.NODE_ENV === "production";
+  const adminName = process.env.AGU_ADMIN_USERNAME || process.env.AGU_DEMO_ADMIN_USERNAME ||
+    (isProduction ? "" : "admin");
+  const adminPass = process.env.AGU_DEMO_ADMIN_PASSWORD ?? (isProduction ? "" : "admin");
   const studentName = process.env.AGU_DEMO_STUDENT_USERNAME ?? "";
   const studentPass = process.env.AGU_DEMO_STUDENT_PASSWORD ?? "";
-  if (!process.env.AGU_SESSION_SECRET || process.env.AGU_SESSION_SECRET.length < 32 || process.env.AGU_SESSION_SECRET.startsWith("THAY_BANG_")) {
+  if (process.env.NODE_ENV === "production" &&
+    (!process.env.AGU_SESSION_SECRET || process.env.AGU_SESSION_SECRET.length < 32 || process.env.AGU_SESSION_SECRET.startsWith("THAY_BANG_"))) {
     return NextResponse.json({ message: "Chưa cấu hình AGU_SESSION_SECRET trên máy chủ." }, { status: 503 });
   }
   if ((!adminName && !studentName) || adminPass.startsWith("DAT_MAT_KHAU_") || studentPass.startsWith("DAT_MAT_KHAU_")) {

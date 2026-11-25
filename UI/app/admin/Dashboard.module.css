@@ -13,6 +13,102 @@
   color: var(--portal-ink);
 }
 
+.loginPage {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: #f5f8fa;
+}
+
+.loginPanel {
+  width: min(100%, 440px);
+  padding: 32px;
+  border: 1px solid #dce5ed;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px #153c5910;
+  color: #173b55;
+}
+
+.loginPanel h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.loginPanel > p:not(.loginEyebrow, .loginError) {
+  margin-top: 10px;
+  color: #52687a;
+  line-height: 1.5;
+}
+
+.loginEyebrow {
+  margin-bottom: 8px;
+  color: #5d8199;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.loginForm {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.loginForm label {
+  display: grid;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.loginForm input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font: inherit;
+}
+
+.loginForm input:focus {
+  border-color: #1a658b;
+  outline: 2px solid #1a658b33;
+}
+
+.loginForm button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 7px;
+  background: #1a658b;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loginForm button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.loginError {
+  margin-top: 16px;
+  color: #b42318;
+}
+
+.loginBack {
+  display: inline-block;
+  margin-top: 20px;
+  color: #315b75;
+}
+
+.loginNotice {
+  padding: 20px;
+  color: #52687a;
+}
+
 .heading {
   margin-bottom: 20px;
   padding-left: 14px;

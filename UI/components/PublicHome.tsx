@@ -12,6 +12,7 @@ import TeacherPortalContent from "./TeacherPortalContent";
 import TeacherSchedule from "./TeacherSchedule";
 import TeacherGradebook from "./TeacherGradebook";
 import TrainingOfficeAssignmentReadonly from "./TrainingOfficeAssignmentReadonly";
+import ChangePasswordForm from "./ChangePasswordForm";
 import { verifySession, logoutSessions } from "../lib/session-client";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +21,7 @@ const AGU_LOGO_URL =
   "https://upload.wikimedia.org/wikipedia/commons/4/42/Logoagunew2026.jpg";
 const SO_THONG_BAO_TRANG_CHU = 5;
 
-type PublicPage = "home" | "notices" | "programs" | "contact" | "about" | "teacher-profile" | "teacher-grades" | "teacher-schedule" | "office-assign" | StudentSection;
+type PublicPage = "home" | "notices" | "programs" | "contact" | "about" | "teacher-profile" | "teacher-grades" | "teacher-schedule" | "office-assign" | "change-password" | StudentSection;
 
 const publicLinks = [
   { href: "/", label: "Trang chủ", page: "home" },
@@ -32,6 +33,7 @@ const publicLinks = [
 const teacherLinks = [
   { href: "/", label: "Trang chủ", page: "home" },
   { href: "/thong-bao", label: "Thông báo", page: "notices" },
+  { href: "/doi-mat-khau", label: "Đổi mật khẩu", page: "change-password" },
   { href: "/giang-vien/thong-tin", label: "Thông tin giảng viên", page: "teacher-profile" },
   { href: "/giang-vien/thoi-khoa-bieu", label: "Thời khóa biểu", page: "teacher-schedule" },
   { href: "/giang-vien/tra-cuu-diem", label: "Bảng điểm", page: "teacher-grades" },
@@ -54,6 +56,7 @@ const secondaryLinks = [
 ] as const;
 
 const studentLinks = [
+  { href: "/doi-mat-khau", label: "Đổi mật khẩu", page: "change-password" },
   { href: "/profile", label: "Hồ sơ học viên", page: "profile" },
   { href: "/schedule", label: "Thời khóa biểu", page: "schedule" },
   { href: "/grades", label: "Bảng điểm", page: "grades" },
@@ -69,7 +72,7 @@ type ThongBao = {
   ngay_dang: string;
   trang_thai: number;
 };
-type SessionUser = { role: "admin" | "student" | "teacher" | "training_office"; maHocVien?: string; teacherId?: string; username?: string; shcc?: string; hoTen?: string; email?: string };
+type SessionUser = { role: "admin" | "student" | "teacher" | "training_office"; maHocVien?: string; teacherId?: string; username?: string; shcc?: string; hoTen?: string; email?: string; mustChangePassword?: boolean };
 
 function dinhDangNgay(ngay: string): string {
   // Ngày kiểu YYYY-MM-DDTHH:mm:ss từ API, tránh lệch ngày do timezone khi chỉ cần ngày.
@@ -157,6 +160,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   const isTeacherSchedule = page === "teacher-schedule";
   const isTeacherGrades = page === "teacher-grades";
   const isOfficeAssignment = page === "office-assign";
+  const isChangePassword = page === "change-password";
   // Trang chủ của giảng viên vẫn hiển thị thông báo như cổng thông tin chung.
   const isNoticePage = page === "home" || page === "notices";
   const isStudentPage = (["profile", "schedule", "grades", "progress"] as string[]).includes(page);
@@ -257,27 +261,19 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       setLoginError("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
       return;
     }
+    if (["admin", "admin@agu.edu.vn", "admin@student.agu.edu.vn"].includes(inputUser)) {
+      setLoginError("Quản trị viên vui lòng đăng nhập riêng tại /admin.");
+      return;
+    }
+    if (inputUser === "phongdaotao@agu.edu.vn") {
+      setLoginError("Phòng đào tạo vui lòng đăng nhập tại /admin.");
+      return;
+    }
     setLoggingIn(true);
     setLoginError("");
     try {
-      const isAdmin = ["admin", "admin@agu.edu.vn", "admin@student.agu.edu.vn"].includes(inputUser);
       let session: SessionUser;
-      if (inputUser === "phongdaotao@agu.edu.vn") {
-        const response = await fetch("/api/training-office/login", {
-          method: "POST", credentials: "same-origin", cache: "no-store",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: inputUser, password }),
-        });
-        if (!response.ok) {
-          setLoginError(response.status === 401
-            ? "Tài khoản Phòng đào tạo hoặc mật khẩu không hợp lệ."
-            : "Không thể đăng nhập Phòng đào tạo. Kiểm tra Backend và lệnh tạo tài khoản.");
-          return;
-        }
-        const data: { user?: SessionUser } = await response.json();
-        if (!data.user || data.user.role !== "training_office") throw new Error("Invalid office response");
-        session = data.user;
-      } else if (inputUser.endsWith("@teacher.agu.edu.vn")) {
+      if (inputUser.endsWith("@teacher.agu.edu.vn")) {
         const response = await fetch("/api/teacher-auth/login", {
           method: "POST", credentials: "same-origin", cache: "no-store",
           headers: { "Content-Type": "application/json" },
@@ -291,17 +287,6 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         }
         const data: { user?: SessionUser } = await response.json();
         if (!data.user || data.user.role !== "teacher") throw new Error("Invalid teacher response");
-        session = data.user;
-      } else if (isAdmin) {
-        const response = await fetch("/api/auth/login", {
-          method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: inputUser, password }),
-        });
-        const data = await response.json();
-        if (!response.ok || data.user?.role !== "admin") {
-          setLoginError(data.message || "Không thể đăng nhập quản trị viên.");
-          return;
-        }
         session = data.user;
       } else {
         // Đăng nhập học viên DEMO có cookie xác thực trên Backend để đọc điểm riêng tư.
@@ -328,7 +313,9 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       setPassword("");
       setUsername("");
       setMenuMo(false);
-      if (window.location.pathname === "/") router.refresh();
+      if (session.role === "training_office") router.replace("/assignment");
+      else if ((session.role === "student" || session.role === "teacher") && session.mustChangePassword) router.replace("/doi-mat-khau");
+      else if (window.location.pathname === "/") router.refresh();
       else router.replace("/");
     } catch {
       setLoginError("Không kết nối được máy chủ đăng nhập. Vui lòng kiểm tra máy chủ API ở cổng 3001 đang chạy và thử lại.");
@@ -338,6 +325,10 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
   };
 
   const handleLogout = async () => {
+    const destination =
+      user?.role === "admin" || user?.role === "training_office"
+        ? "/admin"
+        : "/";
     await logoutSessions();
     localStorage.removeItem("currentUser");
     localStorage.removeItem("aguAuthSource");
@@ -347,7 +338,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
     setOfficeVerified(false);
     setMenuMo(false);
     setLoginError("");
-    router.replace("/");
+    router.replace(destination);
     router.refresh();
   };
 
@@ -386,7 +377,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   <div className={styles.loginField}>
                     <label htmlFor="inline-username">Tên đăng nhập</label>
                     <input id="inline-username" type="text" autoComplete="username"
-                      placeholder="Mã HV / Email giảng viên / Phòng đào tạo" value={username}
+                      placeholder="Mã HV / Email giảng viên" value={username}
                       onChange={(event) => { setUsername(event.target.value); setLoginError(""); }} required />
                   </div>
                   <div className={styles.loginField}>
@@ -465,7 +456,18 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
 
       <main className={styles.main}>
         <div className={styles.container}>
-          {isOfficeAssignment ? (
+          {isChangePassword ? (
+            user?.role === "student" || user?.role === "teacher" ? (
+              <ChangePasswordForm role={user.role} />
+            ) : (
+              <section className={styles.infoPanel} style={{ padding: 28 }}>
+                <div className={styles.emptyInfo}>
+                  <strong>Vui lòng đăng nhập</strong>
+                  <span>Bạn cần đăng nhập bằng tài khoản học viên hoặc giảng viên để đổi mật khẩu.</span>
+                </div>
+              </section>
+            )
+          ) : isOfficeAssignment ? (
             officeVerified && user?.role === "training_office" ? (
               <TrainingOfficeAssignmentReadonly />
             ) : (
