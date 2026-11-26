@@ -1,0 +1,34 @@
+// Isolated HTTP smoke test: never reads or changes production account/data files.
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const original=process.cwd(),fixture=fs.mkdtempSync(path.join(os.tmpdir(),'qldt-management-http-'));
+const appModule=path.resolve(__dirname,'../dist/app.module.js'),interceptorModule=path.resolve(__dirname,'../dist/common/response.interceptor.js');
+process.env.QLDT_DATA_ROOT=fixture;process.env.NODE_ENV='test';process.env.AGU_SESSION_SECRET='isolated-http-admin-secret-32-characters';
+process.env.STUDENT_AUTH_SECRET='isolated-http-student-secret-32-characters';
+fs.mkdirSync(path.join(fixture,'UI/data'),{recursive:true});fs.copyFileSync(path.resolve(__dirname,'../../UI/data/agu_masters_curriculum.json'),path.join(fixture,'UI/data/agu_masters_curriculum.json'));
+fs.mkdirSync(path.join(fixture,'api'));process.chdir(path.join(fixture,'api'));
+fs.writeFileSync(path.join(fixture,'UI/db.json'),JSON.stringify({students:[{maHocVien:'S1',hoTen:'Student 1',lop:'L1',trangThai:'Đang học'},{maHocVien:'S2',hoTen:'Student 2',lop:'L2',trangThai:'Đang học'}],teachers:[{shcc:'T1',hoten:'Teacher 1',t_dvi:'Dept'}],teachingAssignments:[{id:'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',teacherId:'T1',teacherName:'Teacher 1',courseCode:'C1',courseName:'Course',classCode:'L1',schoolYear:'2026-2027',semester:'1'}]}));
+const fixtureFile=path.join(fixture,'UI/db.json'),seed=JSON.parse(fs.readFileSync(fixtureFile,'utf8'));seed.students[0].trinhDo='Thạc sĩ';seed.academicPolicies=[{id:'P1',name:'GPA scale',passScore:5,thresholds:[{min:5,letter:'C',gpa:2},{min:0,letter:'F',gpa:0}]}];seed.courses=[{code:'C1',name:'Course',revision:1,credits:3,gpaWeight:2,processWeight:.3,examWeight:.7,policyId:'P1'}];seed.academicPlans=[{classCode:'L1',policyId:'P1',requiredCredits:3,courses:[{code:'C1',name:'Course',credits:3,required:true}]}];fs.writeFileSync(fixtureFile,JSON.stringify(seed));
+let app;
+(async()=>{
+ require('reflect-metadata');const {NestFactory}=require('@nestjs/core');const {AppModule}=require(appModule);const {ResponseInterceptor}=require(interceptorModule);app=await NestFactory.create(AppModule,{logger:false});app.useGlobalInterceptors(new ResponseInterceptor());await app.listen(0,'127.0.0.1');const base=await app.getUrl();
+ const login=await fetch(base+'/api/student-records/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:'S1',password:'S1'})});assert.equal(login.status,201);const cookie=login.headers.get('set-cookie').split(';')[0];
+ let r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}}),data=await r.json();assert.equal(r.status,200);assert.equal(data.configured,true);assert.equal(data.earnedCredits,0);
+ r=await fetch(base+'/api/student-records/thesis-workflow',{headers:{cookie}});data=await r.json();assert.equal(data.workflow.maHocVien,'S1');assert.equal(data.workflow.revision,0);
+ r=await fetch(base+'/api/student-records/thesis-workflow',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({action:'topic_request',revision:0,title:'Research title',reason:'Request'})});data=await r.json();assert.equal(r.status,201);assert.equal(data.workflow.requests.length,1);
+ r=await fetch(base+'/api/student-records/thesis-workflow',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({code:'S2',action:'approve',revision:1,requestId:data.workflow.requests[0].id,reason:'Forged'})});assert.equal(r.status,400);
+ const pdf=Buffer.from('%PDF-1.7 fixture');const form=new FormData();form.set('file',new File([pdf],'evidence.pdf'));form.set('kind','evidence');form.set('title','HTTP evidence');
+ r=await fetch(base+'/api/student-documents',{method:'POST',headers:{cookie},body:form});data=await r.json();assert.equal(r.status,201);assert.ok(data.data.id);const docId=data.data.id;
+ r=await fetch(base+'/api/student-documents/'+docId+'/file',{headers:{cookie}});assert.equal(r.status,200);assert.equal(await r.text(),pdf.toString());
+ r=await fetch(base+'/api/student-documents?student=S2',{headers:{cookie}});assert.equal(r.status,403);
+ const body=Buffer.from(JSON.stringify({user:{role:'admin'},exp:Math.floor(Date.now()/1000)+600})).toString('base64url');const token=body+'.'+crypto.createHmac('sha256',process.env.AGU_SESSION_SECRET).update(body).digest('base64url');
+ r=await fetch(base+'/api/training-office/assignments',{headers:{cookie:'agu_session='+token}});data=await r.json();assert.equal(r.status,200);assert.equal(data.data.length,1);
+ r=await fetch(base+'/api/training-office/catalog',{headers:{cookie:'agu_session='+token}});assert.equal(r.status,200);
+ const teacherLogin=await fetch(base+'/api/teacher-auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:require('../../shared/teacher-account-username.cjs').nextTeacherUsername('Teacher 1',new Set()),password:'T1'})});assert.equal(teacherLogin.status,201);const teacherCookie=teacherLogin.headers.get('set-cookie').split(';')[0];
+ const assignmentId='aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa';
+ r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId,{headers:{cookie:teacherCookie}});data=await r.json();assert.equal(r.status,200);assert.equal(data.gradingPolicy.processWeight,.3);assert.equal(data.students.length,1);
+ r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId,{method:'PUT',headers:{cookie:teacherCookie,'content-type':'application/json'},body:JSON.stringify({revision:data.revision,scores:[{maHocVien:'S1',processScore:8,examScore:9}]})});assert.equal(r.status,200);
+ r=await fetch(base+'/api/student-records/grades',{headers:{cookie}});data=await r.json();assert.equal(data.data[0].totalScore,8.7);
+ r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}});data=await r.json();assert.equal(data.earnedCredits,3);assert.equal(data.gpa,2);
+ r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId+'/submit',{method:'POST',headers:{cookie:teacherCookie,'content-type':'application/json'},body:'{}'});assert.equal(r.status,404);
+ console.log('PASS: HTTP student/teacher login; per-course grading; saved scores immediately visible in transcript and GPA; removed approval endpoint; private uploads; workflow isolation; shared Admin catalog.');
+})().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(app)await app.close();process.chdir(original);if(!path.resolve(fixture).startsWith(path.resolve(os.tmpdir())+path.sep+'qldt-management-http-'))throw new Error('Unsafe test cleanup');fs.rmSync(fixture,{recursive:true});});

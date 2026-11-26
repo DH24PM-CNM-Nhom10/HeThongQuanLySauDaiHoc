@@ -65,10 +65,8 @@ export class TeacherAuthController {
     return this.grades.getGradebook(req, id);
   }
 
-  @Post('gradebook/:assignmentId/submit')
-  submit(@Req() req: Request, @Param('assignmentId') id: string, @Body() body: { revision?: number }) {
-    return this.grades.submit(req, id, body.revision);
-  }
+  @Post('gradebook/:assignmentId/sync-roster')
+  syncRoster(@Req() req: Request, @Param('assignmentId') id: string, @Body() body: { revision?: number }) { return this.grades.syncForTeacher(req,id,body.revision); }
 
   @Put('gradebook/:assignmentId')
   saveGradebook(@Req() req: Request, @Param('assignmentId') id: string, @Body() body: unknown) {

@@ -157,8 +157,8 @@ export default function TrainingOfficeAssignmentReadonly() {
       </div>
 
       {error ? <p className={styles.error} role="alert">{error}</p> : null}
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
+      <div className={styles.tableWrap} tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+        <table data-grid="excel" className={"excel-grid " + (styles.table)}>
           <thead>
             <tr>
               <th scope="col">STT</th>

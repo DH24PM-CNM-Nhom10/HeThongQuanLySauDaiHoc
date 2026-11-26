@@ -61,4 +61,14 @@ describe('Thu hồi phân công và lịch liên kết', () => {
     expect(readStore().schedule).toHaveLength(1);
     expect(readStore().teachingAssignments).toHaveLength(2);
   });
+  it('đổi giảng viên chỉ khi chưa có điểm, đồng bộ lịch và chặn bản cũ', () => {
+    fs.writeFileSync(path.join(root,'UI/db.json'),JSON.stringify({students:[],teachers:[{shcc:'T1',hoten:'GV1'},{shcc:'T2',hoten:'GV2'}],teachingAssignments:[{id,teacherId:'T1',teacherName:'GV1'}],schedule:[{assignmentId:id,teacherId:'T1',date:'2026-11-30',startPeriod:1,endPeriod:3}],gradebooks:[{assignmentId:id,scores:[]}]}));
+    expect(service.reassign(req,id,{teacherId:'T2',previousTeacherId:'T1'}).success).toBe(true);
+    expect(readStore().schedule[0].teacherId).toBe('T2');
+    expect(()=>service.reassign(req,id,{teacherId:'T1',previousTeacherId:'T1'})).toThrow(ConflictException);
+    const changed=readStore();changed.gradebooks[0].scores=[{maHocVien:'S1',totalScore:8}];
+    fs.writeFileSync(path.join(root,'UI/db.json'),JSON.stringify(changed));
+    expect(()=>service.reassign(req,id,{teacherId:'T1',previousTeacherId:'T2'})).toThrow(ConflictException);
+  });
+
 });

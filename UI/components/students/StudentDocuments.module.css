@@ -1,0 +1,12 @@
+.panel { margin-top: 24px; padding: 20px; border: 1px solid #d5e0eb; border-radius: 12px; background: white; color: #173d59; }
+.panel header, .panel footer, .filters, .buttons, .summary { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.panel header { justify-content: space-between; align-items: flex-start; }
+.panel h2 { font-size: 21px; margin: 0 0 8px; }.panel p { font-size: 14px; }
+.panel button, .panel input, .panel select { font: inherit; border: 1px solid #bdcddd; border-radius: 7px; padding: 9px 12px; min-width: 0; background: white; color: #173d59; }
+.panel button { cursor: pointer; }.panel button:disabled { opacity: .5; cursor: default; }
+.summary { margin: 18px 0; }.summary span { background: #edf4fb; border-radius: 8px; padding: 10px 14px; }.summary strong { margin-left: 12px; }
+.upload { padding: 14px; border: 1px solid #d5e0eb; border-radius: 8px; }.upload summary { cursor: pointer; font-weight: 600; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin-top: 18px; }.form label { display: grid; gap: 6px; }.wide { grid-column: 1/-1; }
+.filters { margin: 18px 0; }.filters input { flex: 1; }.scroll { overflow-x: auto; }.panel table { width: 100%; min-width: 700px; border-collapse: collapse; }.panel th { background: #eaf2f8; }.panel td, .panel th { text-align: left; padding: 12px; border: 1px solid #d5e0eb; vertical-align: top; }.panel small { display: block; margin-top: 5px; color: #536c82; }.panel a { color: #1764b4; text-decoration: underline; overflow-wrap: anywhere; }.panel footer { justify-content: flex-end; margin-top: 14px; }
+.panel .primary { background: #1764b4; color: white; border-color: #1764b4; }.panel .danger { background: #fde7e7; color: #ae2626; }.message { padding: 12px; background: #eef5ff; border-radius: 6px; }.panel [data-status="approved"] { color: #168342; }.panel [data-status="rejected"] { color: #b42323; }
+@media(max-width: 640px) { .panel { padding: 12px; }.form { grid-template-columns: 1fr; }.filters > * { width: 100%; } }

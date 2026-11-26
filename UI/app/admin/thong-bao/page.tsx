@@ -32,6 +32,7 @@ export default function QuanLyThongBao() {
   const [status, setStatus] = useState<'all' | 'nhap' | 'da_dang'>('all');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState<Draft>({ ...EMPTY });
+  const [uploading, setUploading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
 
   const reload = useCallback(async () => {
@@ -68,7 +69,7 @@ export default function QuanLyThongBao() {
   };
   const save = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (saving) return;
+    if (saving || uploading) return;
     if (!draft.tieu_de.trim()) { setError('Vui lòng nhập tiêu đề thông báo.'); return; }
     if (draft.duong_dan_file && !draft.ten_file) { setError('Vui lòng nhập tên tệp khi có đường dẫn.'); return; }
     setSaving(true); setError(''); setSuccess('');
@@ -86,6 +87,11 @@ export default function QuanLyThongBao() {
       await reload();
     } catch (e) { setError(e instanceof Error ? e.message : 'Không thể lưu thông báo.'); }
     finally { setSaving(false); }
+  };
+  const uploadAttachment = async (file: File | undefined) => {
+    if (!file) return; setUploading(true); setError('');
+    try { const form=new FormData();form.set('file',file);const response=await fetch('/api/thong-bao/files',{method:'POST',body:form});const data=await response.json();if(!response.ok)throw new Error(data.message);setDraft(current=>({...current,ten_file:data.ten_file,duong_dan_file:data.duong_dan_file})); }
+    catch(error){setError(error instanceof Error?error.message:'Không tải được tệp.');}finally{setUploading(false);}
   };
   const remove = async (item: Notice) => {
     if (!window.confirm(`Bạn muốn xóa vĩnh viễn thông báo “${item.tieu_de}”?`)) return;
@@ -124,15 +130,15 @@ export default function QuanLyThongBao() {
             <label>Tên tệp đính kèm<input maxLength={255} value={draft.ten_file} onChange={(e) => setDraft({ ...draft, ten_file: e.target.value })} placeholder="Ví dụ: KeHoachHocTap.pdf" /></label>
             <label>Đường dẫn tệp (nếu có)<input maxLength={1024} value={draft.duong_dan_file} onChange={(e) => setDraft({ ...draft, duong_dan_file: e.target.value })} placeholder="/tai-lieu/file.pdf hoặc https://..." /></label>
           </div>
-          <p className={styles.hint}>Tệp đính kèm cần tồn tại sẵn trong thư mục public hoặc tại đường dẫn HTTPS. Form này chưa hỗ trợ upload tệp trực tiếp.</p>
-          <div className={styles.formFooter}><label>Trạng thái<select value={draft.trang_thai} onChange={(e) => setDraft({ ...draft, trang_thai: e.target.value as Draft['trang_thai'] })}><option value="nhap">Lưu bản nháp</option><option value="da_dang">Công bố trên website</option></select></label><div className={styles.actions}><button type="button" className={styles.secondaryButton} onClick={() => setFormOpen(false)}>Hủy</button><button type="submit" className={styles.primaryButton} disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu thông báo'}</button></div></div>
+          <label>Tải tệp đính kèm (PDF, DOCX, XLSX, JPG, PNG; tối đa 10 MB)<input type="file" accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png" disabled={uploading || saving} onChange={e=>void uploadAttachment(e.target.files?.[0])}/></label>{uploading && <p role="status">Đang tải tệp...</p>}
+          <div className={styles.formFooter}><label>Trạng thái<select value={draft.trang_thai} onChange={(e) => setDraft({ ...draft, trang_thai: e.target.value as Draft['trang_thai'] })}><option value="nhap">Lưu bản nháp</option><option value="da_dang">Công bố trên website</option></select></label><div className={styles.actions}><button type="button" className={styles.secondaryButton} onClick={() => setFormOpen(false)}>Hủy</button><button type="submit" className={styles.primaryButton} disabled={saving || uploading}>{saving ? 'Đang lưu...' : 'Lưu thông báo'}</button></div></div>
         </form>
       </section>}
 
       <section className={styles.panel}>
         <div className={styles.panelHeader}><div><h2>Danh sách thông báo</h2><p>Những thông báo đã công bố sẽ xuất hiện trên trang chủ và trang Thông báo.</p></div><button className={styles.textButton} type="button" onClick={() => void reload()}>Làm mới</button></div>
         <div className={styles.toolbar}><input aria-label="Tìm thông báo" type="search" placeholder="Tìm theo tiêu đề hoặc nội dung..." value={filter} onChange={(e) => setFilter(e.target.value)} /><select aria-label="Lọc trạng thái" value={status} onChange={(e) => setStatus(e.target.value as typeof status)}><option value="all">Tất cả trạng thái</option><option value="da_dang">Đã công bố</option><option value="nhap">Bản nháp</option></select></div>
-        <div className={styles.tableWrap}><table><thead><tr><th>THÔNG BÁO</th><th>NGÀY ĐĂNG</th><th>TRẠNG THÁI</th><th>THAO TÁC</th></tr></thead><tbody>
+        <div className={styles.tableWrap} tabIndex={0} role="region" aria-label="Bảng dữ liệu"><table className="excel-grid" data-grid="excel"><thead><tr><th>THÔNG BÁO</th><th>NGÀY ĐĂNG</th><th>TRẠNG THÁI</th><th>THAO TÁC</th></tr></thead><tbody>
           {!busy && shown.map((item) => <tr key={item.ma_thong_bao}><td><strong>{item.tieu_de}</strong><small>{item.ten_file || (item.noi_dung ? item.noi_dung.slice(0, 100) : 'Không có tệp đính kèm')}</small></td><td className={styles.date}>{formatDate(item.ngay_dang)}</td><td><span className={item.trang_thai === 'da_dang' ? styles.published : styles.draft}>{item.trang_thai === 'da_dang' ? 'Đã công bố' : 'Bản nháp'}</span></td><td><div className={styles.tableActions}><button type="button" onClick={() => startEdit(item)}>Sửa</button><button type="button" className={styles.danger} onClick={() => void remove(item)}>Xóa</button></div></td></tr>)}
         </tbody></table>{busy && <div className={styles.empty}>Đang tải dữ liệu...</div>}{!busy && shown.length === 0 && <div className={styles.empty}>Chưa có thông báo phù hợp.</div>}</div>
         <div className={styles.tableFooter}>Hiển thị {shown.length} / {items.length} thông báo</div>

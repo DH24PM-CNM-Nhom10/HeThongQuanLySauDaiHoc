@@ -272,3 +272,43 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Report workspace */
+.heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 0; border: 0; margin: 0 0 26px; }
+.heading h1 { margin: 6px 0 9px; color: #18364f; font-size: clamp(25px, 2.7vw, 34px); font-weight: 750; letter-spacing: -1px; }
+.heading p { margin: 0; color: #718297; font-size: 13px; line-height: 1.7; }
+.heading .eyebrow, .eyebrow { color: #46728e; font-size: 10px; letter-spacing: 1.7px; font-weight: 750; }
+.primaryLink { display: inline-flex; align-items: center; justify-content: center; padding: 12px 18px; border-radius: 9px; background: #174e70; color: #fff; text-decoration: none; font-size: 12px; font-weight: 650; box-shadow: 0 4px 10px #174e7018; }
+.primaryLink:hover { background: #103c59; }
+.metrics { gap: 16px; margin: 0; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.metrics > div { padding: 20px 22px; min-height: 145px; border: 1px solid #e1e8f0; border-radius: 13px; border-top: 0; position: relative; overflow: hidden; background: #fff; box-shadow: 0 3px 12px #153c5905; }
+.metrics > div::before { content: ''; position: absolute; inset: 20px auto 20px 0; width: 4px; background: var(--status-accent, var(--status-color, #202a35)); border-radius: 0 5px 5px 0; }
+.metrics dt { color: #63758b; font-size: 12px; font-weight: 600; }
+.metrics dd { font-size: 36px; letter-spacing: -1px; line-height: 1.3; margin-top: 8px; color: var(--status-color, #171d26); }
+.metrics small { display: block; color: #8996a6; margin-top: 6px; font-size: 11px; }
+.reportGrid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr); gap: 20px; margin-top: 22px; align-items: stretch; }
+.panel, .quickPanel { margin: 0; border: 1px solid #e1e8f0; border-radius: 14px; padding: 26px; box-shadow: 0 3px 12px #153c5904; background: #fff; min-width: 0; }
+.panel h2, .quickPanel h2 { color: #203a52; font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
+.subtitle { color: #8795a5; font-size: 12px; margin-top: 7px; line-height: 1.6; }
+.chartLayout { grid-template-columns: minmax(150px, 1fr) minmax(180px, 1fr); gap: 30px; margin-top: 30px; }
+.donut { width: min(100%, 240px); box-shadow: none; }
+.donut > div { width: 77%; background: #fff; }
+.donut strong { font-size: 34px; letter-spacing: -1px; }
+.donut span { margin-top: 5px; font-size: 12px; color: #8795a5; }
+.breakdown { padding: 0; }
+.breakdown li { padding: 11px 0; border-radius: 0; background: none; border-bottom: 1px solid #eef2f6; gap: 10px; }
+.breakdown li + li { margin-top: 0; }
+.breakdown li::before { background: var(--status-color, #8795a5); width: 8px; height: 8px; }
+.breakdown strong { font-size: 14px; color: #203a52; }
+.statusName { color: #475d72; font-size: 12px; }
+.statusName small { display: block; color: #98a3b1; font-size: 10px; margin-top: 4px; }
+.quickPanel { background: linear-gradient(145deg, #f7fbff, #fff); }
+.quickPanel h2 { margin-top: 12px; line-height: 1.5; font-size: 21px; }
+.quickPanel > p:not(.eyebrow) { color: #8795a5; font-size: 12px; line-height: 1.6; margin: 8px 0 24px; }
+.quickPanel a { display: block; text-decoration: none; color: #274d69; padding: 16px 0; border-top: 1px solid #e4edf4; }
+.quickPanel a:hover strong { color: #2563eb; }
+.quickPanel a strong { display: block; font-size: 13px; }
+.quickPanel a span { display: block; margin-top: 6px; font-size: 11px; color: #8795a5; line-height: 1.6; }
+.notice { margin-top: 20px; padding: 26px; color: #63758b; }
+@media (max-width: 1200px) { .reportGrid { grid-template-columns: 1fr; } .quickPanel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 20px; } .quickPanel > :is(p, h2) { grid-column: 1 / -1; } }
+@media (max-width: 620px) { .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .metrics > div { padding: 16px; min-height: 130px; } .metrics dd { font-size: 30px; } .chartLayout { grid-template-columns: 1fr; } .panel, .quickPanel { padding: 20px; } .quickPanel { display: block; } .heading { gap: 14px; } .primaryLink { width: 100%; } }

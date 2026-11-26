@@ -1,2 +1,2 @@
-import GradeReview from "../../../components/grades/GradeReview";
-export default function Page() { return <GradeReview />; }
+import { redirect } from 'next/navigation';
+export default function Page(){redirect('/admin/thong-ke-diem');}

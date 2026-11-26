@@ -14,6 +14,6 @@ export default function StudentPageSwitch({ section, adminView }: { section: Stu
     } catch { setRole("guest"); }
   }, []);
   if (role === null) return <div style={{padding:24, color:"#6b7e90"}}>Đang tải trang...</div>;
-  if (role === "admin") return <>{adminView}</>;
+  if (role === "admin" || role === "training_office") return <>{adminView}</>;
   return <PublicHome page={section} />;
 }

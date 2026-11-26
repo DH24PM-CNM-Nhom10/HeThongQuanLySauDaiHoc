@@ -26,7 +26,7 @@ export class EntitiesController {
     if (!["students", "teachers", "thesis", "assignments", "grades", "schedule"].includes(entity)) {
       throw new BadRequestException("Loại dữ liệu không hợp lệ");
     }
-    if (mutation && ["students", "grades", "assignments"].includes(entity)) {
+    if (mutation && ["students", "grades", "assignments", "schedule"].includes(entity)) {
       throw new BadRequestException("Hãy sử dụng nghiệp vụ quản lý học viên, điểm hoặc phân công tương ứng");
     }
   }

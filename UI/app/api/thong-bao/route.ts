@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import { getDb } from "../../../lib/mysql";
 import { requireAdmin } from "../../../lib/admin-api";
-import { noticeError, noticeResponse, noticeValues, parseNotice, requireNoticeAdmin } from "../../../lib/notice-api";
+import { noticeError, noticeResponse, noticeValues, parseNotice, requireNoticeManager } from "../../../lib/notice-api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +16,7 @@ interface ThongBaoRow extends RowDataPacket {
 export async function GET(request: NextRequest) {
   const includeDrafts = request.nextUrl.searchParams.get("admin") === "1";
   if (includeDrafts) {
-    const denied = requireAdmin(request);
+    const denied = await requireNoticeManager(request);
     if (denied) return denied;
   }
   const limitParam = request.nextUrl.searchParams.get("limit");
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const denied = requireNoticeAdmin(request);
+  const denied = await requireNoticeManager(request);
   if (denied) return denied;
   const input = parseNotice(await request.json().catch(() => null));
   if (!input) return noticeError("Vui lòng kiểm tra tiêu đề, nội dung, tệp đính kèm và trạng thái.", 400);

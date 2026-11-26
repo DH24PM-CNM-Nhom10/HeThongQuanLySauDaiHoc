@@ -24,6 +24,7 @@ function studentCode(row) {
 }
 
 const { studentStatus } = require("./student-status.cjs");
+const { studentCohort } = require("./student-profile.cjs");
 
 function catalogFromStudents(students, saved = []) {
   const entries = new Map(saved.map(row => [row.id, row]));
@@ -43,6 +44,10 @@ function catalogFromStudents(students, saved = []) {
       const value = normalize(row[field]);
       if (value) entries.set(kind + ":" + value, { id: kind + ":" + value, kind, code: value, name: value });
     }
+    const cohort = studentCohort(row);
+    if (cohort) entries.set('cohort:' + cohort, { id: 'cohort:' + cohort, kind: 'cohort', code: cohort, name: cohort });
+    const mode = normalize(row.hinhThucDaoTao);
+    if (mode) entries.set('study_mode:' + mode, { id: 'study_mode:' + mode, kind: 'study_mode', code: mode, name: mode });
   }
   return [...entries.values()];
 }
@@ -70,6 +75,9 @@ function readStore() {
   store.gradebooks ??= [];
   store.gradeHistory ??= [];
   store.studentHistory ??= [];
+  store.studentDocuments ??= [];
+  store.documentHistory ??= [];
+  for (const key of ["courses", "assignmentHistory", "teacherHistory", "scheduleHistory", "academicPolicies", "academicPlans", "academicHistory", "thesisWorkflows", "thesisHistory", "noticeAttachments"]) store[key] ??= [];
   store.catalogs = catalogFromStudents(store.students, store.catalogs || []);
   versions.set(store, fingerprint(raw));
   return store;

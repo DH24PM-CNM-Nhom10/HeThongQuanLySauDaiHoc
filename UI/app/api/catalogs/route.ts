@@ -1,10 +1,11 @@
+import { requireStudentManager } from "../../../lib/student-manager";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "../../../lib/admin-api";
 import { getStore, saveStoreToFile } from "../../../lib/store";
 import { normalize } from "../../../../shared/system-store.cjs";
 
 export async function GET(request: Request) {
-  const denied = requireAdmin(request);
+  const denied = await requireStudentManager(request);
   if (denied) return denied;
   return NextResponse.json({ success: true, data: getStore().catalogs });
 }
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
     const code = normalize(input.code);
     const name = normalize(input.name);
     const majorCode = normalize(input.majorCode);
-    if (!["major", "class", "program", "level"].includes(kind) || !code || (kind === "major" && !name)) {
+    if (!["major", "class", "program", "level", "cohort", "study_mode"].includes(kind) || !code || (kind === "major" && !name)) {
       return NextResponse.json({ error: "Nhập đủ thông tin danh mục." }, { status: 400 });
     }
     const store = getStore();

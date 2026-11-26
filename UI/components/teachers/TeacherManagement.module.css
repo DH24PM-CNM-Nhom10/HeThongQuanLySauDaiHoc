@@ -1,0 +1,22 @@
+.page h1 { font-size: 24px; font-weight: 700; margin: 0; }
+.filters { display: grid; grid-template-columns: minmax(230px, 1.5fr) repeat(3, minmax(135px, 1fr)) auto auto; align-items: end; gap: 10px; margin: 14px 0; }
+.filters label { display: grid; gap: 5px; font-weight: 600; min-width: 0; }
+.filters :is(input, select) { width: 100%; height: 40px; min-width: 0; font-weight: 400; }
+.filters button { min-height: 40px; }
+.filters p { color: #52687a; white-space: nowrap; padding-bottom: 10px; font-size: 13px; }
+.pagination { justify-content: space-between; margin-top: 14px; color: #52687a; font-size: 13px; }
+.pagination > div { display: flex; align-items: center; gap: 10px; }
+.error { padding: 12px; margin-bottom: 12px; color: #ad3a33; background: #fff0ee; border-radius: 5px; }
+.dialog { width: min(740px, calc(100vw - 28px)); max-height: calc(100dvh - 40px); margin: auto; padding: 26px; border: 1px solid #d6e0e8; border-radius: 12px; overflow-y: auto; color: #203a52; box-shadow: 0 24px 80px #163b5830; }
+.dialog::backdrop { background: #122b4666; }
+.dialog header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; }
+.dialog h2 { font-size: 22px; }
+.dialog button { font: inherit; border: 1px solid #c7d4df; border-radius: 5px; background: #fff; padding: 8px 12px; color: inherit; cursor: pointer; }
+.dialog dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.dialog dl > div { padding-bottom: 12px; border-bottom: 1px solid #e4eaf0; }
+.dialog dt { color: #7b8e9f; font-size: 12px; margin-bottom: 6px; }
+.dialog dd { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 1250px) { .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }.filters > label:first-child { grid-column: 1 / -1; }.filters p { padding: 0; } }
+@media (max-width: 580px) { .filters, .dialog dl { grid-template-columns: 1fr; }.page h1 { font-size: 22px; }.dialog { padding: 20px; } }
+
+.importLink { display: inline-block; padding: 9px 12px; background: #08734e; color: white; text-decoration: none; border-radius: 5px; font-weight: 600; }.dialog footer { margin-top: 22px; }

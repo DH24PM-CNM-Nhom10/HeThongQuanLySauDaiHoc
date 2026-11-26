@@ -54,7 +54,7 @@
 
 .scopeFilters {
   display: grid;
-  grid-template-columns: minmax(180px, 1.4fr) minmax(140px, 1fr) minmax(145px, 1fr) minmax(115px, 0.8fr) auto;
+  grid-template-columns: repeat(5, minmax(130px, 1fr)) auto;
   align-items: end;
   gap: 6px 8px;
   margin-bottom: 12px;
@@ -250,7 +250,7 @@
 }
 
 .details {
-  width: min(680px, 92vw);
+  width: min(1100px, 94vw);
   max-height: 85vh;
   overflow: auto;
   border-radius: 10px;

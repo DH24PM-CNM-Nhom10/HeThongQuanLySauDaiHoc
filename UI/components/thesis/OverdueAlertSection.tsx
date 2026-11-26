@@ -197,8 +197,8 @@ export default function OverdueAlertSection() {
           </div>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", tableLayout: "fixed", borderCollapse: "collapse", fontSize: "14px", textAlign: "left", minWidth: "1050px" }}>
+        <div style={{ overflowX: "auto" }} tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+          <table className="excel-grid" data-grid="excel" style={{ width: "100%", tableLayout: "fixed", borderCollapse: "collapse", fontSize: "14px", textAlign: "left", minWidth: "1050px" }}>
             <colgroup>
               <col style={{ width: "15%" }} />
               <col style={{ width: "16%" }} />

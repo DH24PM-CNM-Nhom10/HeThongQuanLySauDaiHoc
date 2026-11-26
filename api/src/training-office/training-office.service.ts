@@ -1,3 +1,4 @@
+import { requireManager } from '../common/management-access';
 import { BadRequestException, ConflictException, Injectable, UnauthorizedException, ServiceUnavailableException, NotFoundException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
@@ -156,7 +157,7 @@ export class TrainingOfficeService {
   }
 
   catalog(req: Request) {
-    this.fromRequest(req);
+    requireManager(req, this);
     const { teachers, students } = this.source();
     const list = teachers.filter(t => t.hoten && (t.shcc || t.id)).map(t => ({
       id: String(t.shcc || t.id), name: String(t.hoten), department: String(t.t_dvi || 'Chưa cập nhật bộ môn'),
@@ -217,7 +218,7 @@ export class TrainingOfficeService {
       };
     }).sort((a, b) => a.code.localeCompare(b.code, 'vi'));
     const majors = [...majorIndex.values()].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
-    return { success: true, departments, teachers: list, classes, majors, dataWarnings };
+    return { success: true, departments, teachers: list, classes, majors, dataWarnings, courses: this.curriculum() };
   }
 
   private readAssignments(): TeachingAssignment[] {
@@ -225,7 +226,7 @@ export class TrainingOfficeService {
   }
 
   assignments(req: Request) {
-    this.fromRequest(req);
+    requireManager(req, this);
     return { success: true, data: this.readAssignments() };
   }
 
@@ -298,14 +299,16 @@ export class TrainingOfficeService {
     try {
       const parsed: unknown = JSON.parse(fs.readFileSync(filename, 'utf8'));
       if (!Array.isArray(parsed)) throw new Error('Wrong curriculum format');
-      return parsed as CourseReference[];
+      const configured=readStore().courses || [];
+      const extras=configured.map(c=>({...c,id:'configured:'+c.code,majorName:MAJOR_TO_CURRICULUM[c.majorCode]||c.majorName,needsReview:false,reviewNote:'',source:'configured',sourcePage:null}));
+      return [...(parsed as CourseReference[]).filter(c=>!extras.some(e=>e.code.toUpperCase()===c.code.toUpperCase()&&e.majorName===c.majorName&&e.track===c.track)),...extras] as CourseReference[];
     } catch { throw new ServiceUnavailableException('Không đọc được danh mục chương trình đào tạo'); }
   }
 
   // Lưu toàn bộ các bản nháp đang hiển thị trong MỘT giao dịch ghi file.
   // Hệ thống hiện sử dụng kho JSON của Backend, chưa kết nối SQL/MySQL.
   publishAssignments(req: Request, input: unknown) {
-    const office = this.fromRequest(req);
+    const office = requireManager(req, this);
     if (!input || typeof input !== 'object') throw new BadRequestException('Thiếu dữ liệu phân công');
     const payload = input as Record<string, unknown>;
     if (payload.confirmedOpen !== true) {
@@ -375,10 +378,27 @@ export class TrainingOfficeService {
     return { success: true, count: additions.length, data: additions };
   }
 
+  reassign(req: Request, id: string, body: { teacherId?: unknown; previousTeacherId?: unknown }) {
+    const actor = requireManager(req, this), store=readStore(), row=store.teachingAssignments.find(a=>a.id===id);
+    if (!row) throw new NotFoundException('Không tìm thấy phân công.');
+    if (row.teacherId !== body?.previousTeacherId) throw new ConflictException('Phân công đã thay đổi. Hãy tải lại.');
+    const teacher=store.teachers.find(t=>String(t.shcc||t.id)===body.teacherId);
+    if (!teacher) throw new BadRequestException('Chọn giảng viên có trong danh mục.');
+    const book=store.gradebooks.find(b=>b.assignmentId===id);
+    if (book?.scores?.length || book?.publishedScores?.length || store.teacherGrades.some(g=>g.assignmentId===id)) throw new ConflictException('Không đổi giảng viên khi bảng điểm đã có dữ liệu.');
+    const slots=store.schedule.filter(s=>s.assignmentId===id);
+    for(const slot of slots) {
+      if (store.schedule.some(s=>s.assignmentId!==id && s.teacherId===body.teacherId && s.date===slot.date && Number(s.startPeriod)<=Number(slot.endPeriod) && Number(s.endPeriod)>=Number(slot.startPeriod))) throw new ConflictException('Giảng viên mới bị trùng lịch.');
+    }
+    const before={...row};row.teacherId=String(teacher.shcc||teacher.id);row.teacherName=String(teacher.hoten||teacher.hoTen);row.department=String(teacher.t_dvi||'');
+    for(const slot of slots) {slot.teacherId=row.teacherId;slot.teacherName=row.teacherName;}
+    store.assignmentHistory??=[];store.assignmentHistory.push({action:'reassign',actor:actor.username,at:new Date().toISOString(),before,after:{...row}});saveStore(store);return {success:true,data:row};
+  }
+
   // Phòng đào tạo được thu hồi phân công, sẽ giải phóng học phần ở danh sách chọn.
   // Khi triển khai bảng điểm thật cần khóa việc thu hồi nếu đã có điểm liên quan.
   deleteAssignment(req: Request, id: string) {
-    this.fromRequest(req);
+    requireManager(req, this);
     if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id)) throw new BadRequestException('Mã phân công không hợp lệ');
     const store = readStore();
     const rows = store.teachingAssignments;

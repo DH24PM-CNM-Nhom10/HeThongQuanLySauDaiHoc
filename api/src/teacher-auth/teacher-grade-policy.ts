@@ -21,9 +21,10 @@ export const TEACHER_GRADE_POLICY = {
   ],
 } as const;
 
-export function calculateTeacherGrade(processScore: number | null, examScore: number | null) {
-  if (processScore === null || examScore === null) return { totalScore: null, letterGrade: null };
-  const totalScore = Math.round((processScore * TEACHER_GRADE_POLICY.processWeight + examScore * TEACHER_GRADE_POLICY.examWeight + Number.EPSILON) * 100) / 100;
-  const letterGrade = TEACHER_GRADE_POLICY.thresholds.find(row => totalScore >= row.min)?.letter ?? 'F';
+export type GradePolicy = { id: string; description: string; processWeight: number; examWeight: number; thresholds: readonly { min: number; letter: string; gpa?: number }[]; passScore?: number };
+export function calculateTeacherGrade(processScore: number | null, examScore: number | null, policy: GradePolicy = TEACHER_GRADE_POLICY) {
+  if ((processScore === null && policy.processWeight > 0) || (examScore === null && policy.examWeight > 0)) return { totalScore: null, letterGrade: null };
+  const totalScore = Math.round(((processScore ?? 0) * policy.processWeight + (examScore ?? 0) * policy.examWeight + Number.EPSILON) * 100) / 100;
+  const letterGrade = policy.thresholds.find(row => totalScore >= row.min)?.letter ?? 'F';
   return { totalScore, letterGrade };
 }

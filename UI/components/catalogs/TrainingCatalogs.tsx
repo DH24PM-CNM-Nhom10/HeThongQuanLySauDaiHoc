@@ -37,6 +37,7 @@ export default function TrainingCatalogs() {
       <label>Loại danh mục<select name="kind" value={kind} onChange={event => setKind(event.target.value)}>
         <option value="major">Ngành</option><option value="class">Lớp</option>
         <option value="program">Loại chương trình</option><option value="level">Trình độ</option>
+        <option value="cohort">Khóa đào tạo</option><option value="study_mode">Hình thức đào tạo</option>
       </select></label>
       <label>{["major", "class"].includes(kind) ? "Mã" : "Tên"}<input name="code" required /></label>
       {kind === "major" && <label>Tên ngành<input name="name" required /></label>}
@@ -46,8 +47,8 @@ export default function TrainingCatalogs() {
       <button className={styles.addButton} disabled={saving}>Thêm danh mục</button>
     </form>
     {message && <p role="status">{message}</p>}
-    <table className={styles.table}><thead><tr><th>Mã / Tên</th><th>Tên ngành / Mã ngành</th></tr></thead>
+    <div className={styles.sheet} role="region" aria-label="Danh mục đào tạo" tabIndex={0}><table data-grid="excel" className={"excel-grid " + (styles.table)}><thead><tr><th>Mã / Tên</th><th>Tên ngành / Mã ngành</th></tr></thead>
       <tbody>{rows.filter(row => row.kind === kind).map(row => <tr key={row.id}><td>{row.code}</td><td>{row.majorCode || row.name || "—"}</td></tr>)}</tbody>
-    </table>
+    </table></div>
   </section>;
 }

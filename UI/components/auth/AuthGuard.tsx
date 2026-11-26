@@ -9,11 +9,11 @@ import Footer from "../layout/Footer";
 
 type SessionUser = { role?: "admin" | "student" | "teacher" | "training_office"; hoTen?: string; maHocVien?: string; teacherId?: string; username?: string; mustChangePassword?: boolean };
 const publicRoutes = new Set(["/", "/home", "/login", "/thong-bao", "/chuong-trinh-dao-tao", "/lien-he", "/gioi-thieu", "/phong-dao-tao/phan-cong", "/giang-vien/thong-tin", "/giang-vien/tra-cuu-diem", "/giang-vien/thoi-khoa-bieu"]);
-const adminRoutes = ["/admin", "/upload", "/students", "/teachers", "/assignment", "/thesis"];
+const adminRoutes = ["/admin", "/upload", "/students", "/teachers", "/assignment", "/thesis", "/kiem-tra-van-bang", "/academic", "/courses"];
 const studentRoutes = ["/profile", "/grades", "/schedule", "/tien-do-hoc-tap"];
 const studentOnlyRoutes = studentRoutes.filter(route => route !== "/schedule");
 const matches = (path: string, base: string) => path === base || path.startsWith(`${base}/`);
-const officePage = (path: string) => matches(path, "/phong-dao-tao") || path === "/assignment";
+const officePage = (path: string) => matches(path, "/phong-dao-tao") || path === "/assignment" || path === "/kiem-tra-van-bang" || path === "/students" || path === "/teachers" || path === "/schedule" || path === "/thesis" || path === "/academic" || path === "/courses";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,12 +23,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+    let check = 0;
     const verify = async () => {
-      setLoading(true);
+      const currentCheck = ++check;
       let session: SessionUser | null = null;
       try { session = await verifySession(); }
       catch { session = null; }
-      if (cancelled) return;
+      if (cancelled || currentCheck !== check) return;
       setUser(session);
       setLoading(false);
 
@@ -56,11 +57,18 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       if (session.role === "admin" && (studentOnlyRoutes.some(r => matches(pathname, r)) || matches(pathname, "/giang-vien") || matches(pathname, "/phong-dao-tao"))) { router.replace("/admin"); return; }
       if (session.role === "student" && (matches(pathname, "/giang-vien") || matches(pathname, "/phong-dao-tao"))) { router.replace("/home"); }
     };
+    // Navigation verifies the session in the background so the existing shell
+    // (including sidebar scroll/collapse state) stays mounted.
     void verify();
-    window.addEventListener("agu-auth-changed", verify);
+    const onAuthChanged = () => {
+      setLoading(true);
+      setUser(null);
+      void verify();
+    };
+    window.addEventListener("agu-auth-changed", onAuthChanged);
     return () => {
       cancelled = true;
-      window.removeEventListener("agu-auth-changed", verify);
+      window.removeEventListener("agu-auth-changed", onAuthChanged);
     };
   }, [pathname, router]);
 
@@ -75,7 +83,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // Học viên dùng cổng thông tin riêng. Phòng đào tạo dùng bố cục quản lý.
   if (user?.role === "student" && studentRoutes.includes(pathname)) return <>{children}</>;
   return (
-    <div className="app-layout">
+    <div className="app-layout management-layout">
       <Sidebar role={user.role || "student"} />
       <div className="main-wrapper">
         <Header />

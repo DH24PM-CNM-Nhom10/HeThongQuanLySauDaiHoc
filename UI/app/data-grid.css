@@ -1,0 +1,132 @@
+/* Shared spreadsheet appearance for every data table. Keep domain-specific
+   widths, sticky columns, score inputs and status/action colors in modules. */
+.excel-grid[data-grid="excel"] {
+  --grid-line: #d3ded8;
+  --grid-heading: #e9f2ed;
+  --grid-hover: #f0f7f2;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--grid-line);
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 0;
+  background: #fff;
+  color: #243c4b;
+  font-family: inherit;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+.excel-grid[data-grid="excel"] > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-right: 1px solid var(--grid-line);
+  border-bottom: 1px solid var(--grid-line);
+  border-radius: 0;
+  vertical-align: middle;
+  line-height: 1.5;
+  font-size: 13px;
+  letter-spacing: normal;
+}
+.excel-grid[data-grid="excel"] > thead > tr > th {
+  background: var(--grid-heading);
+  color: #244b35;
+  font-weight: 650;
+  text-align: left;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-shadow: 0 1px 0 var(--grid-line);
+}
+.excel-grid[data-grid="excel"] > tbody > tr > td {
+  background: #fff;
+  color: #243c4b;
+}
+.excel-grid[data-grid="excel"] > tbody > tr:nth-child(even) > td {
+  background: #fafcfb;
+}
+.excel-grid[data-grid="excel"] > tbody > tr:is(:hover, :focus-within) > td {
+  background: var(--grid-hover);
+}
+.excel-grid[data-grid="excel"] > tfoot > tr > :is(th, td) {
+  background: var(--grid-heading);
+  font-weight: 650;
+}
+.excel-grid[data-grid="excel"] > tbody > tr > td small {
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.excel-grid[data-grid="excel"] > tbody > tr > td button {
+  min-height: 28px;
+  padding: 4px 9px;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+/* This cell is intentionally edge-to-edge for keyboard grade entry. */
+.excel-grid[data-grid="excel"] > tbody > tr > td:has(> input) {
+  padding: 0;
+}
+.excel-grid[data-grid="excel"] > tbody > tr > td > input {
+  min-height: 35px;
+  border-radius: 0;
+}
+.excel-grid[data-grid="excel"] > tbody > tr > td > input:focus-visible {
+  outline: 2px solid #21834d;
+  outline-offset: -2px;
+}
+html body div:has(> .excel-grid[data-grid="excel"]) {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* Keep the pager and toolbar outside the scrolling management list. */
+html body .management-layout div:has(> .excel-grid[data-grid="excel"]) {
+  max-height: min(65vh, 640px);
+  max-height: min(65dvh, 640px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: #8ba99a #edf3ef;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"]):focus-visible {
+  outline: 2px solid #21834d;
+  outline-offset: 2px;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"])::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"])::-webkit-scrollbar-track {
+  background: #edf3ef;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"])::-webkit-scrollbar-thumb {
+  border: 3px solid #edf3ef;
+  border-radius: 8px;
+  background: #8ba99a;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"])::-webkit-scrollbar-thumb:hover {
+  background: #597e6c;
+}
+html body .management-layout div:has(> .excel-grid[data-grid="excel"])::-webkit-scrollbar-corner {
+  background: #edf3ef;
+}
+.excel-grid[data-grid="excel"] .grid-row-number {
+  width: 48px;
+  min-width: 48px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b8174;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.excel-grid[data-grid="excel"] > thead > tr > .grid-row-number {
+  z-index: 4;
+}

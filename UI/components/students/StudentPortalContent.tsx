@@ -5,7 +5,11 @@ import { studentStatus } from "../../../shared/student-status.cjs";
 import Link from "next/link";
 import { type StoredRecord } from "../../lib/db";
 import styles from "./StudentPortalContent.module.css";
-import StudentCertificates from "./certificates/StudentCertificates";
+import ThesisWorkflow from '../thesis/ThesisWorkflow';
+import AcademicProgress from '../academic/AcademicProgress';
+import StudentDocuments from "./StudentDocuments";
+import StudentContactForm from "./StudentContactForm";
+import { studentCohort } from "../../../shared/student-profile.cjs";
 import ChangePasswordForm from "../auth/ChangePasswordForm";
 import TeacherSchedule from "../schedule/TeacherSchedule";
 
@@ -181,12 +185,23 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           <Field label="Trạng thái" value={status}/>
           <Field label="Ngày nhập học" value={formatDate(textVal(student,"ngayNhapHoc","ngay_nhap_hoc"))}/>
           <Field label="Email" value={textVal(student,"email") || user.email || ""}/>
+          <Field label="Số điện thoại" value={textVal(student,'soDienThoai','so_dien_thoai')}/>
+          <Field label="Địa chỉ liên hệ" value={textVal(student,'diaChi','dia_chi')}/>
+          <Field label="Đơn vị công tác" value={textVal(student,'donViCongTac','don_vi_cong_tac')}/>
+          <Field label="Nơi sinh" value={textVal(student,'noiSinh','noi_sinh')}/>
+          <Field label="Khóa đào tạo" value={studentCohort(student)}/>
+          <Field label="Hình thức đào tạo" value={textVal(student,'hinhThucDaoTao')}/>
+          <Field label="Thời gian đào tạo dự kiến" value={student.thoiGianDaoTao ? String(student.thoiGianDaoTao) + ' tháng' : ''}/>
+          <Field label="Ngày dự kiến hoàn thành" value={formatDate(textVal(student,'ngayDuKienTotNghiep'))}/>
+          <Field label="Thời hạn đào tạo tối đa" value={formatDate(textVal(student,'ngayHetHan','ngay_het_han_dt'))}/>
           {thesisName && <div className={styles.fullRow}><Field label="Đề tài luận văn" value={thesisName}/></div>}
         </div> : <Empty title="Chưa tìm thấy hồ sơ" description="Không tìm thấy bản ghi học viên khớp mã đăng nhập. Vui lòng liên hệ Phòng Đào tạo để kiểm tra dữ liệu."/>)}
         {section === "profile" && <details className={styles.passwordSettings}>
           <summary>Đổi mật khẩu</summary>
           <ChangePasswordForm role="student" />
         </details>}
+        {section === 'profile' && student && <StudentContactForm student={student} onSaved={setStudent} />}
+        {section === 'profile' && <StudentDocuments studentCode={code} />}
         {section === "schedule" && <TeacherSchedule audience="student" />}
         {section === "grades" && <div className={styles.assignedGradeSection}>
           <h1 className={styles.gradeTitle}>Bảng điểm học viên</h1>
@@ -203,8 +218,8 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           {assignedLoading ? <div className={styles.loading}>Đang tải bảng điểm...</div> :
           assignedError ? <p className={styles.gradeError} role="alert">{assignedError}</p> :
           assignedCourses.length === 0 ? <Empty title="Chưa có bảng điểm" description="Khi lớp học phần được ghi nhận, bạn có thể xem kết quả đã công bố tại đây."/> :
-          <div className={styles.assignedGradeScroll}>
-            <table className={styles.assignedGradeTable}>
+          <div className={styles.assignedGradeScroll} tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+            <table data-grid="excel" className={"excel-grid " + (styles.assignedGradeTable)}>
               <thead><tr>
                 <th scope="col">STT</th><th scope="col">Học phần</th><th scope="col">Lớp</th><th scope="col">Giảng viên</th>
                 <th>Quá trình</th><th>Thi kết thúc</th><th>Tổng kết</th><th>Điểm chữ</th><th>Trạng thái</th>
@@ -237,13 +252,13 @@ export default function StudentPortalContent({ section }: { section: StudentSect
           <h2 className={styles.subTitle}>Các mốc được ghi nhận</h2>
           <ol className={styles.timeline}>
             <li><div><strong>Nhập học</strong><p>{enrolled ? `Ngày ${formatDate(textVal(student,"ngayNhapHoc","ngay_nhap_hoc"))}` : "Chưa cập nhật ngày nhập học"}</p></div></li>
-            <li><div><strong>Học các học phần</strong><p>{assignedCourses.length ? `Đã ghi nhận ${assignedCourses.length} học phần, trong đó ${scoreRows.length} học phần đã công bố điểm.` : "Chưa có dữ liệu điểm học phần."}</p></div></li>
+            <li><div><strong>Học các học phần</strong><p>{assignedCourses.length ? `Đã ghi nhận ${assignedCourses.length} học phần, trong đó ${scoreRows.length} học phần đã có điểm.` : "Chưa có dữ liệu điểm học phần."}</p></div></li>
             <li><div><strong>Luận văn / Đề án</strong><p>{thesisName ? `${thesisName}${thesisStatus ? ` — ${thesisStatus}` : ""}` : "Chưa cập nhật đề tài hoặc kết quả nghiên cứu."}</p></div></li>
             <li><div><strong>Tốt nghiệp</strong><p>{graduated ? "Hồ sơ đã có thông tin tốt nghiệp." : "Chưa có thông tin công nhận tốt nghiệp."}</p></div></li>
           </ol>
-          <p className={styles.infoBanner}>Chưa thể tính phần trăm hoàn thành hoặc tín chỉ còn thiếu vì dữ liệu hiện tại chưa có kế hoạch học tập và tổng số tín chỉ yêu cầu cho từng học viên.</p>
+          <AcademicProgress /><ThesisWorkflow />
           <div className={styles.links}><Link href="/grades">Xem bảng điểm</Link><Link href="/schedule">Xem thời khóa biểu</Link></div>
-          <StudentCertificates key={code} student={student} studentCode={code} studentName={user.hoTen || ""} />
+          <StudentDocuments key={code} studentCode={code} />
         </>}
       </>
     }

@@ -1,14 +1,14 @@
 import { NextRequest } from "next/server";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import { getDb } from "../../../../lib/mysql";
-import { noticeError, noticeResponse, noticeValues, parseNotice, parseNoticeId, requireNoticeAdmin } from "../../../../lib/notice-api";
+import { noticeError, noticeResponse, noticeValues, parseNotice, parseNoticeId, requireNoticeManager } from "../../../../lib/notice-api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ id: string }> };
 
 export async function PUT(request: NextRequest, context: Context) {
-  const denied = requireNoticeAdmin(request);
+  const denied = await requireNoticeManager(request);
   if (denied) return denied;
   const id = parseNoticeId((await context.params).id);
   if (id === null) return noticeError("Mã thông báo không hợp lệ.", 400);
@@ -32,7 +32,7 @@ export async function PUT(request: NextRequest, context: Context) {
 }
 
 export async function DELETE(request: NextRequest, context: Context) {
-  const denied = requireNoticeAdmin(request);
+  const denied = await requireNoticeManager(request);
   if (denied) return denied;
   const id = parseNoticeId((await context.params).id);
   if (id === null) return noticeError("Mã thông báo không hợp lệ.", 400);

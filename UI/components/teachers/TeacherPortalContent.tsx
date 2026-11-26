@@ -74,8 +74,8 @@ function AssignedCoursesForTeacher() {
         {!loading && !error && rows.length === 0 &&
           <p className={styles.teacherAssignmentEmpty}>Chưa có học phần nào được Phòng đào tạo lưu phân công cho tài khoản này.</p>}
         {!loading && !error && rows.length > 0 && (
-          <div className={styles.teacherAssignmentScroll}>
-            <table className={styles.teacherAssignmentTable}>
+          <div className={styles.teacherAssignmentScroll} tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+            <table data-grid="excel" className={"excel-grid " + (styles.teacherAssignmentTable)}>
               <thead><tr><th>Học phần</th><th>Lớp</th><th>Năm học / Học kỳ</th><th>Định hướng</th><th>Nhập điểm</th></tr></thead>
               <tbody>{rows.map(row => (
                 <tr key={row.id}>

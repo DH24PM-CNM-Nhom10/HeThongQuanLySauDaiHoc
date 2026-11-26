@@ -352,103 +352,23 @@ export default function DataTable({ entityKey, title }: DataTableProps) {
               border: "1px solid #e2e8f0",
               boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
             }}
-          >
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "separate",
-                borderSpacing: 0,
-                textAlign: "left",
-                fontSize: "13px",
-              }}
-            >
+           tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+            <table data-grid="excel" className="excel-grid" aria-label={title || schema.label}>
               <thead>
-                <tr style={{ backgroundColor: "#f8fafc", color: "#334155" }}>
-                  {/* Cố định cột STT ở mép trái */}
-                  <th
-                    style={{
-                      padding: "12px 14px",
-                      width: "50px",
-                      textAlign: "center",
-                      whiteSpace: "nowrap",
-                      position: "sticky",
-                      left: 0,
-                      backgroundColor: "#f8fafc",
-                      zIndex: 10,
-                      borderBottom: "2px solid #e2e8f0",
-                      borderRight: "1px solid #e2e8f0",
-                    }}
-                  >
-                    STT
-                  </th>
-                  {fields.map((field) => (
-                    <th
-                      key={field.key}
-                      style={{
-                        padding: "12px 14px",
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
-                        backgroundColor: "#f8fafc",
-                        borderBottom: "2px solid #e2e8f0",
-                      }}
-                    >
-                      {field.label}
-                    </th>
-                  ))}
+                <tr>
+                  <th scope="col" className="grid-row-number">STT</th>
+                  {fields.map((field) => <th scope="col" key={field.key}>{field.label}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {pagedData.map((item, idx) => (
-                  <tr
-                    key={item.id || idx}
-                    style={{
-                      transition: "background-color 0.1s",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#f8fafc")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "transparent")
-                    }
-                  >
-                    {/* Ô STT Cố định Sticky trái */}
-                    <td
-                      style={{
-                        padding: "10px 14px",
-                        color: "#64748b",
-                        textAlign: "center",
-                        fontWeight: 500,
-                        position: "sticky",
-                        left: 0,
-                        backgroundColor: "#fff",
-                        zIndex: 5,
-                        borderBottom: "1px solid #f1f5f9",
-                        borderRight: "1px solid #e2e8f0",
-                      }}
-                    >
-                      {(currentPage - 1) * pageSize + idx + 1}
-                    </td>
-
+                  <tr key={item.id || idx}>
+                    <td className="grid-row-number">{(currentPage - 1) * pageSize + idx + 1}</td>
                     {fields.map((field) => {
                       const val = getFieldValue(item, field.key);
-                      return (
-                        <td
-                          key={field.key}
-                          title={val}
-                          style={{
-                            padding: "10px 14px",
-                            color: "#1e293b",
-                            whiteSpace: "nowrap",
-                            maxWidth: "260px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            verticalAlign: "middle",
-                            borderBottom: "1px solid #f1f5f9",
-                          }}
-                        >
-                          {renderCellContent(field.key, val)}
-                        </td>
-                      );
+                      return <td key={field.key} title={val} style={{ whiteSpace: "nowrap", maxWidth: "260px", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {renderCellContent(field.key, val)}
+                      </td>;
                     })}
                   </tr>
                 ))}

@@ -1,8 +1,3 @@
-"use client";
-
-import DataTable from "../../components/shared/DataTable";
-import StudentPageSwitch from "../../components/students/StudentPageSwitch";
-
-export default function SchedulePage() {
-  return <StudentPageSwitch section="schedule" adminView={<DataTable entityKey="schedule" title="Thời khóa biểu" />}/>;
-}
+import StudentPageSwitch from '../../components/students/StudentPageSwitch';
+import ScheduleImport from '../../components/schedule/ScheduleImport';
+export default function SchedulePage() { return <StudentPageSwitch section="schedule" adminView={<ScheduleImport />}/>; }

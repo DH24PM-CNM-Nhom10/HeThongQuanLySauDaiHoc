@@ -1,3 +1,4 @@
+import { requireStudentManager } from './student-manager';
 import { NextResponse } from "next/server";
 import { requireAdmin } from "./admin-api";
 
@@ -53,4 +54,10 @@ export function parseNoticeId(raw: string) {
   if (!/^[1-9]\d*$/.test(raw)) return null;
   const id = Number(raw);
   return Number.isSafeInteger(id) ? id : null;
+}
+
+export async function requireNoticeManager(request: Request) {
+  const denied = await requireStudentManager(request); if (denied) return denied;
+  const origin = request.headers.get('origin');
+  return origin && origin !== new URL(request.url).origin ? noticeError('Origin không hợp lệ.', 403) : null;
 }

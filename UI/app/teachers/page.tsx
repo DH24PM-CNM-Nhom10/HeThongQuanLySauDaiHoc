@@ -1,11 +1,5 @@
-"use client";
-
-import DataTable from "../../components/shared/DataTable";
+import TeacherManagement from '../../components/teachers/TeacherManagement';
 
 export default function TeachersPage() {
-  return (
-    <div>
-      <DataTable entityKey="teachers" title="Quản lý Giảng viên" />
-    </div>
-  );
+  return <TeacherManagement />;
 }

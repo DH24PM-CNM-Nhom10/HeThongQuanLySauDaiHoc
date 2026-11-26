@@ -1,6 +1,8 @@
 // UI/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+import "./management.css";
+import "./data-grid.css";
 import AuthGuard from "../components/auth/AuthGuard";
 
 export const metadata: Metadata = {

@@ -11,7 +11,7 @@ type ClassOption = {
   inconsistentMajor?: boolean; inconsistentAdmissionYear?: boolean; inconsistentTrack?: boolean;
 };
 type Major = { code: string; name: string };
-type Catalog = { success?: boolean; departments?: string[]; teachers: Teacher[]; classes: ClassOption[]; majors?: Major[]; dataWarnings?: string[] };
+type Catalog = { success?: boolean; departments?: string[]; teachers: Teacher[]; classes: ClassOption[]; courses?: CurriculumCourse[]; majors?: Major[]; dataWarnings?: string[] };
 type Assignment = {
   id: string; teacherId: string; teacherName: string; department: string;
   classCode: string; courseCode: string; courseName: string;
@@ -121,6 +121,7 @@ function safeExportText(value: string | number | undefined) {
 export default function TrainingOfficeAssignmentContent() {
   const [catalog, setCatalog] = useState<Catalog>({ teachers: [], classes: [], majors: [] });
   const [storedAssignments, setStoredAssignments] = useState<Assignment[]>([]);
+  const [curriculum, setCurriculum] = useState<CurriculumCourse[]>(CURRICULUM);
   const [drafts, setDrafts] = useState<Assignment[]>([]);
   const [draftsReady, setDraftsReady] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -160,6 +161,7 @@ export default function TrainingOfficeAssignmentContent() {
         if (!aborter.signal.aborted) {
           setCatalog({ teachers: c.teachers ?? [], classes: c.classes ?? [], majors: c.majors ?? [], dataWarnings: c.dataWarnings ?? [] });
           setStoredAssignments(a.data ?? []);
+          setCurriculum(c.courses || CURRICULUM);
         }
       } catch (error) {
         if (!aborter.signal.aborted) setLoadError(error instanceof Error ? error.message : "Không tải được dữ liệu.");
@@ -193,7 +195,7 @@ export default function TrainingOfficeAssignmentContent() {
   // Khoa QUẢN LÝ NGÀNH lấy từ cấu hình ngành, hoàn toàn độc lập với Khoa công tác của giảng viên.
   const programFaculty = majorCode ? (MAJOR_TO_FACULTY[majorCode] ?? "") : "";
   const curriculumMajorName = MAJOR_TO_CURRICULUM[majorCode] || selectedMajor?.name || "";
-  const availableTracks = useMemo(() => new Set(CURRICULUM.filter(c => c.majorName === curriculumMajorName).map(c => c.track)), [curriculumMajorName]);
+  const availableTracks = useMemo(() => new Set(curriculum.filter(c => c.majorName === curriculumMajorName).map(c => c.track)), [curriculumMajorName, curriculum]);
   // Không cần chọn khóa nhập học: hệ thống tự lấy năm nhập học từ hồ sơ của mỗi lớp.
   const classesInAcademicYear = useMemo(() => catalog.classes.filter(c => {
     const admission = c.admissionYear;
@@ -203,7 +205,7 @@ export default function TrainingOfficeAssignmentContent() {
       yearGap >= 0 && yearGap < 2;
   }).sort((a, b) => a.code.localeCompare(b.code, "vi")),
   [catalog.classes, majorCode, trainingTrack, schoolYear]);
-  const coursesByTrack = useMemo(() => CURRICULUM.filter(c => c.majorName === curriculumMajorName && c.track === trainingTrack), [curriculumMajorName, trainingTrack]);
+  const coursesByTrack = useMemo(() => curriculum.filter(c => c.majorName === curriculumMajorName && c.track === trainingTrack), [curriculumMajorName, trainingTrack, curriculum]);
   // Chỉ hiển thị những học phần CTĐT đã đối chiếu và thực sự có ít nhất
   // một lớp thạc sĩ hợp lệ theo NGÀNH + ĐỊNH HƯỚNG + NĂM NHẬP HỌC + HỌC KỲ.
   // Đây là điều kiện để tạo NHÁP, không khẳng định lớp đã mở học phần chính thức.
@@ -297,6 +299,13 @@ export default function TrainingOfficeAssignmentContent() {
     } finally { setPublishing(false); }
   };
 
+  const changeTeacher = async (row: Assignment, teacherId: string) => {
+    if (removingId || teacherId===row.teacherId || !window.confirm('Đổi giảng viên cho phân công này? Bảng đã có điểm sẽ không được đổi.')) return;
+    setRemovingId(row.id);setPublishMessage('');
+    try {const response=await fetch(`/api/training-office/assignments/${encodeURIComponent(row.id)}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({teacherId,previousTeacherId:row.teacherId})});const data=await response.json();if(!response.ok)throw new Error(data.message);setStoredAssignments(old=>old.map(r=>r.id===row.id?data.data:r));setPublishMessage('Đã đổi giảng viên và cập nhật lịch liên kết.');}
+    catch(error){setPublishMessage(error instanceof Error?error.message:'Không đổi được giảng viên.');}finally{setRemovingId('');}
+  };
+
   const removePublishedAssignment = async (id: string) => {
     if (removingId || !window.confirm("Hủy phân công đã lưu? Giảng viên sẽ không còn thấy học phần/lớp này.")) return;
     setRemovingId(id);
@@ -369,7 +378,7 @@ export default function TrainingOfficeAssignmentContent() {
       admissionYear: cls.admissionYear ?? undefined,
       programSemester: programSemesterOf(schoolYear, semester, String(cls.admissionYear ?? "")) ?? undefined,
       createdAt: time,
-      createdBy: "local-demo",
+      createdBy: "browser-draft",
     }));
     setDrafts(old => [...old, ...additions]);
     setClassCodes([]);
@@ -464,7 +473,7 @@ export default function TrainingOfficeAssignmentContent() {
         </section>
 
         <section className={`${styles.card} ${styles.assignmentCard}`} aria-labelledby="assignment-title">
-          <div className={styles.titleRow}><h2 id="assignment-title">2. Phân công giảng viên</h2><span className={styles.demoTag}>Thiết kế thử nghiệm</span></div>
+          <div className={styles.titleRow}><h2 id="assignment-title">2. Phân công giảng viên</h2><span className={styles.demoTag}>Lưu nháp và xác nhận phân công</span></div>
           {!scheduleConfirmed ? (
             <div className={styles.scheduleSetup}>
               <div className={styles.stepHeadline}>
@@ -625,8 +634,8 @@ export default function TrainingOfficeAssignmentContent() {
           </label>
         )}
         {publishMessage && <p className={styles.publishMessage} role="status">{publishMessage}</p>}
-        <div className={styles.tableWrap}>
-          <table className={styles.summaryTable}>
+        <div className={styles.tableWrap} tabIndex={0} role="region" aria-label="Bảng dữ liệu">
+          <table data-grid="excel" className={"excel-grid " + (styles.summaryTable)}>
             <thead><tr><th>STT</th><th>Năm học / HK</th><th>Học phần</th><th>Lớp / Ngành</th><th>Giảng viên / Khoa</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
             <tbody>
               {summaryRows.length === 0 ? <tr><td colSpan={7} className={styles.emptyTable}>Không có phân công thuộc Khoa đã chọn. Chọn Tất cả Khoa hoặc tạo bản nháp mới.</td></tr> : summaryRows.map((r, index) => (
@@ -639,7 +648,7 @@ export default function TrainingOfficeAssignmentContent() {
                   <td><span className={r.source === "draft" ? styles.draftBadge : styles.savedBadge}>{r.source === "draft" ? "Bản nháp" : "Đã lưu"}</span></td>
                   <td>{r.source === "draft"
                     ? <button type="button" className={styles.removeButton} onClick={() => setDrafts(old => old.filter(x => x.id !== r.id))}>Xóa nháp</button>
-                    : <button type="button" className={styles.removeButton} disabled={Boolean(removingId)} onClick={() => void removePublishedAssignment(r.id)}>{removingId === r.id ? "Đang hủy..." : "Hủy phân công"}</button>}</td>
+                    : <><select aria-label={`Đổi giảng viên ${r.courseCode} ${r.classCode}`} value={r.teacherId} disabled={Boolean(removingId)} onChange={e=>void changeTeacher(r,e.target.value)}>{catalog.teachers.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select><button type="button" className={styles.removeButton} disabled={Boolean(removingId)} onClick={() => void removePublishedAssignment(r.id)}>{removingId === r.id ? "Đang xử lý..." : "Hủy phân công"}</button></>}</td>
                 </tr>
               ))}
             </tbody>

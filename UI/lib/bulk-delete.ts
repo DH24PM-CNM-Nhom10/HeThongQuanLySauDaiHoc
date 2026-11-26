@@ -1,8 +1,8 @@
 type Store = Record<string, unknown[]>;
 
 const dependencies: Record<string, string[]> = {
-  students: ["thesis", "schedule", "grades", "assignments", "teachingAssignments", "teacherGrades", "gradebooks"],
-  teachers: ["thesis", "schedule", "assignments", "teachingAssignments", "teacherGrades", "gradebooks"],
+  students: ["thesis", "schedule", "grades", "assignments", "teachingAssignments", "teacherGrades", "gradebooks", "studentDocuments", "thesisWorkflows", "academicPlans"],
+  teachers: ["thesisWorkflows", "thesis", "schedule", "assignments", "teachingAssignments", "teacherGrades", "gradebooks"],
   assignments: ["teachingAssignments", "teacherGrades", "gradebooks"],
   grades: ["teacherGrades", "gradebooks"],
 };
@@ -11,7 +11,7 @@ const dependencies: Record<string, string[]> = {
 // Keep linked records until the corresponding business workflow handles them.
 export function bulkDeleteConflict(store: Store, targets: string[] | null): string | null {
   const linked = targets === null
-    ? ["thesis", "schedule", "grades", "assignments", "teachingAssignments", "teacherGrades", "gradebooks", "gradeHistory", "studentHistory"]
+    ? ["thesis", "schedule", "grades", "assignments", "teachingAssignments", "teacherGrades", "gradebooks", "gradeHistory", "studentHistory", "studentDocuments", "documentHistory", "assignmentHistory", "teacherHistory", "scheduleHistory", "academicHistory", "thesisHistory", "noticeAttachments", "academicPlans", "academicPolicies", "thesisWorkflows"]
     : [...new Set(targets.flatMap(key => dependencies[key] || []))];
   const occupied = linked.filter(key => (store[key]?.length ?? 0) > 0);
   return occupied.length

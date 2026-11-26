@@ -3,9 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 import { getStore } from "../../../lib/store";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
+import { requireStudentManager } from "../../../lib/student-manager";
+import { studentCohort } from "../../../../shared/student-profile.cjs";
+import { filterStudents } from "../../../../shared/student-profile.cjs";
 
 export async function GET(req: NextRequest) {
-  const denied = requireAdmin(req);
+  const requestedEntity = req.nextUrl.searchParams.get("entity");
+  const denied = requestedEntity === "students" ? await requireStudentManager(req) : requireAdmin(req);
   if (denied) return denied;
   try {
     const memoryStore = getStore();
@@ -20,7 +24,10 @@ export async function GET(req: NextRequest) {
     }
 
     const schema = ENTITY_SCHEMAS[entityKey];
-    const rawData = memoryStore[entityKey] || [];
+    const rawData = entityKey === 'students' ? filterStudents(memoryStore.students, {
+      search: searchParams.get('search') || '', major: searchParams.get('major') || '', cohort: searchParams.get('cohort') || '',
+      classCode: searchParams.get('class') || '', status: searchParams.get('status') || '',
+    }) : memoryStore[entityKey] || [];
 
     if (rawData.length === 0) {
       return NextResponse.json(
@@ -33,7 +40,7 @@ export async function GET(req: NextRequest) {
     const formattedData = rawData.map((item) => {
       const row: Record<string, any> = {};
       schema.fields.forEach((field) => {
-        row[field.label] = item[field.key] || "";
+        row[field.label] = entityKey === "students" && field.key === "khoaHoc" ? studentCohort(item) : item[field.key] ?? "";
       });
       return row;
     });

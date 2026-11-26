@@ -6,14 +6,16 @@ import { studentStatus } from "../../../shared/student-status.cjs";
 import { DB } from "../../lib/db";
 import { ENTITY_SCHEMAS } from "../../lib/schemas";
 import { parseVNStyleDate } from "../../lib/studentUtils";
-import UploadMapping from "../upload/UploadMapping";
 import styles from "./StudentManagementTable.module.css";
+import { studentCohort, filterStudents, expectedGraduation } from "../../../shared/student-profile.cjs";
+import StudentDocuments from "./StudentDocuments";
 
 type StudentItem = Record<string, string>;
 
 const fields = ENTITY_SCHEMAS.students.fields;
 const detailOnlyFields = new Set([
   "email",
+  "soDienThoai", "diaChi", "noiSinh", "donViCongTac", "hinhThucDaoTao", "thoiGianDaoTao", "ngayDuKienTotNghiep", "ngayHetHan",
   "tenLuanVan",
   "gvHuongDan1",
   "gvHuongDan2",
@@ -34,9 +36,9 @@ const statusOptions = [
   { key: "completed", label: "Hoàn thành" },
 ];
 
-const thesisFields = fields.filter(({ key }) => detailOnlyFields.has(key) && key !== "email");
+const thesisFields = fields.filter(({ key }) => ["tenLuanVan", "gvHuongDan1", "gvHuongDan2", "ngayQD", "trangThaiLv", "ngayBaoVe", "ngayTotNghiep"].includes(key));
 const profileFields = fields.filter((field) => !thesisFields.includes(field));
-const calendarFields = new Set(["ngayNhapHoc", "ngaySinh", "ngayTotNghiep"]);
+const calendarFields = new Set(["ngayNhapHoc", "ngaySinh", "ngayTotNghiep", "ngayDuKienTotNghiep", "ngayHetHan"]);
 
 function calendarValue(raw: string) {
   const value = raw.trim();
@@ -79,6 +81,9 @@ const aliases: Record<string, string[]> = {
   trangThaiLv: ["trang_thai_luan_van_de_an", "TRANG_THAI_LUAN_VAN_DE_AN"],
   trangThai: ["status"],
   email: ["Email"],
+  soDienThoai: ["dienThoai", "sdt"],
+  diaChi: ["dia_chi_lien_he"],
+  ngayHetHan: ["ngay_het_han_dt"],
 };
 
 function mapStudent(record: Record<string, unknown>): StudentItem {
@@ -93,7 +98,7 @@ function mapStudent(record: Record<string, unknown>): StudentItem {
     const date = key.startsWith("ngay") && !calendarFields.has(key) && value != null ? parseVNStyleDate(value) : null;
     student[key] = calendar ? calendar.split("-").reverse().join("/") : date ? date.toLocaleDateString("vi-VN") : text;
   }
-  student.email = student.email.replace(/@agu\.edu\.vn$/i, "@student.agu.edu.vn");
+  student.khoaHoc = studentCohort(record);
   if (!student.email && student.maHocVien) student.email = `${student.maHocVien}@student.agu.edu.vn`;
   return student;
 }
@@ -117,6 +122,8 @@ export default function StudentManagementTable() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [majorFilter, setMajorFilter] = useState("");
   const [classFilter, setClassFilter] = useState("");
+  const [cohortFilter, setCohortFilter] = useState("");
+  const [exporting, setExporting] = useState(false);
 
   const [editing, setEditing] = useState<StudentItem | null>(null);
   const [catalogs, setCatalogs] = useState<CatalogEntry[]>([]);
@@ -124,7 +131,6 @@ export default function StudentManagementTable() {
   const [selectedMajorCode, setSelectedMajorCode] = useState("");
   const [advisors, setAdvisors] = useState<string[]>([]);
   const [advisorMessage, setAdvisorMessage] = useState("");
-  const [showUpload, setShowUpload] = useState(false);
   const [saving, setSaving] = useState(false);
   const [serverReady, setServerReady] = useState(false);
   const [message, setMessage] = useState("");
@@ -240,6 +246,7 @@ export default function StudentManagementTable() {
       return;
     }
     values.tenNganh = majorName;
+    if (!values.ngayDuKienTotNghiep && values.ngayNhapHoc && values.thoiGianDaoTao) values.ngayDuKienTotNghiep = expectedGraduation(values.ngayNhapHoc, values.thoiGianDaoTao);
     if (!editing.maHocVien) {
       void mutateStudent("POST", values);
       return;
@@ -257,8 +264,9 @@ export default function StudentManagementTable() {
   }
 
   function renderEditField({ key, label }: (typeof fields)[number], student: StudentItem) {
-    if (key === "loaiChuongTrinh" || key === "trinhDo") {
-      const choices = catalogs.filter(row => row.kind === (key === "loaiChuongTrinh" ? "program" : "level")).map(row => row.code);
+    if (["loaiChuongTrinh", "trinhDo", "khoaHoc", "hinhThucDaoTao"].includes(key)) {
+      const kind = { loaiChuongTrinh: "program", trinhDo: "level", khoaHoc: "cohort", hinhThucDaoTao: "study_mode" }[key];
+      const choices = catalogs.filter(row => row.kind === kind).map(row => row.code);
       return (
         <label key={key}>{label}
           <select name={key} defaultValue={student[key] ?? ""}>
@@ -327,7 +335,9 @@ export default function StudentManagementTable() {
         ) : (
           <input
             name={key}
-            type={calendarFields.has(key) ? "date" : "text"}
+            type={calendarFields.has(key) ? "date" : key === "thoiGianDaoTao" ? "number" : key === "email" ? "email" : key === "soDienThoai" ? "tel" : "text"}
+            min={key === "thoiGianDaoTao" ? 1 : undefined}
+            max={key === "thoiGianDaoTao" ? 600 : undefined}
             defaultValue={calendarFields.has(key) ? calendarValue(student[key] ?? "") : student[key] ?? ""}
             required={key === "maHocVien" || key === "hoTen"}
             readOnly={key === "maHocVien" && Boolean(student.maHocVien)}
@@ -346,14 +356,20 @@ export default function StudentManagementTable() {
     [majorFilter, students],
   );
   const classes = useMemo(() => studentOptions(studentsInMajor, "lop"), [studentsInMajor]);
-  const term = searchTerm.trim().toLocaleLowerCase("vi");
-  const filteredData = studentsInMajor.filter((student) =>
-    (!classFilter || student.lop.trim() === classFilter) &&
-    (statusFilter === "ALL" || statusKey(student.trangThai) === statusFilter) &&
-    (!term || [student.hoTen, student.maHocVien, student.lop].some((value) =>
-      value.toLocaleLowerCase("vi").includes(term),
-    )),
-  );
+  const cohorts = [...new Set(students.map(studentCohort).filter(Boolean))].sort().reverse();
+  const filteredData = filterStudents(students, { search: searchTerm, major: majorFilter, cohort: cohortFilter, classCode: classFilter, status: statusFilter });
+  async function exportStudents() {
+    setExporting(true);
+    try {
+      const query = new URLSearchParams({ entity: 'students', search: searchTerm, major: majorFilter, cohort: cohortFilter, class: classFilter, status: statusFilter });
+      const response = await fetch('/api/export?' + query);
+      if (!response.ok) throw new Error((await response.json()).error || 'Không xuất được danh sách.');
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a'); link.href = url; link.download = 'danh_sach_hoc_vien.xlsx'; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Không xuất được danh sách.'); }
+    finally { setExporting(false); }
+  }
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
   const visiblePage = Math.min(currentPage, totalPages);
   const start = (visiblePage - 1) * pageSize;
@@ -364,27 +380,17 @@ export default function StudentManagementTable() {
       <header className={styles.toolbar}>
         <h2>Quản lý học viên</h2>
         <div className={styles.actions}>
+          <button type="button" className={styles.uploadButton} disabled={exporting || !serverReady || !filteredData.length} onClick={() => void exportStudents()}>{exporting ? 'Đang xuất...' : 'Xuất Excel theo bộ lọc'}</button>
           <button type="button" className={styles.addButton} disabled={loading || saving || !serverReady} onClick={() => {
             const matchingCodes = [...majorCatalog].filter(([, name]) => name === majorFilter);
             openEditor({ lop: classFilter, maNganh: matchingCodes.length === 1 ? matchingCodes[0][0] : "", trangThai: "Đang học" });
           }}>Thêm học viên</button>
-          <button type="button" className={styles.uploadButton} disabled={saving} aria-expanded={showUpload} onClick={() => setShowUpload(!showUpload)}>
-            {showUpload ? "Ẩn nhập Excel" : "Nhập Excel"}
-          </button>
+
         </div>
       </header>
 
-      {showUpload && (
-        <UploadMapping studentsOnly onSuccess={() => {
-          setShowUpload(false);
-          setCurrentPage(1);
-          void loadStudents();
-        }} />
-      )}
-
-      {message && !editing && <p className={styles.feedback} role="status">{message}</p>}
-
       <div className={styles.scopeFilters}>
+        <label>Khóa đào tạo<select value={cohortFilter} onChange={event => { setCohortFilter(event.target.value); setCurrentPage(1); }}><option value="">Tất cả khóa</option>{cohorts.map(cohort => <option key={cohort}>{cohort}</option>)}</select></label>
         <input
           type="text"
           aria-label="Tìm học viên"
@@ -431,7 +437,7 @@ export default function StudentManagementTable() {
       </div>
 
       <div className={styles.sheet} tabIndex={0} role="region" aria-label="Bảng danh sách học viên">
-        <table className={styles.table}>
+        <table data-grid="excel" className={"excel-grid " + (styles.table)}>
           <thead>
             <tr>
               <th scope="col">STT</th>
@@ -526,6 +532,7 @@ export default function StudentManagementTable() {
                 </div>
               ))}
             </dl>
+            <StudentDocuments studentCode={selectedStudent.maHocVien} />
           </section>
         </div>
       )}

@@ -25,12 +25,15 @@ const adminGroups = [
       { href: "/assignment", label: "Phân công giảng dạy" },
       { href: "/schedule", label: "Quản lý thời khóa biểu" },
       { href: "/thesis", label: "Tiến độ luận văn" },
-      { href: "/admin/diem", label: "Duyệt và công bố điểm" },
+      { href: "/admin/thong-ke-diem", label: "Thống kê điểm số" },
+      { href: "/academic", label: "Thang điểm và tiến độ học tập" },
+      { href: "/admin/thong-bao", label: "Quản lý thông báo" },
+      { href: "/kiem-tra-van-bang", label: "Hồ sơ và minh chứng" },
     ],
   },
   {
     label: "Dữ liệu",
-    items: [{ href: "/upload", label: "Nhập và ánh xạ dữ liệu" },
+    items: [{ href: "/courses", label: "Quản lý môn học và trọng số" },
       { href: "/admin/danh-muc", label: "Danh mục đào tạo" }],
   },
   {
@@ -62,9 +65,17 @@ export default function Sidebar({ role = "admin" }: { role?: string }) {
       ] }]
     : role === "training_office"
       ? [{ label: "Phòng đào tạo", items: [
+          { href: "/students", label: "Quản lý học viên" },
+          { href: "/teachers", label: "Quản lý giảng viên" },
+          { href: "/schedule", label: "Nhập thời khóa biểu Excel" },
+          { href: "/thesis", label: "Tiến độ luận văn" },
+          { href: "/courses", label: "Môn học và trọng số" },
+          { href: "/academic", label: "Quy chế và tiến độ học tập" },
+          { href: "/phong-dao-tao/thong-bao", label: "Quản lý thông báo" },
           { href: "/", label: "Cổng thông tin" },
           { href: "/assignment", label: "Phân công giảng dạy" },
-          { href: "/phong-dao-tao/duyet-diem", label: "Duyệt và công bố điểm" },
+          { href: "/phong-dao-tao/thong-ke-diem", label: "Thống kê điểm số" },
+          { href: "/kiem-tra-van-bang", label: "Hồ sơ và minh chứng" },
         ] }]
       : isStudent ? [{ label: "", items: menuStudent }] : adminGroups;
   const [isOpen, setIsOpen] = useState(false);

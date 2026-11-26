@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AGU_SESSION_COOKIE, readAguSession } from "../../../../lib/agu-auth";
+import { requireStudentManager } from "../../../../lib/student-manager";
 import { getStore } from "../../../../lib/store";
 
 export async function GET(request: NextRequest) {
-  const session = readAguSession(request.cookies.get(AGU_SESSION_COOKIE)?.value);
-  if (session?.role !== "admin") {
-    return NextResponse.json({ error: "Bạn không có quyền xem danh sách giảng viên." }, { status: 403 });
-  }
+  const denied = await requireStudentManager(request);
+  if (denied) return denied;
 
   try {
     const teachers = getStore(true).teachers ?? [];

@@ -42,9 +42,18 @@ const teacherLinks = [
 
 // Menu chuyên biệt Phòng đào tạo: giữ trang chủ, thông báo, giới thiệu, liên hệ.
 const trainingOfficeLinks = [
+  { href: "/students", label: "Quản lý học viên", page: "student-management" },
+  { href: "/teachers", label: "Giảng viên", page: "teacher-management" },
+  { href: "/schedule", label: "Nhập lịch Excel", page: "schedule-import" },
+  { href: "/thesis", label: "Luận văn", page: "thesis-management" },
+  { href: "/academic", label: "Thang điểm và tiến độ", page: "academic-management" },
+  { href: "/courses", label: "Môn học và trọng số", page: "courses-management" },
+  { href: "/phong-dao-tao/thong-bao", label: "Quản lý thông báo", page: "notice-management" },
   { href: "/", label: "Trang chủ", page: "home" },
   { href: "/thong-bao", label: "Thông báo", page: "notices" },
   { href: "/phong-dao-tao/phan-cong", label: "Phân công giảng dạy", page: "office-assign" },
+  { href: "/phong-dao-tao/thong-ke-diem", label: "Thống kê điểm số", page: "grade-statistics" },
+  { href: "/kiem-tra-van-bang", label: "Hồ sơ minh chứng", page: "documents" },
   { href: "/gioi-thieu", label: "Giới thiệu", page: "about" },
   { href: "/lien-he", label: "Liên hệ", page: "contact" },
 ] as const;
@@ -514,7 +523,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
 
             </section>
           ) : isStudentPage ? (
-            user?.role === "student" ? <StudentPortalContent section={page as StudentSection} /> : (
+            user?.role === "student" ? <StudentPortalContent key={`${user.maHocVien}:${page}`} section={page as StudentSection} /> : (
               <section className={styles.infoPanel}>
                 <div className={styles.emptyInfo}>
                   <strong>Vui lòng đăng nhập</strong>

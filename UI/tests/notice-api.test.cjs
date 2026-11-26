@@ -100,3 +100,11 @@ test('Missing records return 404; saving unchanged content still succeeds', asyn
   assert.equal((await detail.DELETE(request('DELETE', '/1'), context('1'))).status, 404);
   assert.equal((await detail.PUT(request('PUT', '/1', draft), context('1'))).status, 200);
 });
+
+test('Verified training office can manage public notices but cannot use a forged office session', async () => {
+ const original=global.fetch;
+ const officeRequest=()=>new NextRequest('http://localhost:3000/api/thong-bao',{method:'POST',headers:{cookie:'agu_training_office_session=fixture','content-type':'application/json'},body:JSON.stringify(draft)});
+ try {global.fetch=async()=>Response.json({user:{role:'training_office'}});reset({insertId:99});assert.equal((await collection.POST(officeRequest())).status,201);assert.equal(calls.length,1);
+ global.fetch=async()=>Response.json({message:'Invalid'},{status:401});reset();assert.equal((await collection.POST(officeRequest())).status,403);assert.equal(calls.length,0);
+ }finally{global.fetch=original;}
+});

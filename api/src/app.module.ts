@@ -1,4 +1,6 @@
-import { GradeReviewController } from './teacher-auth/grade-review.controller';
+import { GradeStatisticsController } from './teacher-auth/grade-statistics.controller';
+import { StudentDocumentsController } from './student-records/student-documents.controller';
+import { StudentDocumentsService } from './student-records/student-documents.service';
 import { Module } from '@nestjs/common';
 import { OfficeNoticesController } from './office-notices/office-notices.controller';
 import { OfficeNoticesService } from './office-notices/office-notices.service';
@@ -15,7 +17,7 @@ import { TrainingOfficeService } from './training-office/training-office.service
 
 @Module({
   imports: [],
-  controllers: [OfficeNoticesController, GradeReviewController, TeacherAuthController, TrainingOfficeController, StudentRecordsController, EntitiesController],
-  providers: [OfficeNoticesService, StoreService, EntitiesService, TeacherAuthService, TeacherGradesService, TrainingOfficeService, StudentRecordsService],
+  controllers: [GradeStatisticsController, StudentDocumentsController, OfficeNoticesController, TeacherAuthController, TrainingOfficeController, StudentRecordsController, EntitiesController],
+  providers: [StudentDocumentsService, OfficeNoticesService, StoreService, EntitiesService, TeacherAuthService, TeacherGradesService, TrainingOfficeService, StudentRecordsService],
 })
 export class AppModule {}

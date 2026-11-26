@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { studentStatus } from "../../../shared/student-status.cjs";
 
 import styles from "./Dashboard.module.css";
@@ -96,8 +97,11 @@ function AdminDashboard() {
 
   return (
     <div className={styles.dashboard}>
-      <div>
+      <div className={styles.heading}>
+        <div><p className={styles.eyebrow}>TỔNG QUAN ĐÀO TẠO</p>
         <h1>Báo cáo tổng hợp</h1>
+        <p>Theo dõi quy mô và tình hình học tập của học viên sau đại học.</p></div>
+        <Link className={styles.primaryLink} href="/students">Xem danh sách học viên</Link>
       </div>
       {error ? (
         <p className={styles.notice} role="alert">Không tải được dữ liệu học viên.</p>
@@ -108,17 +112,19 @@ function AdminDashboard() {
       ) : (
         <>
           <dl className={styles.metrics} aria-label="Tổng hợp học viên">
-            <div><dt>Tổng học viên</dt><dd>{numberFormat.format(totals.total)}</dd></div>
+            <div><dt>Tổng học viên</dt><dd>{numberFormat.format(totals.total)}</dd><small>Toàn bộ hồ sơ đào tạo</small></div>
             {visibleStatuses.map(({ key, label }) => (
               <div key={key} data-status={key}>
                 <dt>{label}</dt>
                 <dd>{numberFormat.format(totals[key])}</dd>
+                <small>{percentFormat.format(totals[key] / totals.total)} tổng học viên</small>
               </div>
             ))}
           </dl>
 
-          <section className={styles.panel} aria-labelledby="status-analysis">
+          <div className={styles.reportGrid}><section className={styles.panel} aria-labelledby="status-analysis">
             <h2 id="status-analysis">Tỷ lệ trạng thái học viên</h2>
+            <p className={styles.subtitle}>Cơ cấu học viên theo tình trạng học tập hiện tại</p>
             <div className={styles.chartLayout}>
               <div
                 className={styles.donut}
@@ -133,13 +139,21 @@ function AdminDashboard() {
               <ul className={styles.breakdown} aria-label="Tỷ lệ học viên theo trạng thái">
                 {visibleStatuses.map(({ key, label }) => (
                   <li key={key} data-status={key}>
-                    <span>{label}</span>
+                    <span className={styles.statusName}>{label}<small>{numberFormat.format(totals[key])} học viên</small></span>
                     <strong>{percentFormat.format(totals[key] / totals.total)}</strong>
                   </li>
                 ))}
               </ul>
             </div>
           </section>
+          <section className={styles.quickPanel} aria-labelledby="management-links">
+            <p className={styles.eyebrow}>KHÔNG GIAN QUẢN LÝ</p>
+            <h2 id="management-links">Hồ sơ và kết quả đào tạo</h2>
+            <p>Truy cập nhanh các nghiệp vụ thường dùng.</p>
+            <Link href="/students"><strong>Hồ sơ học viên</strong><span>Tra cứu, cập nhật và xuất danh sách</span></Link>
+            <Link href="/kiem-tra-van-bang"><strong>Hồ sơ và minh chứng</strong><span>Tiếp nhận văn bằng, chứng chỉ và xét duyệt</span></Link>
+            <Link href="/admin/thong-ke-diem"><strong>Thống kê điểm số</strong><span>Phân bố điểm và kết quả theo học kỳ</span></Link>
+          </section></div>
 
         </>
       )}

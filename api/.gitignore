@@ -78,3 +78,4 @@ teacher-credentials.local.csv
 .student-auth-secret
 .student-accounts.local.json*
 .student-auth-backups/
+/storage/
