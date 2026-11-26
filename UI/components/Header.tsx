@@ -41,10 +41,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = async () => {
-    const destination =
-      currentUser?.role === "admin" || currentUser?.role === "training_office"
-        ? "/admin"
-        : "/";
+    const destination = "/";
     await logoutSessions();
     localStorage.removeItem("currentUser");
     localStorage.removeItem("aguAuthSource");

@@ -14,6 +14,7 @@ import TeacherGradebook from "./TeacherGradebook";
 import TrainingOfficeAssignmentReadonly from "./TrainingOfficeAssignmentReadonly";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { verifySession, logoutSessions } from "../lib/session-client";
+import { loginAccount } from "../lib/login-client";
 import { useRouter } from "next/navigation";
 
 // Có thể thay bằng /images/logo-agu.jpg khi lưu logo vào public/images.
@@ -100,7 +101,7 @@ function chuanHoaThongBao(raw: unknown): ThongBao | null {
     typeof row.tieu_de !== "string" ||
     typeof row.ngay_dang !== "string"
   ) return null;
-  const status = row.trang_thai === undefined ? 1 : Number(row.trang_thai);
+  const status = row.trang_thai === "da_dang" || row.trang_thai === 1 || row.trang_thai === "1" ? 1 : 0;
   return {
     ma_thong_bao: id,
     tieu_de: row.tieu_de,
@@ -188,42 +189,6 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
         if (!Array.isArray(rows)) throw new Error("API trả về dữ liệu không phải danh sách thông báo.");
         const items = rows.map(chuanHoaThongBao).filter((item): item is ThongBao => item !== null);
 
-        try {
-          const extraResponse = await fetch(
-            "/api/office-notices/public",
-            {
-              signal: controller.signal,
-              cache: "no-store",
-            }
-          );
-
-          if (extraResponse.ok) {
-            const extra = await extraResponse.json();
-
-            if (Array.isArray(extra.data)) {
-              const officeItems: ThongBao[] = extra.data.map(
-                (row: Record<string, unknown>) => ({
-                  ma_thong_bao: Number(row.ma_thong_bao) + 1000000000,
-                  tieu_de: String(row.tieu_de || ""),
-                  noi_dung: String(row.noi_dung || ""),
-                  ten_file: String(row.ten_file || ""),
-                  duong_dan_file: String(row.duong_dan_file || ""),
-                  ngay_dang: String(row.ngay_dang || ""),
-                  trang_thai: 1,
-                })
-              );
-
-              items.push(...officeItems);
-            }
-          }
-        } catch (error) {
-          if (controller.signal.aborted) return;
-          console.warn(
-            "Không tải được thông báo Phòng đào tạo",
-            error
-          );
-        }
-
         if (!controller.signal.aborted) setDanhSach(items);
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -261,48 +226,10 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       setLoginError("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
       return;
     }
-    if (["admin", "admin@agu.edu.vn", "admin@student.agu.edu.vn"].includes(inputUser)) {
-      setLoginError("Quản trị viên vui lòng đăng nhập riêng tại /admin.");
-      return;
-    }
-    if (inputUser === "phongdaotao@agu.edu.vn") {
-      setLoginError("Phòng đào tạo vui lòng đăng nhập tại /admin.");
-      return;
-    }
     setLoggingIn(true);
     setLoginError("");
     try {
-      let session: SessionUser;
-      if (inputUser.endsWith("@teacher.agu.edu.vn")) {
-        const response = await fetch("/api/teacher-auth/login", {
-          method: "POST", credentials: "same-origin", cache: "no-store",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: inputUser, password }),
-        });
-        if (!response.ok) {
-          setLoginError(response.status === 401
-            ? "Tài khoản giảng viên hoặc mật khẩu không hợp lệ."
-            : "Không thể đăng nhập giảng viên. Hãy kiểm tra Backend và tài khoản đã tạo.");
-          return;
-        }
-        const data: { user?: SessionUser } = await response.json();
-        if (!data.user || data.user.role !== "teacher") throw new Error("Invalid teacher response");
-        session = data.user;
-      } else {
-        // Đăng nhập học viên DEMO có cookie xác thực trên Backend để đọc điểm riêng tư.
-        const response = await fetch("/api/student-records/login", {
-          method: "POST", credentials: "same-origin", cache: "no-store",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: inputUser, password }),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          setLoginError(typeof data.message === "string" ? data.message : "Không đăng nhập được học viên.");
-          return;
-        }
-        if (!data.user || data.user.role !== "student") throw new Error("Invalid student response");
-        session = data.user;
-      }
+      const session = await loginAccount(inputUser, password);
       await logoutSessions(session.role);
       localStorage.setItem("currentUser", JSON.stringify(session));
       localStorage.removeItem("aguAuthSource");
@@ -313,22 +240,20 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
       setPassword("");
       setUsername("");
       setMenuMo(false);
-      if (session.role === "training_office") router.replace("/assignment");
+      if (session.role === "admin") router.replace("/admin");
+      else if (session.role === "training_office") router.replace("/assignment");
       else if ((session.role === "student" || session.role === "teacher") && session.mustChangePassword) router.replace("/doi-mat-khau");
       else if (window.location.pathname === "/") router.refresh();
       else router.replace("/");
-    } catch {
-      setLoginError("Không kết nối được máy chủ đăng nhập. Vui lòng kiểm tra máy chủ API ở cổng 3001 đang chạy và thử lại.");
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : "Không thể đăng nhập. Vui lòng thử lại.");
     } finally {
       setLoggingIn(false);
     }
   };
 
   const handleLogout = async () => {
-    const destination =
-      user?.role === "admin" || user?.role === "training_office"
-        ? "/admin"
-        : "/";
+    const destination = "/";
     await logoutSessions();
     localStorage.removeItem("currentUser");
     localStorage.removeItem("aguAuthSource");
@@ -377,7 +302,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
                   <div className={styles.loginField}>
                     <label htmlFor="inline-username">Tên đăng nhập</label>
                     <input id="inline-username" type="text" autoComplete="username"
-                      placeholder="Mã HV / Email giảng viên" value={username}
+                      placeholder="Tên đăng nhập / Mã học viên / Email" value={username}
                       onChange={(event) => { setUsername(event.target.value); setLoginError(""); }} required />
                   </div>
                   <div className={styles.loginField}>

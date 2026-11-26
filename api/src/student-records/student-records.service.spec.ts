@@ -49,9 +49,13 @@ describe('Đăng nhập và đổi mật khẩu học viên', () => {
     expect(() => service.fromRequest(oldRequest, true)).toThrow(UnauthorizedException);
     expect(service.login('S001', 'NewSecurePass123', 'fixture').user.mustChangePassword).toBe(false);
   });
-  it('rejects email as a student username and refuses a wrong initial password', () => {
+  it.each(['learner@example.edu.vn', 'S001@agu.edu.vn', 's001@student.agu.edu.vn'])(
+    'accepts the student email alias %s', username => {
+      expect(new StudentRecordsService().login(username, '00123456789', 'fixture').user.maHocVien).toBe('S001');
+    },
+  );
+  it('refuses a wrong initial password', () => {
     const service = new StudentRecordsService();
-    expect(() => service.login('learner@example.edu.vn', '00123456789', 'fixture')).toThrow(UnauthorizedException);
     expect(() => service.login('S001', 'wrong', 'fixture')).toThrow(UnauthorizedException);
   });
   it('does not create a student account when the source record has no CMND/CCCD', () => {

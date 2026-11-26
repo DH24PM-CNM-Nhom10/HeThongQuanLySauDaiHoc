@@ -37,11 +37,15 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
       if (pathname === "/admin") {
-        if (session?.role === "training_office") router.replace("/assignment");
+        if (!session) router.replace("/");
+        else if (session.role === "training_office") router.replace("/assignment");
         else if (session && session.role !== "admin") router.replace("/");
         return;
       }
-      if (!session) { router.replace("/"); return; }
+      if (!session) {
+        if (!publicRoutes.has(pathname)) router.replace("/");
+        return;
+      }
       if (pathname === changePasswordRoute && session.role !== "student" && session.role !== "teacher") {
         router.replace(session.role === "admin" ? "/admin" : "/assignment");
         return;
@@ -70,7 +74,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     };
   }, [pathname, router]);
 
-  if (pathname === "/admin" && !user && !loading) return <>{children}</>;
   if ((user?.role === "student" || user?.role === "teacher") &&
     user.mustChangePassword && pathname !== changePasswordRoute) {
     return <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#f8fafc", color: "#64748b" }}>Đang chuyển đến trang đổi mật khẩu...</div>;

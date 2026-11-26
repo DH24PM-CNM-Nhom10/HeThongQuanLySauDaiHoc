@@ -52,7 +52,12 @@ export class StudentRecordsService {
 
   private findStudent(code: string): SourceStudent | null {
     const input = code.trim().toLowerCase();
-    const matches = this.students().filter(item => studentCode(item).toLowerCase() === input);
+    const matches = this.students().filter(item => {
+      const id = studentCode(item).toLowerCase();
+      const email = String(item.email || item.Email || '').trim().toLowerCase();
+      return Boolean(id && (input === id || input === email ||
+        input === `${id}@agu.edu.vn` || input === `${id}@student.agu.edu.vn`));
+    });
     if (matches.length !== 1) return null;
     return matches[0];
   }
