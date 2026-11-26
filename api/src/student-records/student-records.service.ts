@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -62,24 +62,19 @@ export class StudentRecordsService {
     return matches[0];
   }
 
-  private identity(student: SourceStudent, mustChangePassword: boolean): StudentIdentity {
+  private identity(student: SourceStudent): StudentIdentity {
     const maHocVien = studentCode(student);
     return {
       role: 'student',
       maHocVien,
       hoTen: String(student.hoTen || student.ho_ten || student.HO_TEN || 'Học viên').trim(),
       email: String(student.email || `${maHocVien}@student.agu.edu.vn`),
-      mustChangePassword,
+      mustChangePassword: false,
     };
   }
 
   private initialPassword(student: SourceStudent): string {
-    const value = student.cccd ?? student.CCCD ?? student.cmnd ?? student.CMND ??
-      student.soCCCD ?? student.soCMND;
-    if (typeof value === 'string') return value.trim();
-    return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0
-      ? String(value)
-      : '';
+    return studentCode(student);
   }
 
   private accounts(): StudentAccount[] {
@@ -167,7 +162,7 @@ export class StudentRecordsService {
       account = {
         maHocVien,
         passwordHash: this.hashPassword(firstPassword),
-        mustChangePassword: true,
+        mustChangePassword: false,
         sessionVersion: 0,
         active: true,
       };
@@ -176,7 +171,7 @@ export class StudentRecordsService {
     }
     this.attempts.delete(key);
     return {
-      user: this.identity(student, Boolean(account?.mustChangePassword)),
+      user: this.identity(student),
       session: this.createSession(maHocVien, account?.sessionVersion ?? 0),
     };
   }
@@ -205,7 +200,7 @@ export class StudentRecordsService {
     };
   }
 
-  fromRequest(req: Request, allowPasswordChange = false): StudentIdentity {
+  fromRequest(req: Request, _allowPasswordChange = false): StudentIdentity {
     const raw = (req.headers.cookie || '').split(';').map(v => v.trim())
       .find(v => v.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
     if (!raw) throw new UnauthorizedException('Học viên cần đăng nhập lại');
@@ -230,9 +225,7 @@ export class StudentRecordsService {
     if (!account || (payload.v ?? 0) !== (account.sessionVersion ?? 0)) {
       throw new UnauthorizedException('Phiên đăng nhập đã hết hạn');
     }
-    if (account.mustChangePassword && !allowPasswordChange) {
-      throw new ForbiddenException('Bạn phải đổi mật khẩu trước khi sử dụng hệ thống.');
-    }
-    return this.identity(student, Boolean(account.mustChangePassword));
+
+    return this.identity(student);
   }
 }

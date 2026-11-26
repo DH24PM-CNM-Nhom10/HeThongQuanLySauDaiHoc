@@ -1,6 +1,6 @@
 "use client";
 
-import StudentManagementTable from "../../components/StudentManagementTable";
+import StudentManagementTable from "../../components/students/StudentManagementTable";
 
 export default function StudentsPage() {
   return (

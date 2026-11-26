@@ -5,6 +5,7 @@ import { requireAdmin } from "../../../lib/admin-api";
 import { ENTITY_SCHEMAS } from "../../../lib/schemas";
 import { AGU_SESSION_COOKIE, readAguSession } from "../../../lib/agu-auth";
 import { appendNewStudents, studentCode } from "../../../lib/studentRecords";
+import { teacherDeletionConflict } from "../../../../shared/teacher-links.cjs";
 
 function studentMutationDenied(req: NextRequest, entity: string) {
   return entity === "students" &&
@@ -217,6 +218,16 @@ export async function DELETE(
       currentStore.studentHistory.push({ action: "delete", code, at: new Date().toISOString(), actor: "admin", before: matches[0] });
       saveStoreToFile(currentStore);
       return NextResponse.json({ success: true });
+    }
+    if (entityKey === "teachers") {
+      const matches = list.filter(row => String(row.shcc) === id || String(row.id) === id);
+      if (!matches.length) return studentError("Không tìm thấy giảng viên.", 404);
+      if (matches.length !== 1) return studentError("Mã giảng viên bị trùng.", 409);
+      const conflict = teacherDeletionConflict(currentStore, matches[0]);
+      if (conflict) return studentError(conflict, 409);
+      currentStore.teachers = list.filter(row => row !== matches[0]);
+      saveStoreToFile(currentStore);
+      return NextResponse.json({ success: true, remainingCount: currentStore.teachers.length });
     }
     const schema = ENTITY_SCHEMAS[entityKey];
     const keyField = schema?.fields[0]?.key || "id";

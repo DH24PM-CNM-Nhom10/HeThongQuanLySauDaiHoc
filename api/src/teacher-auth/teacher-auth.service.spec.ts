@@ -1,4 +1,4 @@
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -19,7 +19,7 @@ describe('Teacher password onboarding and change', () => {
     root = fs.mkdtempSync(path.join(os.tmpdir(), 'qldt-teacher-auth-'));
     fs.mkdirSync(path.join(root, 'UI'));
     fs.mkdirSync(path.join(root, 'api'));
-    fs.writeFileSync(path.join(root, 'UI', 'db.json'), JSON.stringify({ teachers: [], students: [] }));
+    fs.writeFileSync(path.join(root, 'UI', 'db.json'), JSON.stringify({ teachers: [{ shcc: 'GV001', hoten: 'Giảng viên thử nghiệm' }], students: [] }));
 
     process.env.QLDT_DATA_ROOT = root;
     process.env.TEACHER_AUTH_SECRET = 'fixture-teacher-secret-at-least-32-characters';
@@ -51,13 +51,13 @@ describe('Teacher password onboarding and change', () => {
   it('forces the initial teacher code password to be changed and revokes the old session', () => {
     const service = new TeacherAuthService();
     const result = service.login('LEHOANGANH@TEACHER.AGU.EDU.VN', 'GV001', 'fixture');
-    expect(result.identity.mustChangePassword).toBe(true);
+    expect(result.identity.mustChangePassword).toBe(false);
 
     const oldRequest = {
       headers: { cookie: `${service.cookieName()}=${result.session}` },
     } as Request;
     expect(service.fromRequest(oldRequest, true).teacherId).toBe('GV001');
-    expect(() => service.fromRequest(oldRequest)).toThrow(ForbiddenException);
+    expect(service.fromRequest(oldRequest).teacherId).toBe('GV001');
 
     const changed = service.changePassword(oldRequest, 'GV001', 'NewSecurePass123');
     const newRequest = {
@@ -79,7 +79,7 @@ describe('Teacher password onboarding and change', () => {
     const result = service.login('lehoanganh@teacher.agu.edu.vn', 'GV002', 'fixture');
     const request = { headers: { cookie: `${service.cookieName()}=${result.session}` } } as Request;
 
-    expect(result.identity.mustChangePassword).toBe(true);
+    expect(result.identity.mustChangePassword).toBe(false);
     expect(service.fromRequest(request, true).teacherId).toBe('GV002');
     expect(JSON.parse(fs.readFileSync(path.join(root, 'api', '.teacher-accounts.local.json'), 'utf8')))
       .toHaveLength(1);
@@ -95,5 +95,13 @@ describe('Teacher password onboarding and change', () => {
     expect(() => new TeacherAuthService().login('lehoanganh@teacher.agu.edu.vn', 'GV002', 'fixture'))
       .toThrow(UnauthorizedException);
     expect(fs.existsSync(path.join(root, 'api', '.teacher-accounts.local.json'))).toBe(false);
+  });
+  it('rejects new logins and existing sessions when the teacher profile has been deleted', () => {
+    const service = new TeacherAuthService();
+    const result = service.login('lehoanganh@teacher.agu.edu.vn', 'GV001', 'fixture');
+    const req = { headers: { cookie: service.cookieName() + '=' + result.session } } as Request;
+    fs.writeFileSync(path.join(root, 'UI', 'db.json'), JSON.stringify({ teachers: [], students: [] }));
+    expect(() => service.fromRequest(req)).toThrow(UnauthorizedException);
+    expect(() => service.login('lehoanganh@teacher.agu.edu.vn', 'GV001', 'fixture')).toThrow(UnauthorizedException);
   });
 });

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import DataTable from "../../components/DataTable";
-import TrainingOfficeAssignmentContent from "../../components/TrainingOfficeAssignmentContent";
+import DataTable from "../../components/shared/DataTable";
+import TrainingOfficeAssignmentContent from "../../components/training-office/TrainingOfficeAssignmentContent";
 export default function AssignmentPage() {
   const [role, setRole] = useState<string | null>(null);
   useEffect(() => {

@@ -1,7 +1,7 @@
 // UI/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import AuthGuard from "../components/AuthGuard";
+import AuthGuard from "../components/auth/AuthGuard";
 
 export const metadata: Metadata = {
   title: "Hệ thống Quản lý Đào tạo Thạc sĩ | AGU",

@@ -388,6 +388,26 @@ export class TrainingOfficeService {
         store.teacherGrades.some(row => row.assignmentId === id)) {
       throw new ConflictException('Không thể hủy phân công đã có điểm. Cần xử lý bảng điểm trước.');
     }
+    const text = (value: unknown) => String(value ?? '').trim();
+    const candidates = (slot: Record<string, unknown>) => {
+      const linkedId = text(slot.assignmentId || slot.maPhanCong);
+      if (linkedId) return rows.filter(row => row.id === linkedId);
+      const course = text(slot.courseCode || slot.maMon || slot.ma_mon).toUpperCase();
+      const cls = text(slot.classCode || slot.lop || slot.maLop);
+      const teacher = text(slot.teacherId || slot.maGV || slot.ma_giang_vien);
+      const year = text(slot.schoolYear || slot.namHoc || slot.nam_hoc).replace(/[–—]/g, '-').replace(/\s/g, '');
+      const semester = text(slot.semester || slot.hocKy || slot.hoc_ky);
+      if (!course || (!cls && !teacher)) return [];
+      return rows.filter(row => row.courseCode.toUpperCase() === course && (!cls || cls === row.classCode) &&
+        (!teacher || teacher === row.teacherId) && (!year || year === row.schoolYear) && (!semester || semester === row.semester));
+    };
+    const remainingSchedule = store.schedule.filter(slot => {
+      const matches = candidates(slot);
+      if (!matches.some(row => row.id === id)) return true;
+      if (matches.length !== 1) throw new ConflictException('Lịch liên kết nhiều phân công. Hãy bổ sung mã phân công hoặc năm học/học kỳ trước khi hủy.');
+      return false;
+    });
+    store.schedule = remainingSchedule;
     store.teachingAssignments = rows.filter(row => row.id !== id);
     store.gradebooks = store.gradebooks.filter(row => row.assignmentId !== id);
     saveStore(store);

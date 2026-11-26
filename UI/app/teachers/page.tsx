@@ -1,6 +1,6 @@
 "use client";
 
-import DataTable from "../../components/DataTable";
+import DataTable from "../../components/shared/DataTable";
 
 export default function TeachersPage() {
   return (

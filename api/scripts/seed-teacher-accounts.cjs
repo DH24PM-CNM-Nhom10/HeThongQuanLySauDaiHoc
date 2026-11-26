@@ -46,7 +46,7 @@ for (const teacher of teachers) {
     shcc: String(teacher.shcc || ''),
     username,
     passwordHash,
-    mustChangePassword: true,
+    mustChangePassword: false,
     sessionVersion: 0,
     active: true,
   });
@@ -57,7 +57,7 @@ if (created) {
   fs.writeFileSync(accountsPath, JSON.stringify(accounts, null, 2), { mode: 0o600 });
 }
 console.log(`Giảng viên nguồn: ${teachers.length}; tài khoản đã có: ${old.length}; tạo mới: ${created}; tổng: ${accounts.length}`);
-if (created) console.log('Tài khoản mới dùng mã giảng viên làm mật khẩu khởi tạo và phải đổi mật khẩu ở lần đăng nhập đầu.');
+if (created) console.log('Tài khoản mới dùng mã giảng viên làm mật khẩu khởi tạo.');
 if (skippedWithoutCode) console.log(`Bỏ qua ${skippedWithoutCode} giảng viên không có mã giảng viên.`);
 if (!created) console.log('Không tạo lại mật khẩu của tài khoản đã tồn tại.');
 if (isDemo) console.warn('CẢNH BÁO: chế độ --demo dùng mật khẩu dễ đoán, chỉ chạy cục bộ với dữ liệu giả lập.');

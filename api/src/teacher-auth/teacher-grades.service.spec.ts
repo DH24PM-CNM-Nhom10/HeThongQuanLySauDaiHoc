@@ -89,4 +89,27 @@ describe('Quy trình điểm và lịch sử lớp học phần', () => {
     expect(() => saveStore(stale)).toThrow('Dữ liệu đã thay đổi');
     expect(readStore().students[0].hoTen).toBe('Mới');
   });
+  it('bổ sung học viên mới vào bản nháp, giữ điểm và học viên chuyển lớp', () => {
+    const draft = saved();
+    const store = readStore();
+    store.students[0].lop = 'L02';
+    store.students.push({ maHocVien: 'S2', hoTen: 'Học viên mới', lop: 'L01', maNganh: 'M1', trinhDo: 'Thạc sĩ', trangThai: 'Đang học' });
+    saveStore(store);
+    const synced = service.review(req, id, { action: 'sync_roster', revision: draft.revision });
+    expect(synced).toMatchObject({ added: 1, revision: draft.revision + 1 });
+    const book = service.getGradebook(req, id);
+    expect(book.students.map(row => row.maHocVien)).toEqual(['S1', 'S2']);
+    expect(book.students[0].totalScore).toBe(8.6);
+    expect(book.students[1].totalScore).toBeNull();
+    expect(service.transcriptForStudent('S2')).toHaveLength(1);
+    expect(service.review(req, id, { action: 'sync_roster', revision: book.revision })).toMatchObject({ added: 0, revision: book.revision });
+    expect(() => service.saveGradebook(req, id, { revision: draft.revision, scores: [] })).toThrow(ConflictException);
+    expect(readStore().gradeHistory.at(-1)?.action).toBe('sync_roster');
+  });
+  it('không thay đổi danh sách khi bảng điểm chờ duyệt hoặc đã công bố', () => {
+    const pending = service.submit(req, id, saved().revision);
+    expect(() => service.review(req, id, { action: 'sync_roster', revision: pending.revision })).toThrow(ConflictException);
+    const published = service.review(req, id, { action: 'publish', revision: pending.revision });
+    expect(() => service.review(req, id, { action: 'sync_roster', revision: published.revision })).toThrow(ConflictException);
+  });
 });

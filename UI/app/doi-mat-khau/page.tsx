@@ -1,5 +1,5 @@
-import PublicHome from "../../components/PublicHome";
+import { redirect } from "next/navigation";
 
-export default function ChangePasswordPage() {
-  return <PublicHome page="change-password" />;
+export default function LegacyChangePasswordPage() {
+  redirect("/profile");
 }

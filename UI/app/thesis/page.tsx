@@ -1,7 +1,7 @@
 "use client";
 
-import ThesisProgressTable from "../../components/ThesisProgressTable";
-import OverdueAlertSection from "../../components/OverdueAlertSection";
+import ThesisProgressTable from "../../components/thesis/ThesisProgressTable";
+import OverdueAlertSection from "../../components/thesis/OverdueAlertSection";
 
 export default function ThesisPage() {
   return (

@@ -1,5 +1,5 @@
 import { StudentRecordsService } from './student-records.service';
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -28,20 +28,20 @@ describe('Đăng nhập và đổi mật khẩu học viên', () => {
     else process.env.STUDENT_DEMO_AUTH_SECRET = oldSecret;
     fs.rmSync(root, { recursive: true, force: true });
   });
-  it('uses the student code as username and CCCD as the one-time initial password', () => {
+  it('uses the student code as username and the one-time initial password', () => {
     const service = new StudentRecordsService();
-    const result = service.login('s001', '00123456789', 'fixture');
+    const result = service.login('s001', 'S001', 'fixture');
     expect(result.user.maHocVien).toBe('S001');
-    expect(result.user.mustChangePassword).toBe(true);
+    expect(result.user.mustChangePassword).toBe(false);
     const req = { headers: { cookie: service.cookieName() + '=' + result.session } } as Request;
     expect(service.fromRequest(req, true).maHocVien).toBe('S001');
-    expect(() => service.fromRequest(req)).toThrow(ForbiddenException);
+    expect(service.fromRequest(req).maHocVien).toBe('S001');
   });
-  it('requires a new password on first login and invalidates the old session', () => {
+  it('allows an optional password change and invalidates the old session', () => {
     const service = new StudentRecordsService();
-    const first = service.login('S001', '00123456789', 'fixture');
+    const first = service.login('S001', 'S001', 'fixture');
     const oldRequest = { headers: { cookie: service.cookieName() + '=' + first.session } } as Request;
-    const changed = service.changePassword(oldRequest, '00123456789', 'NewSecurePass123');
+    const changed = service.changePassword(oldRequest, 'S001', 'NewSecurePass123');
     const newRequest = { headers: { cookie: service.cookieName() + '=' + changed.session } } as Request;
 
     expect(changed.user.mustChangePassword).toBe(false);
@@ -49,19 +49,32 @@ describe('Đăng nhập và đổi mật khẩu học viên', () => {
     expect(() => service.fromRequest(oldRequest, true)).toThrow(UnauthorizedException);
     expect(service.login('S001', 'NewSecurePass123', 'fixture').user.mustChangePassword).toBe(false);
   });
+  it('allows existing accounts with the former first-login flag to access their profile', () => {
+    const service = new StudentRecordsService();
+    const first = service.login('S001', 'S001', 'fixture');
+    const file = path.join(root, 'api', '.student-accounts.local.json');
+    const accounts = JSON.parse(fs.readFileSync(file, 'utf8'));
+    accounts[0].mustChangePassword = true;
+    fs.writeFileSync(file, JSON.stringify(accounts));
+    const req = { headers: { cookie: service.cookieName() + '=' + first.session } } as Request;
+    expect(service.fromRequest(req).mustChangePassword).toBe(false);
+    expect(service.login('S001', 'S001', 'fixture').user.mustChangePassword).toBe(false);
+    expect(() => service.changePassword(req, 'wrong', 'NewSecurePass123')).toThrow(UnauthorizedException);
+  });
   it.each(['learner@example.edu.vn', 'S001@agu.edu.vn', 's001@student.agu.edu.vn'])(
     'accepts the student email alias %s', username => {
-      expect(new StudentRecordsService().login(username, '00123456789', 'fixture').user.maHocVien).toBe('S001');
+      expect(new StudentRecordsService().login(username, 'S001', 'fixture').user.maHocVien).toBe('S001');
     },
   );
   it('refuses a wrong initial password', () => {
     const service = new StudentRecordsService();
     expect(() => service.login('S001', 'wrong', 'fixture')).toThrow(UnauthorizedException);
+    expect(() => service.login('S001', '00123456789', 'fixture')).toThrow(UnauthorizedException);
   });
-  it('does not create a student account when the source record has no CMND/CCCD', () => {
+  it('allows first login without CMND/CCCD', () => {
     fs.writeFileSync(path.join(root, 'UI/db.json'), JSON.stringify({
       students: [{ MA_HOC_VIEN: 'S002', HO_TEN: 'Thiếu giấy tờ' }],
     }));
-    expect(() => new StudentRecordsService().login('S002', 'S002', 'fixture')).toThrow(UnauthorizedException);
+    expect(new StudentRecordsService().login('S002', 'S002', 'fixture').user.mustChangePassword).toBe(false);
   });
 });

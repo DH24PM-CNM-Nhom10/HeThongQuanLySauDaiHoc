@@ -1,0 +1,17 @@
+{
+  "name": "qldt-sau-dai-hoc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workspace commands for the Next.js UI and NestJS API",
+  "scripts": {
+    "install:apps": "npm --prefix UI ci && npm --prefix api ci",
+    "dev:ui": "npm --prefix UI run dev",
+    "dev:api": "npm --prefix api run start:dev",
+    "build:ui": "npm --prefix UI run build -- --webpack",
+    "build:api": "npm --prefix api run build",
+    "build": "npm run build:api && npm run build:ui",
+    "test:ui": "npm --prefix UI test",
+    "test:api": "npm --prefix api test -- --runInBand",
+    "test": "npm run test:ui && npm run test:api"
+  }
+}

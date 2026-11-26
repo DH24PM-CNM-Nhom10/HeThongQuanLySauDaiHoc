@@ -21,9 +21,14 @@ and saved locally on first use; no `AGU_SESSION_SECRET` setup is required.
 Production servers must configure a private `AGU_SESSION_SECRET` of at least
 32 characters. Do not commit `.env.local` or `.agu-session-secret`.
 
-Admin and Training Office sign in at `http://localhost:3000/admin`. Admin opens
-the dashboard there; Training Office is sent to `/assignment`. Students and
-teachers use the shared portal and sign in at `http://localhost:3000/`.
+All four roles sign in at `http://localhost:3000/`. Admin is sent to `/admin`;
+Training Office is sent to `/assignment`. Students and teachers use the shared portal.
+
+Components are organized by feature under `components/`, with styles beside
+their components. Routes remain in `app/`, shared helpers remain in `lib/`, and
+tests remain in `tests/`. Run `npm test` here, or run the workspace commands
+documented in the repository README. Old API copies are stored outside this app
+in `../archive/frontend-api` and are not part of the build.
 
 For local development, the fixed demo accounts are `admin` / `admin` (Admin)
 and `phongdaotao@agu.edu.vn` / `phongdaotao` (Training Office). These demo
@@ -31,14 +36,13 @@ credentials are disabled in production; configure `AGU_ADMIN_USERNAME` and
 `AGU_ADMIN_PASSWORD_HASH`, and seed a separate Training Office account before
 deployment.
 
-New student accounts use the student code as the username and the
-student's CMND/CCCD as the initial password. New teacher accounts use the
+New student accounts use the student code (or email) as the username and the
+student code as the initial password. New teacher accounts use the
 normalized name at `@teacher.agu.edu.vn` as the username and the teacher code
-as the initial password. Both roles must change the initial password at
-`/doi-mat-khau` before accessing their portal; new passwords must be 8–128
-characters. A student needs a CMND/CCCD value in their record for first login;
-students with existing accounts must use their changed password. Seeding does
-not reset credentials for accounts that already exist.
+as the initial password. Password changes are optional and available in the
+student or teacher profile. New passwords must be 8–128 characters. Existing
+accounts keep their passwords; first login does not require a password change.
+Seeding does not reset credentials for accounts that already exist.
 
 On the first teacher login, the backend creates the account from the matching
 teacher record in `UI/db.json`; no account seed command is required. This writes

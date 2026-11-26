@@ -150,11 +150,32 @@ export class TeacherGradesService {
 
   review(req: Request, id: string, input: { action?: string; revision?: number; reason?: string }, admin = false) {
     const actor = admin ? 'admin' : this.trainingOffice.fromRequest(req).username;
-    if (!input || !['publish', 'reopen'].includes(input.action || '') ||
+    if (!input || !['publish', 'reopen', 'sync_roster'].includes(input.action || '') ||
         (input.reason !== undefined && typeof input.reason !== 'string')) {
       throw new BadRequestException('Thao tác duyệt điểm không hợp lệ');
     }
+    if (input.action === 'sync_roster') return this.syncRoster(id, input.revision, actor);
     return this.transition(id, input.revision, input.action || '', actor, input.reason || '');
+  }
+
+  private syncRoster(id: string, revision: unknown, actor: string) {
+    const assignment = this.assignment(id);
+    this.ensureBook(assignment);
+    const store = readStore();
+    const book = store.gradebooks.find(item => item.assignmentId === id) as Book;
+    if (revision !== book.revision) throw new ConflictException('Bảng điểm đã thay đổi. Hãy tải lại.');
+    if (book.status !== 'draft') throw new ConflictException('Cần trả lại hoặc mở khóa bảng điểm trước khi bổ sung học viên.');
+    const enrolled = new Set(book.roster.map(row => row.maHocVien));
+    const additions = assignmentRoster(assignment, store.students).filter(row => !enrolled.has(row.maHocVien));
+    if (!additions.length) return { success: true, status: book.status, revision: book.revision, added: 0 };
+    store.gradeHistory.push({ assignmentId: id, action: 'sync_roster', actor, at: new Date().toISOString(),
+      revision: book.revision, before: JSON.parse(JSON.stringify(book)), added: additions.map(row => row.maHocVien) });
+    book.roster.push(...additions);
+    book.roster.sort((a, b) => a.maHocVien.localeCompare(b.maHocVien, 'vi'));
+    book.revision++;
+    book.updatedAt = new Date().toISOString();
+    saveStore(store);
+    return { success: true, status: book.status, revision: book.revision, added: additions.length };
   }
 
   transcriptForStudent(code: string) {

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
     "dev": "next dev",
     "reset": "node -e \"require('fs').writeFileSync('./db.json', JSON.stringify({students:[],teachers:[],thesis:[],schedule:[],assignments:[],grades:[]}, null, 2))\" && echo '✅ Đã reset toàn bộ db.json!'",
     "build": "next build",

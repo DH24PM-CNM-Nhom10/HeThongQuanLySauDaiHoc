@@ -1,4 +1,4 @@
-import PublicHome from "../../../components/PublicHome";
+import PublicHome from "../../../components/public/PublicHome";
 
 // Trang hồ sơ nằm trong Cổng thông tin: Header AGU + menu ngang + Footer,
 // không sử dụng Dashboard/Sidebar quản trị.

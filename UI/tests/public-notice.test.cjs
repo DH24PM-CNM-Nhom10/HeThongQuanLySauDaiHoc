@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const ts = require('typescript');
 
 // Exercise the normalization used by the public page, with no network or DB writes.
-const file = path.join(__dirname, '../components/PublicHome.tsx');
+const file = path.join(__dirname, '../components/public/PublicHome.tsx');
 const source = ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 const normalizeNode = source.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'chuanHoaThongBao');
 const code = ts.transpileModule(normalizeNode.getText(source), {

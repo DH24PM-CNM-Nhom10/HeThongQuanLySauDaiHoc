@@ -4,7 +4,33 @@ export type ScheduleRow = {
   dayOfWeek?: number | string | null; thu?: number | string | null;
   startPeriod?: number | string | null; endPeriod?: number | string | null;
   periodCount?: number | string | null; date?: string | number; startDate?: string | number; endDate?: string | number;
+  teacherName?: string;
 };
+
+export function normalizeStudentSchedule(raw: unknown, index: number): ScheduleRow | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const row = raw as Record<string, unknown>;
+  const text = (...keys: string[]) => {
+    for (const key of keys) if (row[key] !== undefined && row[key] !== null && String(row[key]).trim()) return String(row[key]).trim();
+    return "";
+  };
+  return {
+    id: `student:${text("id", "assignmentId")}:${index}`,
+    courseCode: text("courseCode", "maMon", "ma_mon"),
+    courseName: text("courseName", "tenMon", "ten_mon") || "Chưa cập nhật học phần",
+    classCode: text("classCode", "lop", "maLop", "LOP"),
+    teacherName: text("teacherName", "tenGV", "tenGiangVien"),
+    schoolYear: text("schoolYear", "namHoc", "nam_hoc"),
+    semester: text("semester", "hocKy", "hoc_ky"),
+    time: text("time", "thoiGian", "thoi_gian"), room: text("room", "phong"), hasSchedule: true,
+    dayOfWeek: text("dayOfWeek", "weekday"), thu: text("thu"),
+    startPeriod: text("startPeriod", "tietBatDau", "tiet_bat_dau"),
+    endPeriod: text("endPeriod", "tietKetThuc", "tiet_ket_thuc"),
+    periodCount: text("periodCount", "soTiet"),
+    date: text("date", "ngayHoc", "ngay_hoc"),
+    startDate: text("startDate", "ngayBatDau"), endDate: text("endDate", "ngayKetThuc"),
+  };
+}
 const DAY_MS = 86400000;
 
 export function parseScheduleDate(value: unknown = ""): Date | null {

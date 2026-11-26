@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { StudentRecordsService } from './student-records.service';
 import { readStore, studentCode } from '../common/data-store';
 import { TeacherGradesService } from '../teacher-auth/teacher-grades.service';
+import { scheduleForStudent } from './student-schedule';
 
 @Controller('api/student-records')
 export class StudentRecordsController {
@@ -53,10 +54,9 @@ export class StudentRecordsController {
   schedule(@Req() req: Request) {
     const user = this.auth.fromRequest(req);
     const store = readStore();
-    const student = store.students.find(row => studentCode(row) === user.maHocVien.toUpperCase());
-    const rows = store.schedule.filter(row => studentCode(row)
-      ? studentCode(row) === user.maHocVien.toUpperCase()
-      : Boolean(student?.lop && String(row.lop || row.classCode || "") === student.lop));
+    const rows = scheduleForStudent({
+      students: store.students, schedule: store.schedule, teachingAssignments: store.teachingAssignments,
+    }, user.maHocVien);
     return { success: true, data: rows };
   }
 

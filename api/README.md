@@ -109,6 +109,18 @@ Check out a few resources that may come in handy when working with NestJS:
 - To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
 - Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
+## Cơ sở dữ liệu thông báo
+
+Khởi động MySQL (cổng mặc định 3306), cấu hình `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` trong `api/.env` và `UI/.env.local`. Hai máy chủ cần trỏ đến cùng cơ sở dữ liệu.
+
+Từ thư mục dự án, chạy:
+
+```powershell
+node api/scripts/setup-notices-db.cjs
+```
+
+Lệnh chỉ tạo cơ sở dữ liệu và bảng `thong_bao` còn thiếu, giữ nguyên dữ liệu đã có. Khởi động lại API sau khi sửa `api/.env`.
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).

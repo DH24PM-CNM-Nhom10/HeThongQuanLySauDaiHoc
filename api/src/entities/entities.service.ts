@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { StoreService } from '../store/store.service';
+import { teacherDeletionConflict } from '../../../shared/teacher-links.cjs';
 
 @Injectable()
 export class EntitiesService {
@@ -57,7 +58,14 @@ export class EntitiesService {
   delete(entityKey: string, id: string) {
     const store = this.storeService.getStore();
     let list = store[entityKey] || [];
-    list = list.filter((i) => i.id !== id && i.maHocVien !== id && i.shcc !== id);
+    if (entityKey === 'teachers') {
+      const matches = list.filter(row => String(row.id) === id || String(row.shcc) === id);
+      if (!matches.length) throw new NotFoundException('Không tìm thấy giảng viên');
+      if (matches.length !== 1) throw new ConflictException('Mã giảng viên bị trùng');
+      const conflict = teacherDeletionConflict(store, matches[0]);
+      if (conflict) throw new ConflictException(conflict);
+    }
+    list = list.filter((i) => String(i.id) !== id && String(i.maHocVien) !== id && String(i.shcc) !== id);
     store[entityKey] = list;
     this.storeService.saveStoreToFile(store);
     return { success: true };

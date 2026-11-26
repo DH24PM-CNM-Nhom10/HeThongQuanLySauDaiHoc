@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { createPool, type Pool, type RowDataPacket, type ResultSetHeader } from 'mysql2/promise';
 
 export type OfficeNoticeInput = { tieu_de: string; noi_dung: string; ten_file: string; duong_dan_file: string; trang_thai: 'nhap' | 'da_dang' };
@@ -6,6 +6,9 @@ export type OfficeNoticeInput = { tieu_de: string; noi_dung: string; ten_file: s
 export class OfficeNoticesService {
   private pool?: Pool;
   private db() {
+    if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_NAME) {
+      throw new ServiceUnavailableException('Chưa cấu hình kết nối cơ sở dữ liệu thông báo trong api/.env.');
+    }
     return this.pool ??= createPool({host: process.env.DB_HOST || 'localhost', port: Number(process.env.DB_PORT || 3306), user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: process.env.DB_NAME, waitForConnections: true, connectionLimit: 5, timezone: '+07:00'});
   }
   async list(all = false) {

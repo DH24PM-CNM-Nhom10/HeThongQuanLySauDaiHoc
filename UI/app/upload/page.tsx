@@ -2,7 +2,7 @@
 "use client";
 
 // ⚠️ Đảm bảo đổi tên thành UploadMapping_2 nếu bạn dùng file UploadMapping_2.tsx
-import UploadMapping from "../../components/UploadMapping";
+import UploadMapping from "../../components/upload/UploadMapping";
 import { useRouter } from "next/navigation";
 
 export default function UploadPage() {

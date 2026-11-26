@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -132,7 +132,7 @@ export class TeacherAuthService {
         username: generatedUsername,
         ...(teacher.shcc ? { shcc: String(teacher.shcc) } : {}),
         passwordHash: '',
-        mustChangePassword: true,
+        mustChangePassword: false,
         sessionVersion: 0,
         active: true,
       };
@@ -162,7 +162,7 @@ export class TeacherAuthService {
         account = candidate;
       }
     }
-    if (!account || !this.matchesPassword(password, account.passwordHash)) {
+    if (!account || !this.sourceTeacherExists(account.teacherId) || !this.matchesPassword(password, account.passwordHash)) {
       const count = current && now < current.until ? current.count + 1 : 1;
       this.failures.set(throttleKey, { count, until: now + 15 * 60_000 });
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
@@ -185,9 +185,13 @@ export class TeacherAuthService {
       teacherId: account.teacherId,
       hoTen: account.hoTen,
       username: account.username,
-      mustChangePassword: Boolean(account.mustChangePassword),
+      mustChangePassword: false,
       ...(account.shcc ? { shcc: account.shcc } : {}),
     };
+  }
+
+  private sourceTeacherExists(id: string) {
+    return readStore().teachers.some(row => String(row.shcc || row.id || '').trim() === id);
   }
 
   private sign(payload: SessionPayload): string {
@@ -225,7 +229,7 @@ export class TeacherAuthService {
     };
   }
 
-  fromRequest(req: Request, allowPasswordChange = false): TeacherIdentity {
+  fromRequest(req: Request, _allowPasswordChange = false): TeacherIdentity {
     const rawCookie = (req.headers.cookie ?? '').split(';').map((entry) => entry.trim()).find((part) => part.startsWith(`${COOKIE_NAME}=`));
     if (!rawCookie) throw new UnauthorizedException('Giảng viên chưa đăng nhập');
     const token = rawCookie.slice(COOKIE_NAME.length + 1);
@@ -239,11 +243,9 @@ export class TeacherAuthService {
     try { payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')); } catch { throw new UnauthorizedException('Phiên đăng nhập không hợp lệ'); }
     if (!payload || typeof payload.sub !== 'string' || typeof payload.exp !== 'number' || payload.exp <= Date.now() / 1000) throw new UnauthorizedException('Phiên đăng nhập hết hạn');
     const account = this.accounts().find((item) => item.teacherId === payload.sub && item.active);
-    if (!account) throw new UnauthorizedException('Tài khoản không tồn tại hoặc đã khóa');
+    if (!account || !this.sourceTeacherExists(account.teacherId)) throw new UnauthorizedException('Tài khoản không tồn tại hoặc đã khóa');
     if ((payload.v ?? 0) !== (account.sessionVersion ?? 0)) throw new UnauthorizedException('Phiên đăng nhập đã hết hạn');
-    if (account.mustChangePassword && !allowPasswordChange) {
-      throw new ForbiddenException('Bạn phải đổi mật khẩu trước khi sử dụng hệ thống.');
-    }
+
     return this.publicIdentity(account);
   }
 

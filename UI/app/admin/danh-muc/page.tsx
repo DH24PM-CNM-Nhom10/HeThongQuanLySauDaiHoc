@@ -1,2 +1,2 @@
-import TrainingCatalogs from "../../../components/TrainingCatalogs";
+import TrainingCatalogs from "../../../components/catalogs/TrainingCatalogs";
 export default function Page() { return <TrainingCatalogs />; }
