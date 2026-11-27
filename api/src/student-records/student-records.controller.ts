@@ -1,5 +1,4 @@
 import { workflowView, applyWorkflow } from '../../../shared/thesis-workflow.cjs';
-import { calculateProgress } from '../../../shared/academic.cjs';
 import { BadRequestException, Body, Controller, Get, Patch, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { StudentRecordsService } from './student-records.service';
@@ -86,7 +85,7 @@ export class StudentRecordsController {
   thesisRequest(@Req() req: Request, @Body() body: unknown) { const user=this.auth.fromRequest(req); const store=readStore();try {const workflow=applyWorkflow(store,user.maHocVien,{manager:false,name:user.maHocVien},body);saveStore(store);return {success:true,workflow};}catch(e){throw new BadRequestException(e instanceof Error?e.message:'Không lưu được yêu cầu.');} }
 
   @Get('academic-progress')
-  academicProgress(@Req() req: Request) { const user = this.auth.fromRequest(req); return {success:true,...calculateProgress(readStore(), user.maHocVien)}; }
+  academicProgress(@Req() req: Request) { const user = this.auth.fromRequest(req); return {success:true,configured:false,message:'Quy chế GPA và chương trình đào tạo thuộc hệ thống riêng. Chưa tích hợp dữ liệu.'}; }
 
   @Get('grades')
   getMyGrades(@Req() req: Request, @Res({ passthrough: true }) res: Response) {

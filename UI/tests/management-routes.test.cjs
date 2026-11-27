@@ -1,9 +1,9 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');const ts=require('typescript');const XLSX=require('xlsx');const {NextRequest}=require('next/server');
 process.env.AGU_SESSION_SECRET='extended-management-tests-secret-32-characters';const root=path.resolve(__dirname,'..'),cache=new Map();let store,writes;
-function load(file){if(file.endsWith('.cjs'))return require(file);file+='.ts';if(file===path.join(root,'lib/store.ts'))return {getStore:()=>store,saveStoreToFile:()=>writes++};if(cache.has(file))return cache.get(file).exports;const module={exports:{}};cache.set(file,module);const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;vm.runInThisContext(`(function(require,module,exports){${code}\n})`)(n=>n.startsWith('.')?load(path.resolve(path.dirname(file),n)):require(n),module,module.exports);return module.exports;}
+function load(file){if(file.endsWith('.json'))return require(file);if(file.endsWith('.cjs'))return require(file);file+='.ts';if(file===path.join(root,'lib/store.ts'))return {getStore:()=>store,saveStoreToFile:()=>writes++};if(cache.has(file))return cache.get(file).exports;const module={exports:{}};cache.set(file,module);const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;vm.runInThisContext(`(function(require,module,exports){${code}\n})`)(n=>n.startsWith('.')?load(path.resolve(path.dirname(file),n)):require(n),module,module.exports);return module.exports;}
 const auth=load(path.join(root,'lib/agu-auth')),teacher=load(path.join(root,'app/api/teachers/manage/route')),schedule=load(path.join(root,'app/api/schedule/import/route')),academic=load(path.join(root,'app/api/academic/route'));
 function request(method,url,body,authorized=true){const headers={cookie:authorized?`${auth.AGU_SESSION_COOKIE}=${auth.createAguSession({role:'admin'})}`:''};if(!(body instanceof FormData))headers['content-type']='application/json';return new NextRequest('http://localhost:3000'+url,{method,headers,...(body?{body:body instanceof FormData?body:JSON.stringify(body)}:{})});}
-function fixture(){store={students:[{maHocVien:'S1',hoTen:'HV',lop:'L1'}],teachers:[],teacherHistory:[],schedule:[],scheduleHistory:[],teachingAssignments:[{id:'A1',classCode:'L1',teacherId:'T1',courseCode:'C1',schoolYear:'2026-2027',semester:'1'}],academicPolicies:[],academicPlans:[],academicHistory:[],thesisWorkflows:[]};writes=0;}
+function fixture(){store={students:[{maHocVien:'S1',hoTen:'HV',lop:'L1'}],teachers:[],teacherHistory:[],schedule:[],scheduleHistory:[],academicTerms:[{schoolYear:"2026-2027",semester:"1",startDate:"2026-08-01",endDate:"2027-01-31"}],teachingAssignments:[{id:'A1',classCode:'L1',teacherId:'T1',courseCode:'C1',schoolYear:'2026-2027',semester:'1'}],academicPolicies:[],academicPlans:[],academicHistory:[],thesisWorkflows:[]};writes=0;}
 test('Teacher form creates/edits with uniqueness checks and refuses linked deletion',async()=>{
  fixture();let body={shcc:'T1',hoten:'Giảng viên 1',t_dvi:'Khoa 1',email:'gv1@example.edu.vn'};
  assert.equal((await teacher.POST(request('POST','/api/teachers/manage',body,false))).status,403);assert.equal(writes,0);
@@ -22,16 +22,7 @@ test('Actual Excel upload previews, commits, deduplicates and keeps old records 
  response=await schedule.POST(request('POST','/api/schedule/import',excel(rows,true)));assert.equal((await response.json()).duplicates,1);assert.equal(writes,1);
  response=await schedule.POST(request('POST','/api/schedule/import',excel([{...rows[0],'Tiết bắt đầu':2,'Tiết kết thúc':4}],true)));assert.equal(response.status,400);assert.equal(store.schedule.length,1);assert.equal(writes,1);
 });
-test('Academic configuration requires staff auth and revisions before changing class plan',async()=>{
- fixture();const policy={name:'Quy chế',processWeight:.3,examWeight:.7,passScore:5,thresholds:[{min:5,letter:'Đạt',gpa:2},{min:0,letter:'F',gpa:0}]};
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'policy',data:policy},false))).status,403);
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'policy',data:policy}))).status,200);
- store.courses=[{code:'C1',name:'Học phần 1',credits:3}];
- const plan={classCode:'L1',policyId:store.academicPolicies[0].id,requiredCredits:3,courses:[{code:'C1',name:'Học phần 1',credits:3,required:true}]};
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'plan',data:plan}))).status,200);
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'plan',data:plan,revision:0}))).status,409);
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'plan',data:plan,revision:1}))).status,200);
-});
+
 
 test('Teacher edits preserve legacy alias fields and identifier case',async()=>{
  fixture();store.teachingAssignments=[];store.teachers=[{id:'legacy1',shcc:'t001',hoTen:'GV cũ',donVi:'Khoa cũ'}];
@@ -39,19 +30,35 @@ test('Teacher edits preserve legacy alias fields and identifier case',async()=>{
  const response=await teacher.PUT(request('PUT','/api/teachers/manage',{...previous,t_dvi:'Khoa mới',previous}));assert.equal(response.status,200);assert.equal(store.teachers[0].shcc,'t001');assert.equal(store.teachers[0].hoten,'GV cũ');
 });
 
-test('Course creation stores per-course weights and refuses invalid totals or changes after grades exist',async()=>{
- fixture();const route=load(path.join(root,'app/api/courses/route'));store.courses=[];store.catalogs=[{kind:'major',code:'N1',name:'Ngành 1'}];store.academicPolicies=[{id:'P1',name:'Thang GPA',passScore:5,thresholds:[{min:0,letter:'F',gpa:0}]}];
- const data={code:'C1',name:'Môn 1',majorCode:'N1',track:'nghien_cuu',semesters:[1],credits:3,gpaWeight:2,processWeight:.3,examWeight:.7,policyId:'P1'};
- assert.equal((await route.POST(request('POST','/api/courses',{data},false))).status,403);
- assert.equal((await route.POST(request('POST','/api/courses',{data:{...data,examWeight:.6}}))).status,400);assert.equal(writes,0);
- assert.equal((await route.POST(request('POST','/api/courses',{data}))).status,200);assert.equal(store.courses[0].gpaWeight,2);assert.equal(store.courses[0].processWeight,.3);
- store.gradebooks=[{assignmentId:'A1',scores:[{maHocVien:'S1',totalScore:7}]}];
- assert.equal((await route.POST(request('POST','/api/courses',{data:{...data,gpaWeight:5},revision:1}))).status,409);assert.equal(store.courses[0].gpaWeight,2);
-});
+
 test('General upload/mapping endpoint is removed while schedule import remains separate',async()=>{
  const route=load(path.join(root,'app/api/upload/route'));assert.equal((await route.POST(request('POST','/api/upload',{}))).status,410);
 });
-test('Grade conversion scale can be configured without global component weights',async()=>{
- fixture();const policy={name:'Thang GPA chung',passScore:5,thresholds:[{min:5,letter:'C',gpa:2},{min:0,letter:'F',gpa:0}]};
- assert.equal((await academic.POST(request('POST','/api/academic',{kind:'policy',data:policy}))).status,200);assert.equal(store.academicPolicies[0].processWeight,undefined);
+
+
+test('Legacy teacher mutations cannot overwrite or remove linked records',async()=>{
+ fixture();store.teachers=[{shcc:'T1',hoten:'Giảng viên'}];const generic=load(path.join(root,'app/api/[entity]/route')),ctx={params:Promise.resolve({entity:'teachers'})};
+ assert.equal((await generic.POST(request('POST','/api/teachers',[]),ctx)).status,405);
+ assert.equal((await generic.PUT(request('PUT','/api/teachers',{shcc:'T1',hoten:'Đổi tên'}),ctx)).status,405);
+ assert.equal((await generic.DELETE(request('DELETE','/api/teachers?id=T1'),ctx)).status,405);
+ assert.equal(store.teachers.length,1);assert.equal(store.teachingAssignments.length,1);assert.equal(writes,0);
+});
+test('Semester calendar requires valid year and dates and prevents stranding saved schedules',async()=>{
+ fixture();const route=load(path.join(root,'app/api/schedule/terms/route'));
+ const term={schoolYear:'2026-2027',semester:'2',startDate:'2027-02-01',endDate:'2027-07-31'};
+ assert.equal((await route.POST(request('POST','/api/schedule/terms',{...term,startDate:'2099-01-01',endDate:'2099-02-01'}))).status,400);
+ assert.equal((await route.POST(request('POST','/api/schedule/terms',term))).status,200);
+ store.schedule.push({schoolYear:'2026-2027',semester:'2',date:'2027-06-01'});
+ assert.equal((await route.POST(request('POST','/api/schedule/terms',{...term,endDate:'2027-05-31',revision:1}))).status,400);
+ assert.equal(store.academicTerms.find(t=>t.semester==='2').endDate,'2027-07-31');
+});
+
+test('External program configuration is removed and course references are read only',async()=>{
+ fixture();store.courses=[{code:'DOC',track:'tien_si',majorCode:'9620110'},{code:'C1',name:'Legacy',track:'nghien_cuu',credits:3,gpaWeight:2}];
+ const route=load(path.join(root,'app/api/courses/route'));
+ assert.equal((await academic.GET()).status,410);
+ assert.equal((await academic.POST()).status,410);
+ assert.equal((await route.POST()).status,410);
+ const response=await route.GET(request('GET','/api/courses'));assert.equal(response.status,200);
+ const body=await response.json();assert.equal(body.readOnly,true);assert.ok(!body.courses.some(c=>c.code==='DOC'));assert.ok(body.courses.every(c=>c.gpaWeight===undefined));assert.equal(writes,0);assert.equal(store.courses.length,2);
 });

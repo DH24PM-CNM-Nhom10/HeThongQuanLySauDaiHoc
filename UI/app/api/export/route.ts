@@ -1,3 +1,4 @@
+import { isMasterStudent } from '../../../../shared/masters-scope.cjs';
 import { requireAdmin } from "../../../lib/admin-api";
 import { NextRequest, NextResponse } from "next/server";
 import * as XLSX from "xlsx";
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
     }
 
     const schema = ENTITY_SCHEMAS[entityKey];
-    const rawData = entityKey === 'students' ? filterStudents(memoryStore.students, {
+    const rawData = entityKey === 'students' ? filterStudents(memoryStore.students.filter(isMasterStudent), {
       search: searchParams.get('search') || '', major: searchParams.get('major') || '', cohort: searchParams.get('cohort') || '',
       classCode: searchParams.get('class') || '', status: searchParams.get('status') || '',
     }) : memoryStore[entityKey] || [];

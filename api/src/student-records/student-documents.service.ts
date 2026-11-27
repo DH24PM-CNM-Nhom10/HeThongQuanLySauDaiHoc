@@ -1,3 +1,4 @@
+import { isMasterStudent } from '../../../shared/masters-scope.cjs';
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Request } from 'express';
 import fs from 'node:fs';
@@ -24,7 +25,8 @@ export class StudentDocumentsService {
   list(req: Request, requestedCode?: string) {
     const actor = this.actor(req), code = actor.manager ? String(requestedCode || '').trim().toUpperCase() : actor.code;
     if (!actor.manager && requestedCode && requestedCode.trim().toUpperCase() !== actor.code) throw new ForbiddenException('Chỉ được xem hồ sơ của chính mình.');
-    return { success: true, canReview: actor.manager, data: readStore().studentDocuments.filter(row => !row.deletedAt && (!code || row.maHocVien === code))
+    const store = readStore(), codes = new Set(store.students.filter(isMasterStudent).map(studentCode));
+    return { success: true, canReview: actor.manager, data: store.studentDocuments.filter(row => codes.has(String(row.maHocVien)) && !row.deletedAt && (!code || row.maHocVien === code))
       .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt))).map(row => this.publicRecord(row)) };
   }
   upload(req: Request, body: Record<string, unknown>, file: DocumentUpload | undefined) {
@@ -41,7 +43,7 @@ export class StudentDocumentsService {
     const ext = path.extname(file.originalname).toLowerCase();
     if (!type || !(ext === type[0] || ext === '.jpeg' && type[0] === '.jpg')) throw new BadRequestException('Chỉ nhận tệp PDF, JPG, PNG đúng định dạng.');
     const store = readStore(), matches = store.students.filter(row => studentCode(row) === code);
-    if (matches.length !== 1) throw new BadRequestException('Không tìm thấy học viên hoặc mã học viên bị trùng.');
+    if (matches.length !== 1 || !isMasterStudent(matches[0])) throw new BadRequestException('Không tìm thấy học viên hoặc mã học viên bị trùng.');
     const checksum = crypto.createHash('sha256').update(bytes).digest('hex');
     if (store.studentDocuments.some(row => !row.deletedAt && row.maHocVien === code && row.kind === kind && row.checksum === checksum && row.status !== 'rejected')) throw new ConflictException('Tệp này đã được nộp cho cùng loại hồ sơ.');
     const id = crypto.randomUUID(), storedName = id + type[0], now = new Date().toISOString();
@@ -58,7 +60,7 @@ export class StudentDocumentsService {
   }
   review(req: Request, id: string, input: { status?: unknown; reason?: unknown; revision?: unknown }) {
     const actor = requireManager(req, this.office), store = readStore(), row = store.studentDocuments.find(item => item.id === id && !item.deletedAt);
-    if (!row) throw new NotFoundException('Không tìm thấy hồ sơ.');
+    if (!row || !store.students.some(s => studentCode(s) === row.maHocVien && isMasterStudent(s))) throw new NotFoundException('Không tìm thấy hồ sơ thạc sĩ.');
     if (row.revision !== input?.revision) throw new ConflictException('Hồ sơ đã thay đổi. Hãy tải lại.');
     if (row.status !== 'submitted' || !['approved', 'rejected'].includes(String(input.status))) throw new BadRequestException('Chỉ xét duyệt hồ sơ đang chờ xử lý.');
     const reason = typeof input.reason === 'string' ? input.reason.trim() : '';

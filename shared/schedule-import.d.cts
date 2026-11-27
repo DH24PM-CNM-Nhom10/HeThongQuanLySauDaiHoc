@@ -1,1 +1,1 @@
-export function prepareSchedule(input: Record<string, unknown>[], assignments: Record<string, any>[], existing?: Record<string, any>[]): { errors: string[]; additions: Record<string, any>[]; duplicates: number };
+export function prepareSchedule(input: Record<string, unknown>[], assignments: Record<string, any>[], existing?: Record<string, any>[], terms?: Record<string, any>[]): { errors: string[]; additions: Record<string, any>[]; duplicates: number };

@@ -1,3 +1,4 @@
+import { isMasterStudent } from "../../../../shared/masters-scope.cjs";
 import { requireAdmin } from "../../../lib/admin-api";
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "../../../lib/store";
@@ -7,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (denied) return denied;
   try {
     const memoryStore = getStore();
-    const students = memoryStore["students"] || [];
+    const students = (memoryStore["students"] || []).filter(isMasterStudent);
     const thesisList = memoryStore["thesis"] || [];
 
     const warnings = {

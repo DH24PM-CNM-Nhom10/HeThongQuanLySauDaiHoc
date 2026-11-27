@@ -1,0 +1,372 @@
+{
+  "source": "https://pgd.agu.edu.vn/trainings/majors",
+  "checkedAt": "2026-11-27",
+  "majors": [
+    {
+      "id": 1,
+      "name": "Quản lý giáo dục",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/1/programmes",
+      "programmes": [
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2025-2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/41"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2024 - 2026",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/24"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2023 - 2025",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/23"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2022 - 2024",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/20"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2021 - 2023",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/1"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2020 - 2022",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/2"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2019 - 2021",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/3"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2018 - 2020",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/11"
+        },
+        {
+          "code": "8140114",
+          "name": "Quản lý giáo dục 2017 - 2019",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/12"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Quản lý tài nguyên và môi trường",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/2/programmes",
+      "programmes": [
+        {
+          "code": "8850101",
+          "name": "Quản lý tài nguyên và môi trường 2025 - 2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/30"
+        },
+        {
+          "code": "8850101",
+          "name": "Quản lý tài nguyên và môi trường 2021 - 2023",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/6"
+        },
+        {
+          "code": "8850101",
+          "name": "Quản lý tài nguyên và môi trường 2020 - 2022",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/5"
+        },
+        {
+          "code": "8850101",
+          "name": "Quản lý tài nguyên và môi trường 2018 - 2020",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/4"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Chăn nuôi",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/3/programmes",
+      "programmes": [
+        {
+          "code": "8620105",
+          "name": "Chăn nuôi",
+          "mode": "Vừa làm vừa học",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/40"
+        },
+        {
+          "code": "8620105",
+          "name": "Chăn nuôi 2020 - 2022",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/19"
+        },
+        {
+          "code": "8620105",
+          "name": "Chăn nuôi 2019 - 2021",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/18"
+        },
+        {
+          "code": "8620105",
+          "name": "Chăn nuôi 2017 - 2019",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/17"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Khoa học cây trồng",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/4/programmes",
+      "programmes": [
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2025 - 2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/31"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2024 - 2026",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/28"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2023 - 2025",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/26"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2022 - 2024",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/22"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2021 - 2023",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/8"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2020 - 2022",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/7"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2017 - 2019",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/13"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2016 - 2018",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/14"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2015 - 2017",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/15"
+        },
+        {
+          "code": "8620110",
+          "name": "Khoa học cây trồng 2014 - 2016",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/16"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Công nghệ thực phẩm",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/5/programmes",
+      "programmes": [
+        {
+          "code": "8540101",
+          "name": "Công nghệ thực phẩm 2025 - 2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/37"
+        },
+        {
+          "code": "8540101",
+          "name": "Công nghệ thực phẩm 2021 - 2023",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/9"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Công nghệ sinh học",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/6/programmes",
+      "programmes": [
+        {
+          "code": "8420201",
+          "name": "Công nghệ sinh học 2025 -2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/35"
+        },
+        {
+          "code": "8420201",
+          "name": "Công nghệ sinh học 2023 - 2025",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/36"
+        },
+        {
+          "code": "8420201",
+          "name": "Công nghệ sinh học 2022 - 2024",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/21"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Công nghệ thông tin",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/12/programmes",
+      "programmes": [
+        {
+          "code": "8480201",
+          "name": "Công nghệ thông tin 2025 -2027",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/25"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Vật lý lý thuyết và Vật lý toán",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/16/programmes",
+      "programmes": [
+        {
+          "code": "8440103",
+          "name": "Vật lý lý thuyết và Vật lý toán",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/32"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Lý luận và Phương pháp dạy học",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/17/programmes",
+      "programmes": [
+        {
+          "code": "8140110",
+          "name": "Lý luận và Phương pháp dạy học",
+          "mode": "Vừa làm vừa học",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/33"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Lý luận và Phương pháp dạy học bộ môn tiếng Anh",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/18/programmes",
+      "programmes": [
+        {
+          "code": "8140111",
+          "name": "Lý luận và Phương pháp dạy học bộ môn tiếng Anh",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/34"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Chương trình đào tạo liên thông từ trình độ đại học lên trình độ thạc sĩ ngành Công nghệ thực phẩm",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/19/programmes",
+      "programmes": [
+        {
+          "code": "8540101 (BS-MS)",
+          "name": "Chương trình đào tạo liên thông từ trình độ đại học lên trình độ thạc sĩ ngành Công nghệ thực phẩm",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/38"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Chương trình đào tạo liên thông từ trình độ đại học lên trình độ thạc sĩ ngành Công nghệ sinh học",
+      "institution": "Trường Đại học An Giang",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/20/programmes",
+      "programmes": [
+        {
+          "code": "8420201 (BS-MS)",
+          "name": "Chương trình đào tạo liên thông từ trình độ đại học lên trình độ thạc sĩ ngành Công nghệ sinh học",
+          "mode": "Chính quy toàn thời gian",
+          "url": "https://pgd.agu.edu.vn/trainings/majors/programme/39"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Công nghệ thông tin",
+      "institution": "Trường Đại học Công nghệ Thông tin",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/7/programmes",
+      "programmes": []
+    },
+    {
+      "id": 10,
+      "name": "Quản lý công",
+      "institution": "Trường Đại học Quốc tế",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/10/programmes",
+      "programmes": []
+    },
+    {
+      "id": 8,
+      "name": "Luật kinh tế",
+      "institution": "Trường Đại học Kinh tế Luật",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/8/programmes",
+      "programmes": []
+    },
+    {
+      "id": 9,
+      "name": "Tài chính - Ngân hàng",
+      "institution": "Trường Đại học Kinh tế Luật",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/9/programmes",
+      "programmes": []
+    },
+    {
+      "id": 11,
+      "name": "Luật dân sự và tố tụng dân sự",
+      "institution": "Trường Đại học Kinh tế Luật",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/11/programmes",
+      "programmes": []
+    },
+    {
+      "id": 13,
+      "name": "Văn hóa học",
+      "institution": "Trường Khoa học Xã hội và Nhân văn",
+      "url": "https://pgd.agu.edu.vn/trainings/majors/13/programmes",
+      "programmes": []
+    }
+  ]
+}

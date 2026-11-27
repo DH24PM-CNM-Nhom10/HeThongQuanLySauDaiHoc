@@ -13,7 +13,6 @@ import {
 } from '../training-office/training-office.service';
 import {
   calculateTeacherGrade,
-  TEACHER_GRADE_POLICY,
   type GradePolicy,
 } from './teacher-grade-policy';
 import { readStore, saveStore, studentCode } from '../common/data-store';
@@ -97,7 +96,8 @@ export class TeacherGradesService {
           maHocVien: code,
           processScore,
           examScore,
-          ...calculateTeacherGrade(processScore, examScore),
+          totalScore: grade.totalScore ?? grade.score ?? null,
+          letterGrade: grade.letterGrade ?? null,
           legacyScore: grade.score ?? null,
         });
       }
@@ -129,7 +129,7 @@ export class TeacherGradesService {
     return (
       coursePolicy(readStore(), row.courseCode) ||
       book.gradingPolicy ||
-      (savedScores(book).length ? TEACHER_GRADE_POLICY : null)
+      null
     );
   }
   private view(row: TeachingAssignment, book: Book) {
@@ -148,7 +148,7 @@ export class TeacherGradesService {
           revision: item.revision,
         })),
       updatedAt: book.updatedAt,
-      courseConfigured: !!coursePolicy(readStore(), row.courseCode),
+      courseConfigured: !!this.policy(row, book),
       gradingPolicy: this.policy(row, book),
       requiresRecalculation:
         !!coursePolicy(readStore(), row.courseCode) &&
@@ -184,11 +184,7 @@ export class TeacherGradesService {
       throw new ConflictException(
         'Bảng điểm đã thay đổi. Hãy tải lại trước khi lưu.',
       );
-    const policy = coursePolicy(store, row.courseCode) as GradePolicy | null;
-    if (!policy)
-      throw new BadRequestException(
-        'Cần cấu hình trọng số cho môn học trước khi lưu điểm.',
-      );
+    const policy = (coursePolicy(store, row.courseCode) || book.gradingPolicy || null) as GradePolicy | null;
     if (
       !Array.isArray(body.scores) ||
       body.scores.length !== book.roster.length
@@ -208,11 +204,13 @@ export class TeacherGradesService {
       seen.add(code);
       const processScore = component(item.processScore);
       const examScore = component(item.examScore);
+      const previous = savedScores(book).find((score) => score.maHocVien === code);
+      const unchanged = previous?.processScore === processScore && previous?.examScore === examScore;
       scores.push({
         maHocVien: code,
         processScore,
         examScore,
-        ...calculateTeacherGrade(processScore, examScore, policy),
+        ...(policy ? calculateTeacherGrade(processScore, examScore, policy) : {totalScore: unchanged ? previous?.totalScore ?? null : null, letterGrade: unchanged ? previous?.letterGrade ?? null : null}),
         legacyScore:
           processScore === null && examScore === null
             ? book.scores.find((score) => score.maHocVien === code)?.legacyScore
@@ -227,7 +225,7 @@ export class TeacherGradesService {
       revision: book.revision,
       before: JSON.parse(JSON.stringify(book)),
     });
-    book.gradingPolicy = policy;
+    if (policy) book.gradingPolicy = policy;
     book.status = 'saved';
     book.scores = scores;
     book.revision++;

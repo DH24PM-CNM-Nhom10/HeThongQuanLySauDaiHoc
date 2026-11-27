@@ -175,7 +175,7 @@ describe('Lưu điểm trực tiếp và trọng số từng môn', () => {
     expect(service.transcriptForStudent('S1')[0].totalScore).toBeNull();
     expect(service.transcriptForStudent('S1')[0].processScore).toBe(8);
   });
-  it('yêu cầu cấu hình môn và không yêu cầu thành phần có trọng số 0', () => {
+  it('lưu điểm thành phần khi không có quy chế và giữ quy chế lịch sử', () => {
     const s = readStore();
     s.courses[0].processWeight = 0;
     s.courses[0].examWeight = 1;
@@ -185,6 +185,19 @@ describe('Lưu điểm trực tiếp và trọng số từng môn', () => {
     const changed = readStore();
     changed.courses = [];
     saveStore(changed);
-    expect(() => save(id)).toThrow(BadRequestException);
+    changed.gradebooks[0].gradingPolicy = undefined;
+    saveStore(changed);
+    save(id);
+    expect(service.transcriptForStudent('S1')[0].totalScore).toBeNull();
+    expect(service.transcriptForStudent('S1')[0].processScore).not.toBeNull();
   });
+  it('giữ tổng kết lịch sử khi điểm thành phần không đổi và không có quy chế', () => {
+    save();
+    const s = readStore();s.courses=[];s.gradebooks[0].gradingPolicy=undefined;saveStore(s);
+    const before=service.getGradebook(req,id);const score=before.students[0];
+    service.saveGradebook(req,id,{revision:before.revision,scores:[{maHocVien:score.maHocVien,processScore:score.processScore,examScore:score.examScore}]});
+    expect(service.transcriptForStudent('S1')[0].totalScore).toBe(8.7);
+    save(id,1,1);expect(service.transcriptForStudent('S1')[0].totalScore).toBeNull();
+  });
+
 });

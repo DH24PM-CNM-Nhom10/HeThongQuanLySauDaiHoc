@@ -1,3 +1,4 @@
+import { isMasterStudent } from '../../../../../../shared/masters-scope.cjs';
 import { NextRequest, NextResponse } from "next/server";
 import { requireStudentManager } from "../../../../../lib/student-manager";
 import { getStore, saveStoreToFile } from "../../../../../lib/store";
@@ -5,7 +6,6 @@ import {
   workflowView,
   applyWorkflow,
 } from "../../../../../../shared/thesis-workflow.cjs";
-import { calculateProgress } from "../../../../../../shared/academic.cjs";
 export async function GET(req: NextRequest) {
   const denied = await requireStudentManager(req);
   if (denied) return denied;
@@ -13,10 +13,10 @@ export async function GET(req: NextRequest) {
       .trim()
       .toUpperCase(),
     s = getStore(true);
+  if (!s.students.some(row=>String(row.maHocVien||row.ma_hoc_vien||"").toUpperCase()===code&&isMasterStudent(row))) return NextResponse.json({message:"Không tìm thấy học viên thạc sĩ."},{status:404});
   return NextResponse.json(
     {
       workflow: workflowView(s, code),
-      academic: calculateProgress(s, code),
       teachers: s.teachers.map((t) => ({
         id: String(t.shcc || t.id),
         name: t.hoten || t.hoTen,

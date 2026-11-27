@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import styles from "./TrainingOfficeAssignmentContent.module.css";
+import { programSemester as getProgramSemester } from '../../../shared/program-period.cjs';
 import curriculumData from "../../data/agu_masters_curriculum.json";
 
 type Teacher = { id: string; name: string; department: string; qualification?: string; expertise?: string };
 type ClassOption = {
   code: string; studentCount: number; majorCode?: string; majorName?: string;
-  admissionYear?: number | null; trainingTrack?: "nghien_cuu" | "ung_dung" | null;
+  startSemester?: number; durationSemesters?: number; admissionYear?: number | null; trainingTrack?: "nghien_cuu" | "ung_dung" | null;
   inconsistentMajor?: boolean; inconsistentAdmissionYear?: boolean; inconsistentTrack?: boolean;
 };
 type Major = { code: string; name: string };
@@ -81,19 +82,14 @@ function yearOptions(): string[] {
   const start = academicStartYear();
   return [start, start + 1].map(y => `${y}-${y + 1}`);
 }
-function programSemesterOf(schoolYear: string, semester: string, admissionYear: string): number | null {
-  if (!admissionYear || !schoolYear) return null;
-  const diff = Number(schoolYear.slice(0, 4)) - Number(admissionYear);
-  const value = diff * 2 + Number(semester);
-  return Number.isInteger(value) && value >= 1 && value <= 4 ? value : null;
-}
+function programSemesterOf(schoolYear:string,semester:string,admissionYear:string,startSemester=1,durationSemesters?:number){return getProgramSemester(schoolYear,semester,admissionYear,startSemester,durationSemesters);}
 // Khóa được xác định NGẦM từ hồ sơ của từng lớp thay vì bắt người dùng chọn thủ công.
 // Chỉ xác định học phần tương ứng với học kỳ CTĐT, không khẳng định môn đã được mở thực tế.
 function courseAppliesToClass(
   course: CurriculumCourse, classInfo: ClassOption, schoolYear: string, semester: string,
 ): boolean {
   if (!classInfo.admissionYear || classInfo.inconsistentAdmissionYear || classInfo.inconsistentTrack || classInfo.inconsistentMajor) return false;
-  const studySemester = programSemesterOf(schoolYear, semester, String(classInfo.admissionYear));
+  const studySemester = programSemesterOf(schoolYear, semester, String(classInfo.admissionYear),classInfo.startSemester,classInfo.durationSemesters);
   return studySemester !== null && course.semesters.includes(studySemester) &&
     (!course.validFromAdmissionYear || classInfo.admissionYear >= course.validFromAdmissionYear);
 }
@@ -202,16 +198,15 @@ export default function TrainingOfficeAssignmentContent() {
     const yearGap = admission ? Number(schoolYear.slice(0, 4)) - admission : -1;
     return c.majorCode === majorCode && c.trainingTrack === trainingTrack &&
       !c.inconsistentAdmissionYear && !c.inconsistentTrack && !c.inconsistentMajor &&
-      yearGap >= 0 && yearGap < 2;
+      programSemesterOf(schoolYear,semester,String(admission),c.startSemester,c.durationSemesters)!==null;
   }).sort((a, b) => a.code.localeCompare(b.code, "vi")),
-  [catalog.classes, majorCode, trainingTrack, schoolYear]);
+  [catalog.classes, majorCode, trainingTrack, schoolYear, semester]);
   const coursesByTrack = useMemo(() => curriculum.filter(c => c.majorName === curriculumMajorName && c.track === trainingTrack), [curriculumMajorName, trainingTrack, curriculum]);
   // Chỉ hiển thị những học phần CTĐT đã đối chiếu và thực sự có ít nhất
   // một lớp thạc sĩ hợp lệ theo NGÀNH + ĐỊNH HƯỚNG + NĂM NHẬP HỌC + HỌC KỲ.
   // Đây là điều kiện để tạo NHÁP, không khẳng định lớp đã mở học phần chính thức.
   const courseOptions = useMemo(() => coursesByTrack.filter(c =>
     c.code && c.name && !c.needsReview &&
-    c.semesters.some(programTerm => (programTerm - 1) % 2 === Number(semester) - 1) &&
     classesInAcademicYear.some(cls => courseAppliesToClass(c, cls, schoolYear, semester))
   ).sort((a, b) => a.code.localeCompare(b.code, "vi") || a.name.localeCompare(b.name, "vi")),
   [coursesByTrack, semester, classesInAcademicYear, schoolYear]);
@@ -327,10 +322,11 @@ export default function TrainingOfficeAssignmentContent() {
 
   const selectMajor = (newCode: string) => {
     const programName = MAJOR_TO_CURRICULUM[newCode] ?? majors.find(m => m.code === newCode)?.name ?? "";
-    const hasResearch = CURRICULUM.some(c => c.majorName === programName && c.track === "nghien_cuu");
-    const hasApplied = CURRICULUM.some(c => c.majorName === programName && c.track === "ung_dung");
+    const hasResearch = curriculum.some(c => c.majorName === programName && c.track === "nghien_cuu");
+    const hasApplied = curriculum.some(c => c.majorName === programName && c.track === "ung_dung");
     if (trainingTrack === "nghien_cuu" && !hasResearch && hasApplied) setTrainingTrack("ung_dung");
     else if (trainingTrack === "ung_dung" && !hasApplied && hasResearch) setTrainingTrack("nghien_cuu");
+    const tracks=curriculum.filter(c=>c.majorName===programName).map(c=>c.track);if(tracks.length&&!tracks.includes(trainingTrack))setTrainingTrack(tracks[0]);
     setMajorCode(newCode); setCourseId(""); setClassCodes([]); setCourseSearch(""); setMessage("");
   };
   // Không kéo thả: bấm giảng viên / học phần để chọn.
@@ -376,7 +372,7 @@ export default function TrainingOfficeAssignmentContent() {
       semester,
       trainingTrack,
       admissionYear: cls.admissionYear ?? undefined,
-      programSemester: programSemesterOf(schoolYear, semester, String(cls.admissionYear ?? "")) ?? undefined,
+      programSemester: programSemesterOf(schoolYear, semester, String(cls.admissionYear ?? ""),cls.startSemester,cls.durationSemesters) ?? undefined,
       createdAt: time,
       createdBy: "browser-draft",
     }));

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { DB, type StoredRecord } from "../../lib/db";
 import styles from "../students/StudentManagementTable.module.css";
 const columns = [
@@ -23,10 +23,18 @@ export default function ScheduleImport() {
     [message, setMessage] = useState(""),
     [search, setSearch] = useState(""),
     [page, setPage] = useState(1);
+  const [terms, setTerms] = useState<any[]>([]),
+    [termYear, setTermYear] = useState(""),
+    [termSemester, setTermSemester] = useState("1");
   const input = useRef<HTMLInputElement>(null);
   async function load() {
     try {
       setRows(await DB.syncFromApi("schedule"));
+      const response = await fetch("/api/schedule/terms", {
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error();
+      setTerms((await response.json()).data);
     } catch {
       setMessage("Không tải được thời khóa biểu.");
     }
@@ -34,6 +42,33 @@ export default function ScheduleImport() {
   useEffect(() => {
     void load();
   }, []);
+  async function saveTerm(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setMessage("");
+    const f = new FormData(e.currentTarget);
+    try {
+      const r = await fetch("/api/schedule/terms", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          ...Object.fromEntries(f),
+          revision: terms.find(
+            (t) => t.schoolYear === termYear && t.semester === termSemester,
+          )?.revision,
+        }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message);
+      await load();
+      setPreview(null);
+      setMessage("Đã lưu khoảng ngày học kỳ.");
+    } catch (e) {
+      setMessage(String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
   async function upload(commit = false) {
     if (!file) return;
     setBusy(true);
@@ -112,6 +147,73 @@ export default function ScheduleImport() {
         Nhập lịch đã lập từ Excel. Mỗi dòng là một ngày học, gắn với phân công
         đã lưu; hệ thống kiểm tra trùng lịch và giữ dữ liệu cũ.
       </p>
+      <details className={styles.editSection}>
+        <summary>
+          Khoảng ngày học kỳ (cần cấu hình trước khi nhập Excel)
+        </summary>
+        <form onSubmit={saveTerm} className={styles.editFields}>
+          <label>
+            Năm học
+            <input
+              name="schoolYear"
+              placeholder="2026-2027"
+              pattern="20[0-9]{2}-20[0-9]{2}"
+              required
+              value={termYear}
+              onChange={(e) => setTermYear(e.target.value)}
+            />
+          </label>
+          <label>
+            Học kỳ
+            <select
+              name="semester"
+              value={termSemester}
+              onChange={(e) => setTermSemester(e.target.value)}
+            >
+              <option value="1">Học kỳ 1</option>
+              <option value="2">Học kỳ 2</option>
+            </select>
+          </label>
+          <label>
+            Từ ngày
+            <input
+              key={"start-" + termYear + termSemester}
+              required
+              type="date"
+              name="startDate"
+              defaultValue={
+                terms.find(
+                  (t) =>
+                    t.schoolYear === termYear && t.semester === termSemester,
+                )?.startDate || ""
+              }
+            />
+          </label>
+          <label>
+            Đến ngày
+            <input
+              key={"end-" + termYear + termSemester}
+              required
+              type="date"
+              name="endDate"
+              defaultValue={
+                terms.find(
+                  (t) =>
+                    t.schoolYear === termYear && t.semester === termSemester,
+                )?.endDate || ""
+              }
+            />
+          </label>
+          <button disabled={busy}>Lưu khoảng ngày học kỳ</button>
+        </form>
+        <ul>
+          {terms.map((t) => (
+            <li key={t.schoolYear + t.semester}>
+              {t.schoolYear} — HK{t.semester}: {t.startDate} đến {t.endDate}
+            </li>
+          ))}
+        </ul>
+      </details>
       <div className={styles.actions} style={{ marginBlock: 16 }}>
         <input
           ref={input}

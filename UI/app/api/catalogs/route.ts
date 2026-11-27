@@ -7,7 +7,7 @@ import { normalize } from "../../../../shared/system-store.cjs";
 export async function GET(request: Request) {
   const denied = await requireStudentManager(request);
   if (denied) return denied;
-  return NextResponse.json({ success: true, data: getStore().catalogs });
+  return NextResponse.json({ success: true, data: getStore().catalogs.filter(row=>!/^9\d{6}$/.test(String(row.code))&&!/^9\d{6}$/.test(String(row.majorCode||""))&&!/tiến sĩ/i.test(String(row.code))&&!/^NCS/i.test(String(row.code))) });
 }
 
 export async function POST(request: Request) {
@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     if (!["major", "class", "program", "level", "cohort", "study_mode"].includes(kind) || !code || (kind === "major" && !name)) {
       return NextResponse.json({ error: "Nhập đủ thông tin danh mục." }, { status: 400 });
     }
+    if (/^9\d{6}$/.test(code) || /^9\d{6}$/.test(majorCode) || /tiến sĩ/i.test(code) || /^NCS/i.test(code)) return NextResponse.json({error:"Danh mục ngoài phạm vi đào tạo thạc sĩ."},{status:400});
     const store = getStore();
     if (kind === "class" && !store.catalogs.some(row => row.kind === "major" && row.code === majorCode)) {
       return NextResponse.json({ error: "Chọn mã ngành có trong danh mục." }, { status: 400 });

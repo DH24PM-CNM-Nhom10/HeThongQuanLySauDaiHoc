@@ -37,17 +37,17 @@ function fixture(extra = {}) {
   store = { teachers: [{ shcc: 'GV001', hoten: 'Giảng viên' }], gradebooks: [], ...extra };
   writes = 0;
 }
-test('The Next API refuses linked teacher deletion without saving', async () => {
+test('Legacy generic teacher API rejects deletion without saving', async () => {
   fixture({ teachingAssignments: [{ id: 'A1', teacherId: 'GV001' }] });
-  assert.equal((await DELETE(request(), ctx)).status, 409);
+  assert.equal((await DELETE(request(), ctx)).status, 405);
   assert.equal(store.teachers.length, 1);
   assert.equal(writes, 0);
 });
-test('The Next API deletes an unlinked teacher and retains role checks', async () => {
+test('Legacy generic API cannot delete unlinked teachers and retains role checks', async () => {
   fixture();
   assert.equal((await DELETE(request('student'), ctx)).status, 403);
   assert.equal(writes, 0);
-  assert.equal((await DELETE(request(), ctx)).status, 200);
-  assert.equal(store.teachers.length, 0);
-  assert.equal(writes, 1);
+  assert.equal((await DELETE(request(), ctx)).status, 405);
+  assert.equal(store.teachers.length, 1);
+  assert.equal(writes, 0);
 });

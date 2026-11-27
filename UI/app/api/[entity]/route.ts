@@ -1,3 +1,4 @@
+import { isMasterStudent, isMasterSchedule } from '../../../../shared/masters-scope.cjs';
 import { councilConflict } from '../../../../shared/thesis-workflow.cjs';
 import { requireStudentManager } from "../../../lib/student-manager";
 import { validateStudentRecord } from "../../../lib/student-validation";
@@ -42,7 +43,8 @@ export async function GET(
 
     // Luôn lấy store mới nhất từ db.json
     const currentStore = getStore(entityKey === "students");
-    const list = currentStore[entityKey] || [];
+    const sourceList = currentStore[entityKey] || [];
+    const list = entityKey === "students" ? sourceList.filter(isMasterStudent) : entityKey === "schedule" ? sourceList.filter(row=>isMasterSchedule(currentStore,row)) : sourceList;
 
     // Lọc theo từ khóa tìm kiếm
     const filtered = entityKey === 'students' ? filterStudents(list, {
@@ -80,6 +82,7 @@ export async function POST(
   if (requestedEntity === "schedule") return NextResponse.json({ message: "Chỉ nhập thời khóa biểu qua Excel tại trang Thời khóa biểu." }, { status: 405 });
   const denied = ["students", "teachers", "schedule"].includes(requestedEntity) ? await requireStudentManager(req) : requireAdmin(req);
   if (denied) return denied;
+  if (requestedEntity === "teachers") return studentError("Dùng chức năng quản lý giảng viên để kiểm tra liên kết và phiên bản hồ sơ.", 405);
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
@@ -92,6 +95,7 @@ export async function POST(
       if (!body || typeof body !== "object" || Array.isArray(body) || !studentCode(body) || !String(body.hoTen ?? "").trim()) {
         return studentError("Cần nhập mã và họ tên học viên.", 400);
       }
+      if (!isMasterStudent(body)) return studentError("Hệ thống này chỉ quản lý học viên thạc sĩ.",400);
       const invalid = validateStudentRecord(body, currentStore.catalogs, currentStore.teachers);
       if (invalid) return studentError(invalid, 400);
       const result = appendNewStudents(currentStore.students ?? [], [body]);
@@ -130,6 +134,7 @@ export async function PUT(
   if (requestedEntity === "schedule") return NextResponse.json({ message: "Chỉ nhập thời khóa biểu qua Excel tại trang Thời khóa biểu." }, { status: 405 });
   const denied = ["students", "teachers", "schedule"].includes(requestedEntity) ? await requireStudentManager(req) : requireAdmin(req);
   if (denied) return denied;
+  if (requestedEntity === "teachers") return studentError("Dùng chức năng quản lý giảng viên để kiểm tra liên kết và phiên bản hồ sơ.", 405);
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
@@ -149,7 +154,10 @@ export async function PUT(
       const matches = list.filter((item) => studentCode(item) === code);
       if (!matches.length) return studentError("Không tìm thấy học viên.", 404);
       if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
+      if (!isMasterStudent(matches[0])) return studentError("Hồ sơ ngoài phạm vi thạc sĩ được giữ để đối chiếu lịch sử.", 409);
+      if (!isMasterStudent(matches[0])) return studentError("Hồ sơ ngoài phạm vi thạc sĩ được giữ lịch sử, không chỉnh sửa tại đây.",409);
       const record = { ...matches[0], ...updatedRecord };
+      if (!isMasterStudent(record)) return studentError("Chỉ được quản lý trình độ thạc sĩ.",400);
       if (councilConflict(currentStore,code,[record.gvHuongDan1,record.gvHuongDan2])) return studentError("Giảng viên hướng dẫn đang là chủ tịch hoặc phản biện của học viên.", 400);
       const invalid = validateStudentRecord(record, currentStore.catalogs, currentStore.teachers, matches[0]);
       if (invalid) return studentError(invalid, 400);
@@ -195,6 +203,7 @@ export async function DELETE(
   if (requestedEntity === "schedule") return NextResponse.json({ message: "Chỉ nhập thời khóa biểu qua Excel tại trang Thời khóa biểu." }, { status: 405 });
   const denied = ["students", "teachers", "schedule"].includes(requestedEntity) ? await requireStudentManager(req) : requireAdmin(req);
   if (denied) return denied;
+  if (requestedEntity === "teachers") return studentError("Dùng chức năng quản lý giảng viên để kiểm tra liên kết và phiên bản hồ sơ.", 405);
   try {
     const resolvedParams = await Promise.resolve(params);
     const entityKey = resolvedParams.entity;
@@ -217,6 +226,7 @@ export async function DELETE(
       const matches = list.filter((item) => studentCode(item) === code);
       if (!code || !matches.length) return studentError("Không tìm thấy học viên.", 404);
       if (matches.length > 1) return studentError("Mã học viên đang trùng trong dữ liệu cũ.", 409);
+      if (!isMasterStudent(matches[0])) return studentError("Hồ sơ ngoài phạm vi thạc sĩ được giữ để đối chiếu lịch sử.", 409);
       if (currentStore.gradebooks.some(book => book.roster?.some((row: any) => studentCode(row) === code))) {
         return studentError("Học viên đã có lớp học phần. Hãy cập nhật trạng thái thay vì xóa hồ sơ.", 409);
       }

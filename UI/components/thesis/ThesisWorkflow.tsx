@@ -103,12 +103,7 @@ export default function ThesisWorkflow({
           {manager && (
             <>
               <p>
-                Điều kiện học thuật:{" "}
-                {!data.academic.configured
-                  ? "Chưa cấu hình"
-                  : data.academic.academicEligible
-                    ? "Đạt theo kế hoạch"
-                    : "Chưa đạt theo kế hoạch"}{" "}
+                Điều kiện học thuật được đối chiếu tại hệ thống chương trình đào tạo riêng.
                 · Hồ sơ được công nhận:{" "}
                 {
                   data.documents.filter((d: any) => d.status === "approved")

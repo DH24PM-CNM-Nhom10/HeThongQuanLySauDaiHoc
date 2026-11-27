@@ -18,6 +18,8 @@ function coursePolicy(store, code) {
         id: course.code + ":" + course.revision,
         scaleId: scale.id,
         courseCode: course.code,
+        gpaWeight: course.gpaWeight,
+        credits: course.credits,
         processWeight: course.processWeight,
         examWeight: course.examWeight,
         description:
@@ -30,45 +32,4 @@ function coursePolicy(store, code) {
       }
     : null;
 }
-function validateCourse(c, store) {
-  if (
-    !c ||
-    !/^[-\w.]{1,80}$/.test(c.code) ||
-    !String(c.name || "").trim() ||
-    String(c.name).length > 255
-  )
-    return "Nhập mã môn và tên môn hợp lệ.";
-  if (
-    !Number.isFinite(c.credits) ||
-    c.credits <= 0 ||
-    c.credits > 100 ||
-    !Number.isFinite(c.gpaWeight) ||
-    c.gpaWeight <= 0 ||
-    c.gpaWeight > 100
-  )
-    return "Tín chỉ và trọng số GPA phải lớn hơn 0, không quá 100.";
-  if (
-    ![c.processWeight, c.examWeight].every(Number.isFinite) ||
-    c.processWeight < 0 ||
-    c.examWeight < 0 ||
-    Math.abs(c.processWeight + c.examWeight - 1) > 1e-8
-  )
-    return "Tổng tỷ trọng điểm quá trình và thi phải bằng 100%.";
-  if (!(store.academicPolicies || []).some((p) => p.id === c.policyId))
-    return "Chọn thang điểm/GPA đã cấu hình.";
-  if (
-    !(store.catalogs || []).some(
-      (p) => p.kind === "major" && p.code === c.majorCode,
-    )
-  )
-    return "Chọn ngành có trong danh mục.";
-  if (
-    !["nghien_cuu", "ung_dung"].includes(c.track) ||
-    !Array.isArray(c.semesters) ||
-    !c.semesters.length ||
-    c.semesters.some((n) => ![1, 2, 3, 4].includes(n))
-  )
-    return "Chọn định hướng và học kỳ trong chương trình.";
-  return null;
-}
-module.exports = { savedScores, coursePolicy, validateCourse };
+module.exports = { savedScores, coursePolicy };

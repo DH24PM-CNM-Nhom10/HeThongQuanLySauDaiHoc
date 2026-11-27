@@ -1,3 +1,5 @@
+import { isMasterStudent, isMasterAssignment } from '../../../shared/masters-scope.cjs';
+import { programSemester as getProgramSemester } from '../../../shared/program-period.cjs';
 import { requireManager } from '../common/management-access';
 import { BadRequestException, ConflictException, Injectable, UnauthorizedException, ServiceUnavailableException, NotFoundException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
@@ -11,7 +13,7 @@ type OfficeAccount = { username: string; displayName: string; role: 'training_of
 type Payload = { sub: string; exp: number };
 export type OfficeIdentity = { role: 'training_office'; username: string; hoTen: string };
 type Teacher = { id?: string; shcc?: string; hoten?: string; t_dvi?: string; t_tdcmon?: string; t_cmdtao?: string };
-type Student = { lop?: string; loaiChuongTrinh?: string; maNganh?: string; tenNganh?: string; ngayNhapHoc?: string | number };
+type Student = { trinhDo?: string; lop?: string; loaiChuongTrinh?: string; maNganh?: string; tenNganh?: string; ngayNhapHoc?: string | number };
 export type TeachingAssignment = {
   id: string; teacherId: string; teacherName: string; department: string;
   classCode: string; courseCode: string; courseName: string;
@@ -32,7 +34,7 @@ const MAJOR_TO_CURRICULUM: Record<string, string> = {
   '8480201': 'Công nghệ thông tin', '8620110': 'Khoa học cây trồng',
   '8620105': 'Chăn nuôi', '8420201': 'Công nghệ sinh học',
   '8540101': 'Công nghệ thực phẩm', '8850101': 'Quản lý tài nguyên và môi trường',
-  '8140114': 'Quản lý giáo dục', '8140110': 'Lí luận và Phương pháp dạy học',
+  '8140114': 'Quản lý giáo dục', '8140110': 'Lý luận và Phương pháp dạy học',
   '8440103': 'Vật lý lý thuyết và Vật lý toán',
   '8140111': 'Lý luận và Phương pháp dạy học bộ môn tiếng Anh',
 };
@@ -153,7 +155,7 @@ export class TrainingOfficeService {
 
   private source() {
     const store = readStore();
-    return { teachers: store.teachers as Teacher[], students: store.students as Student[] };
+    return { teachers: store.teachers as Teacher[], students: store.students.filter(isMasterStudent) as Student[] };
   }
 
   catalog(req: Request) {
@@ -177,7 +179,7 @@ export class TrainingOfficeService {
     const majorIndex = new Map<string, { code: string; name: string }>();
     for (const s of students) {
       const code = String(s.lop || '').trim();
-      if (!code || String(s.loaiChuongTrinh || '').toLowerCase().includes('tiến sĩ')) continue;
+      if (!code) continue;
       const majorCode = String(s.maNganh || '').trim();
       const majorName = String(s.tenNganh || '').trim();
       if (majorCode && majorName) majorIndex.set(majorCode, { code: majorCode, name: majorName });
@@ -189,7 +191,7 @@ export class TrainingOfficeService {
       row.studentCount++;
       const admissionYear = admissionYearFromRaw(s.ngayNhapHoc);
       if (admissionYear !== null) row.admissionYears.set(admissionYear, (row.admissionYears.get(admissionYear) || 0) + 1);
-      const track = trackFromRaw(s.loaiChuongTrinh);
+      const track = trackFromRaw(String(s.loaiChuongTrinh||'')+' '+String(s.trinhDo||''));
       if (track) row.tracks.set(track, (row.tracks.get(track) || 0) + 1);
       if (majorCode) {
         const current = row.majors.get(majorCode);
@@ -198,7 +200,9 @@ export class TrainingOfficeService {
       }
     }
     const dataWarnings: string[] = [];
+    const plans=readStore().academicPlans;
     const classes = [...classIndex.values()].map(row => {
+      const plan=plans.find(p=>p.classCode===row.code);
       const candidates = [...row.majors.values()].sort((a, b) => b.count - a.count || a.code.localeCompare(b.code));
       const years = [...row.admissionYears.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0]);
       const tracks = [...row.tracks.entries()].sort((a, b) => b[1] - a[1]);
@@ -207,13 +211,14 @@ export class TrainingOfficeService {
       if (tracks.length > 1) dataWarnings.push(`Lớp ${row.code} gồm nhiều định hướng đào tạo; cần xác định nhóm học viên cụ thể.`);
       return {
         code: row.code,
+        startSemester: plan?.startSemester || 1, durationSemesters: plan?.durationSemesters || undefined,
         studentCount: row.studentCount,
         majorCode: candidates[0]?.code ?? '',
         majorName: candidates[0]?.name ?? '',
         inconsistentMajor: candidates.length > 1,
-        admissionYear: years.length === 1 ? years[0][0] : null,
+        admissionYear: plan?.admissionSchoolYear ? Number(plan.admissionSchoolYear.slice(0,4)) : years.length === 1 ? years[0][0] : null,
         trainingTrack: tracks.length === 1 ? tracks[0][0] : null,
-        inconsistentAdmissionYear: years.length > 1,
+        inconsistentAdmissionYear: !plan?.admissionSchoolYear && years.length > 1,
         inconsistentTrack: tracks.length > 1,
       };
     }).sort((a, b) => a.code.localeCompare(b.code, 'vi'));
@@ -222,7 +227,7 @@ export class TrainingOfficeService {
   }
 
   private readAssignments(): TeachingAssignment[] {
-    return readStore().teachingAssignments as TeachingAssignment[];
+    const store=readStore(); return store.teachingAssignments.filter(row=>isMasterAssignment(store,row)) as TeachingAssignment[];
   }
 
   assignments(req: Request) {
@@ -299,7 +304,7 @@ export class TrainingOfficeService {
     try {
       const parsed: unknown = JSON.parse(fs.readFileSync(filename, 'utf8'));
       if (!Array.isArray(parsed)) throw new Error('Wrong curriculum format');
-      const configured=readStore().courses || [];
+      const configured=(readStore().courses || []).filter(c=>["nghien_cuu","ung_dung"].includes(c.track)&&!/^9\d{6}$/.test(String(c.majorCode||"")));
       const extras=configured.map(c=>({...c,id:'configured:'+c.code,majorName:MAJOR_TO_CURRICULUM[c.majorCode]||c.majorName,needsReview:false,reviewNote:'',source:'configured',sourcePage:null}));
       return [...(parsed as CourseReference[]).filter(c=>!extras.some(e=>e.code.toUpperCase()===c.code.toUpperCase()&&e.majorName===c.majorName&&e.track===c.track)),...extras] as CourseReference[];
     } catch { throw new ServiceUnavailableException('Không đọc được danh mục chương trình đào tạo'); }
@@ -348,11 +353,11 @@ export class TrainingOfficeService {
       if (!match || Number(match[2]) !== Number(match[1]) + 1 || !['1', '2'].includes(semester)) {
         throw new BadRequestException('Năm học hoặc học kỳ không hợp lệ');
       }
-      const programSemester = (Number(match[1]) - cls.admissionYear) * 2 + Number(semester);
-      if (programSemester < 1 || programSemester > 4 || track !== cls.trainingTrack) {
+      const programSemester = getProgramSemester(schoolYear,semester,cls.admissionYear,cls.startSemester,cls.durationSemesters);
+      if (programSemester === null || track !== cls.trainingTrack) {
         throw new BadRequestException(`Lớp ${classCode} không phù hợp khóa hoặc định hướng đã chọn`);
       }
-      const majorName = MAJOR_TO_CURRICULUM[cls.majorCode];
+      const majorName = MAJOR_TO_CURRICULUM[cls.majorCode] || cls.majorName;
       const course = courses.find(c => c.code.toUpperCase() === courseCode && c.majorName === majorName &&
         c.track === track && !c.needsReview && Array.isArray(c.semesters) && c.semesters.includes(programSemester) &&
         (c.validFromAdmissionYear == null || (cls.admissionYear != null && cls.admissionYear >= c.validFromAdmissionYear)));
@@ -363,7 +368,7 @@ export class TrainingOfficeService {
       additions.push({
         id: crypto.randomUUID(), teacherId, teacherName: teacher.name, department: teacher.department,
         classCode, courseCode: course.code, courseName: course.name, schoolYear, semester,
-        trainingTrack: cls.trainingTrack === 'nghien_cuu' || cls.trainingTrack === 'ung_dung' ? cls.trainingTrack : undefined, admissionYear: cls.admissionYear ?? undefined, programSemester,
+        trainingTrack: ['nghien_cuu','ung_dung'].includes(cls.trainingTrack||'') ? cls.trainingTrack as 'nghien_cuu'|'ung_dung' : undefined, admissionYear: cls.admissionYear ?? undefined, programSemester: programSemester!,
         majorCode: cls.majorCode, majorName: cls.majorName,
         createdAt: stamp, createdBy: office.username, openingConfirmedAt: stamp,
       });
@@ -380,7 +385,7 @@ export class TrainingOfficeService {
 
   reassign(req: Request, id: string, body: { teacherId?: unknown; previousTeacherId?: unknown }) {
     const actor = requireManager(req, this), store=readStore(), row=store.teachingAssignments.find(a=>a.id===id);
-    if (!row) throw new NotFoundException('Không tìm thấy phân công.');
+    if (!row || !isMasterAssignment(store,row)) throw new NotFoundException('Không tìm thấy phân công thạc sĩ.');
     if (row.teacherId !== body?.previousTeacherId) throw new ConflictException('Phân công đã thay đổi. Hãy tải lại.');
     const teacher=store.teachers.find(t=>String(t.shcc||t.id)===body.teacherId);
     if (!teacher) throw new BadRequestException('Chọn giảng viên có trong danh mục.');
@@ -402,7 +407,7 @@ export class TrainingOfficeService {
     if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id)) throw new BadRequestException('Mã phân công không hợp lệ');
     const store = readStore();
     const rows = store.teachingAssignments;
-    if (!rows.some(row => row.id === id)) throw new NotFoundException('Không tìm thấy phân công');
+    if (!rows.some(row => row.id === id && isMasterAssignment(store,row))) throw new NotFoundException('Không tìm thấy phân công');
     const book = store.gradebooks.find(row => row.assignmentId === id);
     if (book?.scores?.length || book?.publishedScores?.length ||
         store.teacherGrades.some(row => row.assignmentId === id)) {

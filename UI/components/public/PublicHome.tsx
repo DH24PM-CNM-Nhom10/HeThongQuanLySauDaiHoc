@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight, Globe, GraduationCap, MapPin, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
 import styles from "./PublicHome.module.css";
+import TrainingProgrammes from "./TrainingProgrammes";
 import PublicAccountMenu from "./PublicAccountMenu";
 import OfficeNoticeInline from "../training-office/OfficeNoticeInline";
 import StudentPortalContent, { type StudentSection } from "../students/StudentPortalContent";
@@ -46,8 +47,7 @@ const trainingOfficeLinks = [
   { href: "/teachers", label: "Giảng viên", page: "teacher-management" },
   { href: "/schedule", label: "Nhập lịch Excel", page: "schedule-import" },
   { href: "/thesis", label: "Luận văn", page: "thesis-management" },
-  { href: "/academic", label: "Thang điểm và tiến độ", page: "academic-management" },
-  { href: "/courses", label: "Môn học và trọng số", page: "courses-management" },
+  { href: "/courses", label: "Danh mục môn học", page: "courses-management" },
   { href: "/phong-dao-tao/thong-bao", label: "Quản lý thông báo", page: "notice-management" },
   { href: "/", label: "Trang chủ", page: "home" },
   { href: "/thong-bao", label: "Thông báo", page: "notices" },
@@ -534,10 +534,7 @@ export default function PublicHome({ page = "home" }: { page?: PublicPage }) {
           ) : (
             <section className={page === "programs" ? styles.infoPanel : undefined} aria-label={page === "programs" ? "Chương trình đào tạo" : page === "contact" ? "Liên hệ" : "Giới thiệu"}>
               {page === "programs" && (
-                <div className={styles.emptyInfo}>
-                  <strong>Chưa có tài liệu chương trình đào tạo được đăng tải</strong>
-                  <span>Khi có dữ liệu chính thức, hệ thống sẽ hiển thị tài liệu cho học viên và người quan tâm.</span>
-                </div>
+                <TrainingProgrammes />
               )}
               {page === "contact" && (
                 <div className={styles.infoContent}>

@@ -12,7 +12,7 @@ let app;
 (async()=>{
  require('reflect-metadata');const {NestFactory}=require('@nestjs/core');const {AppModule}=require(appModule);const {ResponseInterceptor}=require(interceptorModule);app=await NestFactory.create(AppModule,{logger:false});app.useGlobalInterceptors(new ResponseInterceptor());await app.listen(0,'127.0.0.1');const base=await app.getUrl();
  const login=await fetch(base+'/api/student-records/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:'S1',password:'S1'})});assert.equal(login.status,201);const cookie=login.headers.get('set-cookie').split(';')[0];
- let r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}}),data=await r.json();assert.equal(r.status,200);assert.equal(data.configured,true);assert.equal(data.earnedCredits,0);
+ let r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}}),data=await r.json();assert.equal(r.status,200);assert.equal(data.configured,false);assert.equal(data.gpa,undefined);
  r=await fetch(base+'/api/student-records/thesis-workflow',{headers:{cookie}});data=await r.json();assert.equal(data.workflow.maHocVien,'S1');assert.equal(data.workflow.revision,0);
  r=await fetch(base+'/api/student-records/thesis-workflow',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({action:'topic_request',revision:0,title:'Research title',reason:'Request'})});data=await r.json();assert.equal(r.status,201);assert.equal(data.workflow.requests.length,1);
  r=await fetch(base+'/api/student-records/thesis-workflow',{method:'POST',headers:{cookie,'content-type':'application/json'},body:JSON.stringify({code:'S2',action:'approve',revision:1,requestId:data.workflow.requests[0].id,reason:'Forged'})});assert.equal(r.status,400);
@@ -28,7 +28,7 @@ let app;
  r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId,{headers:{cookie:teacherCookie}});data=await r.json();assert.equal(r.status,200);assert.equal(data.gradingPolicy.processWeight,.3);assert.equal(data.students.length,1);
  r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId,{method:'PUT',headers:{cookie:teacherCookie,'content-type':'application/json'},body:JSON.stringify({revision:data.revision,scores:[{maHocVien:'S1',processScore:8,examScore:9}]})});assert.equal(r.status,200);
  r=await fetch(base+'/api/student-records/grades',{headers:{cookie}});data=await r.json();assert.equal(data.data[0].totalScore,8.7);
- r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}});data=await r.json();assert.equal(data.earnedCredits,3);assert.equal(data.gpa,2);
+ r=await fetch(base+'/api/student-records/academic-progress',{headers:{cookie}});data=await r.json();assert.equal(data.configured,false);assert.equal(data.gpa,undefined);
  r=await fetch(base+'/api/teacher-auth/gradebook/'+assignmentId+'/submit',{method:'POST',headers:{cookie:teacherCookie,'content-type':'application/json'},body:'{}'});assert.equal(r.status,404);
- console.log('PASS: HTTP student/teacher login; per-course grading; saved scores immediately visible in transcript and GPA; removed approval endpoint; private uploads; workflow isolation; shared Admin catalog.');
+ console.log('PASS: HTTP student/teacher login; per-course grading; saved scores immediately visible in transcript; GPA delegated to external system; removed approval endpoint; private uploads; workflow isolation; shared Admin catalog.');
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(app)await app.close();process.chdir(original);if(!path.resolve(fixture).startsWith(path.resolve(os.tmpdir())+path.sep+'qldt-management-http-'))throw new Error('Unsafe test cleanup');fs.rmSync(fixture,{recursive:true});});

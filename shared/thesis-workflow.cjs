@@ -1,3 +1,4 @@
+const {isMasterStudent}=require("./masters-scope.cjs");
 const { studentStatus } = require("./student-status.cjs");
 const { dateISO, thesisValues } = require("./thesis-progress.cjs");
 function workflowView(store, code) {
@@ -10,6 +11,7 @@ function applyWorkflow(store, code, actor, input) {
   const student = store.students.find(
     (s) => String(s.maHocVien || s.ma_hoc_vien || "").toUpperCase() === code,
   );
+  if (student && !isMasterStudent(student)) throw new Error("Chỉ xử lý luận văn/đề án thạc sĩ trong hệ thống này.");
   if (!student) throw new Error("Không tìm thấy học viên.");
   const beforeStudent = JSON.parse(JSON.stringify(student));
   const old = workflowView(store, code);

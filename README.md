@@ -75,9 +75,8 @@ Hồ sơ chấp nhận PDF, JPEG, PNG tối đa 10 MB mỗi file, lưu riêng t�
 - `/teachers`: thêm, sửa, xóa có kiểm tra liên kết, xem chi tiết, lọc và xuất Excel. Mã giảng viên không đổi khi sửa; không đổi tên khi còn hồ sơ liên kết.
 - `/assignment`: Admin và Phòng đào tạo dùng chung phân công `teachingAssignments`; cho đổi giảng viên khi chưa có điểm và không trùng lịch, hoặc hủy phân công chưa phát sinh điểm.
 - `/schedule`: chỉ nhập Excel, không xếp lịch trực tiếp. Tải mẫu, mỗi dòng là một ngày học; nhập mã phân công hoặc đầy đủ năm học/học kỳ/lớp/học phần/giảng viên, ngày học, tiết bắt đầu/kết thúc, phòng. Kiểm tra và xem trước rồi xác nhận; giữ lịch cũ, bỏ trùng, không lưu nếu có lỗi.
-- `/academic`: tạo phiên bản quy chế (trọng số, điểm đạt, thang GPA), cấu hình kế hoạch tín chỉ theo lớp và tra cứu tiến độ. Cần nhập quy chế chính thức trước khi sử dụng; bảng điểm đã lưu giữ phiên bản quy chế. GPA/tín chỉ chỉ tính điểm công bố đúng quy chế của kế hoạch, học lại lấy điểm cao nhất. Điều kiện học thuật không tự công nhận tốt nghiệp.
 - `/thesis`: nút Xét duyệt mở đăng ký đề tài, gia hạn, đề nghị bảo vệ và hội đồng (chủ tịch, phản biện). Chặn giảng viên hướng dẫn làm chủ tịch/phản biện. Duyệt bảo vệ cần cán bộ đối chiếu điều kiện và ghi ý kiến xác nhận; chưa phải bộ máy tự xét đầy đủ mọi điều kiện tốt nghiệp.
-- Học viên gửi và theo dõi yêu cầu luận văn, xem tiến độ tín chỉ tại Tiến độ học tập trên trang chủ.
+- Học viên gửi và theo dõi yêu cầu luận văn. Chương trình đào tạo, quy chế GPA và tiến độ tín chỉ thuộc hệ thống riêng, chưa tích hợp API.
 - `/admin/thong-bao` và `/phong-dao-tao/thong-bao`: tải PDF/DOCX/XLSX/JPG/PNG tối đa 10 MB. File lưu tại `api/storage/notice-attachments`; khách chỉ tải được file gắn với thông báo đã công bố. Thông báo vẫn cần database MySQL hiện có.
 
 Phòng đào tạo có quyền với các nghiệp vụ trên qua menu riêng. Dữ liệu và tệp hồ sơ cần ổ đĩa bền vững trên host; các thay đổi này chưa chuyển dữ liệu sang Supabase.
@@ -86,10 +85,30 @@ Kiểm thử HTTP nghiệp vụ trên dữ liệu giả riêng: `npm run build:a
 
 ## Thay đổi quy trình điểm và môn học
 
-- Thêm môn tại `/courses`: cấu hình tỷ trọng quá trình/thi có tổng 100%, số tín chỉ, trọng số GPA của môn và thang điểm chữ/GPA ngay trong biểu mẫu. Môn mới được đưa vào danh mục phân công theo ngành/định hướng/học kỳ đã chọn.
-- `/academic` chỉ quản lý thang quy đổi điểm/GPA và kế hoạch tín chỉ theo lớp; kế hoạch chọn các môn đã cấu hình thay vì nhập lại trọng số chung cho lớp.
+- `/courses` là danh mục môn học tham chiếu chỉ đọc; không thêm/sửa môn, cấu hình trọng số hoặc thang GPA tại hệ thống này.
 - Điểm lưu trực tiếp bởi giảng viên được học viên và thống kê sử dụng ngay, không gửi duyệt, công bố hoặc mở khóa. Giữ kiểm tra quyền lớp được phân công, phiên bản chống ghi đè và lịch sử sửa điểm. Các ảnh chụp điểm công bố cũ chỉ giữ để đối chiếu lịch sử.
-- GPA dùng tổng (GPA môn × trọng số GPA môn) chia tổng trọng số các môn có điểm; học lại lấy điểm cao nhất. Điểm cũ không tự bị tính lại khi thêm cấu hình môn; giảng viên xem lại và lưu để áp dụng trọng số mới.
 - Chức năng nhập và ánh xạ dữ liệu chung đã bị bỏ; `/api/upload` trả HTTP 410. Nhập Excel thời khóa biểu tại `/schedule` và nhập Excel điểm trong Bảng điểm giảng viên vẫn được giữ riêng.
 
 Các hướng dẫn cũ về gửi duyệt/công bố điểm hoặc nhập dữ liệu bằng ánh xạ không còn áp dụng.
+
+## Kiểm soát nghiệp vụ sau rà soát
+
+- Các API tổng quát Next/Nest không còn cho ghi đè, sửa hoặc xóa giảng viên; dùng `/api/teachers/manage` với kiểm tra liên kết, trùng mã và phiên bản.
+- Danh sách nhập điểm mới chỉ tự lấy học viên đang học/quá hạn, chỉ áp dụng cho thạc sĩ. Danh sách và điểm đã lưu trước đây không bị xóa khi học viên đổi trạng thái.
+- Luận văn không tự chuyển sang đã bảo vệ/hoàn thành khi một ngày dự kiến trôi qua; cần trạng thái được xác nhận. Đã bảo vệ vẫn chưa đồng nghĩa đã hoàn tất đào tạo.
+- Trước khi nhập Excel lịch, khai báo khoảng ngày học kỳ tại `/schedule`. File có ngày ngoài khoảng hoặc chưa có lịch học kỳ sẽ không được nhập. Không có chức năng trực tiếp xếp lịch.
+
+## Phạm vi thạc sĩ và hệ thống chương trình đào tạo riêng
+
+- Gỡ chức năng quản lý nghiên cứu sinh/tiến sĩ khỏi danh sách, phân công, thời khóa biểu và quy trình luận văn đang hoạt động. Giữ nguyên bản ghi và tệp lịch sử; giảng viên có trình độ tiến sĩ vẫn được quản lý bình thường.
+- Bỏ cấu hình chương trình đào tạo và GPA; `/academic` chuyển về danh mục môn học, `/api/academic` trả HTTP 410. Chưa triển khai kết nối hệ thống bên ngoài.
+- Giảng viên vẫn nhập và lưu điểm thành phần. Chỉ tính tổng kết/điểm chữ khi có quy chế tham chiếu đã lưu; không dùng quy chế thử nghiệm thay thế. Điểm tổng kết cũ giữ nguyên khi các điểm thành phần không đổi. Không tự tính GPA, tín chỉ tích lũy hoặc điều kiện tốt nghiệp.
+- Quản lý hồ sơ, giảng viên, phân công, nhập Excel lịch, nhập điểm, luận văn và thông báo tiếp tục hoạt động.
+
+## Nguồn danh mục chương trình đào tạo
+
+Trang `/chuong-trinh-dao-tao` tra cứu danh mục thạc sĩ từ https://pgd.agu.edu.vn/trainings/majors (đối chiếu ngày 27/11/2026). Dữ liệu tham chiếu tại `UI/data/agu_training_programmes.json` giữ riêng từng trường đào tạo, chương trình liên thông và các phiên bản được công bố; không đồng nhất hai ngành trùng tên ở hai trường. Các phiên bản có nút Xem nội dung ngay trong trang tra cứu, không chuyển sang website trường. Đây là ảnh chụp danh mục, không tự đồng bộ hoặc tích hợp API.
+
+Danh mục học phần hiện có đã chuẩn hóa tên/mã ngành và bổ sung liên kết nguồn theo ngành. Nội dung học phần trích từ scan vẫn giữ cờ cần đối chiếu, chưa tự coi là quy chế áp dụng cho mọi khóa; không thay đổi điểm hoặc hồ sơ cũ.
+
+Chi tiết chương trình được lưu tại `UI/public/training-programmes`, gồm HTML đã loại bỏ mã thực thi/liên kết ngoài và PDF gốc; chỉ mục tại `UI/data/agu_programme_documents.json`. Hiện có 37/38 phiên bản có nội dung; Công nghệ thực phẩm 2021–2023 chưa có nội dung ở nguồn, không dùng tài liệu khóa khác thay thế. Khi triển khai cần giữ cả thư mục tài liệu này. Cập nhật thủ công bằng `python scripts/sync-training-details.py` (cần truy cập mạng); đây không phải chức năng cấu hình chương trình hoặc GPA.

@@ -1,2 +1,2 @@
-import AcademicManagement from '../../components/academic/AcademicManagement';
-export default function Page(){return <AcademicManagement/>;}
+import {redirect} from 'next/navigation';
+export default function Page(){redirect('/courses');}

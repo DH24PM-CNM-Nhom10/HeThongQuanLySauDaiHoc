@@ -1,21 +1,20 @@
 import { savedScores } from '../../../shared/course-grading.cjs';
 import { studentCode } from '../common/data-store';
 import { studentCohort } from '../../../shared/student-profile.cjs';
-import { TEACHER_GRADE_POLICY } from './teacher-grade-policy';
+import { isMasterAssignment } from '../../../shared/masters-scope.cjs';
 type Row = Record<string, unknown>;
 const rows = (value: unknown): Row[] => Array.isArray(value) ? value.filter(row => row && typeof row === 'object' && !Array.isArray(row)) : [];
 const text = (value: unknown) => String(value ?? '').trim();
-type Entry = { code: string; assignmentId: string; classCode: string; courseName: string; courseCode: string; schoolYear: string; semester: string; major: string; majorName: string; cohort: string; total: number | null; passed: boolean; bookStatus: string };
+type Entry = { code: string; assignmentId: string; classCode: string; courseName: string; courseCode: string; schoolYear: string; semester: string; major: string; majorName: string; cohort: string; total: number | null; passed: boolean | null; bookStatus: string };
 export function buildGradeStatistics(store: Record<string, unknown[]>, filters: Record<string, string> = {}) {
-  const assignments = rows(store.teachingAssignments), books = rows(store.gradebooks), students = rows(store.students);
-  const passThreshold = Math.min(...TEACHER_GRADE_POLICY.thresholds.filter(row => row.letter !== 'F').map(row => row.min));
+  const assignments = rows(store.teachingAssignments).filter(row => isMasterAssignment(store, row)), books = rows(store.gradebooks), students = rows(store.students);
   const entries: Entry[] = [];
   for (const assignment of assignments) {
     const book = books.find(item => item.assignmentId === assignment.id);
     if (!book) continue;
     const published = rows(savedScores(book));
     const policy = (book.gradingPolicy || book.publishedPolicy) as { passScore?: number } | undefined;
-    const bookPassThreshold = Number.isFinite(policy?.passScore) ? Number(policy!.passScore) : passThreshold;
+    const bookPassThreshold = Number.isFinite(policy?.passScore) ? Number(policy!.passScore) : null;
     const seen = new Set<string>();
     for (const enrollment of rows(book.roster)) {
       const code = studentCode(enrollment);
@@ -28,7 +27,7 @@ export function buildGradeStatistics(store: Record<string, unknown[]>, filters: 
       entries.push({ code, assignmentId: text(assignment.id), classCode: text(assignment.classCode), courseName: text(assignment.courseName), courseCode: text(assignment.courseCode),
         schoolYear: text(assignment.schoolYear), semester: text(assignment.semester), major: text(assignment.majorCode || student.maNganh),
         majorName: text(assignment.majorName || student.tenNganh), cohort: studentCohort(student) || text(assignment.admissionYear),
-        total, passed: total !== null && total >= bookPassThreshold, bookStatus: text(book.status) });
+        total, passed: total !== null && bookPassThreshold !== null ? total >= bookPassThreshold : null, bookStatus: text(book.status) });
     }
   }
   const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi', { numeric: true }));
@@ -38,9 +37,9 @@ export function buildGradeStatistics(store: Record<string, unknown[]>, filters: 
   const filtered = entries.filter(row => ['schoolYear', 'semester', 'major', 'cohort', 'classCode'].every(key => !filters[key] || row[key as keyof Entry] === filters[key]));
   const summarize = (data: Entry[]) => {
     const graded = data.filter(row => row.total !== null), passed = graded.filter(row => row.passed).length;
-    return { enrollments: data.length, graded: graded.length, ungraded: data.length - graded.length, passed, failed: graded.length - passed,
+    return { enrollments: data.length, graded: graded.length, ungraded: data.length - graded.length, passed, failed: graded.filter(row => row.passed === false).length, unclassified: graded.filter(row => row.passed === null).length,
       average: graded.length ? Math.round(graded.reduce((sum, row) => sum + row.total!, 0) / graded.length * 100) / 100 : null,
-      passRate: graded.length ? Math.round(passed / graded.length * 10000) / 100 : null };
+      passRate: graded.some(row => row.passed !== null) ? Math.round(passed / graded.filter(row => row.passed !== null).length * 10000) / 100 : null };
   };
   const group = (kind: 'class' | 'major' | 'cohort') => {
     const groups = new Map<string, Entry[]>();
@@ -57,5 +56,5 @@ export function buildGradeStatistics(store: Record<string, unknown[]>, filters: 
     courseSections: new Set(filtered.map(row => row.assignmentId)).size },
     distribution: ranges.map(range => ({ label: range.label, count: filtered.filter(row => row.total !== null && row.total >= range.min && row.total < range.max).length })),
     groups: { class: group('class'), major: group('major'), cohort: group('cohort') },
-    policy: { id: TEACHER_GRADE_POLICY.id, passThreshold, note: 'Thống kê điểm giảng viên đã lưu, áp dụng ngưỡng đạt theo cấu hình môn học đã lưu của từng bảng điểm. Bảng cũ chưa có cấu hình dùng quy chế thử nghiệm. Điểm trung bình là trung bình cộng các lượt học, không phải GPA theo tín chỉ.' } };
+    policy: { passThreshold: null, note: 'Chỉ phân loại đạt khi bảng điểm có ngưỡng đạt đã lưu; chưa có quy chế sẽ để chưa phân loại. Điểm trung bình là trung bình cộng, không phải GPA.' } };
 }

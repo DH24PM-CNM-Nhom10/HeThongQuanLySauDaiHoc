@@ -1,3 +1,4 @@
+import { isMasterAssignment } from '../../../../../shared/masters-scope.cjs';
 import { NextRequest, NextResponse } from "next/server";
 import { requireStudentManager } from "../../../../lib/student-manager";
 import { getStore, saveStoreToFile } from "../../../../lib/store";
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
       { defval: "" },
     );
     const store = getStore(true),
-      result = prepareSchedule(rows, store.teachingAssignments, store.schedule);
+      result = prepareSchedule(rows, store.teachingAssignments.filter(a=>isMasterAssignment(store,a)), store.schedule, store.academicTerms);
     if (result.errors.length)
       return NextResponse.json(
         { ...result, message: "File có lỗi; chưa lưu dòng nào." },

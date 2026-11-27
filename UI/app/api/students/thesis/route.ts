@@ -1,3 +1,4 @@
+import { isMasterStudent } from '../../../../../shared/masters-scope.cjs';
 import { councilConflict } from '../../../../../shared/thesis-workflow.cjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { requireStudentManager } from '../../../../lib/student-manager';
@@ -16,6 +17,7 @@ export async function PATCH(request: NextRequest) {
     const store = getStore(true), code = String(body.maHocVien || '').trim().toUpperCase();
     const matches = store.students.filter(row => String(row.maHocVien || row.ma_hoc_vien || row.MA_HOC_VIEN || row.id || '').trim().toUpperCase() === code);
     if (matches.length !== 1) return fail('Không tìm thấy học viên hoặc mã học viên bị trùng.', 404);
+    if (!isMasterStudent(matches[0])) return fail("Chỉ quản lý luận văn/đề án thạc sĩ tại đây.",400);
     const row = matches[0], previous = thesisValues(row);
     if (FIELDS.some(k => body.previous[k] !== previous[k])) return fail('Tiến độ đã được thay đổi. Hãy tải lại trước khi lưu.', 409);
     const changes = Object.fromEntries(keys.map(k => [k, body.changes[k].trim()])), next = { ...previous, ...changes };

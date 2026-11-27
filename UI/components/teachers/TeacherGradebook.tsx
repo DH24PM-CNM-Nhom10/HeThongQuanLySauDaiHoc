@@ -51,7 +51,7 @@ type Gradebook = {
   status: string;
   requiresRecalculation?: boolean;
   courseConfigured?: boolean;
-  gradingPolicy: GradePolicy;
+  gradingPolicy: GradePolicy | null;
   updatedAt?: string | null;
   message?: string | string[];
 };
@@ -315,7 +315,6 @@ export default function TeacherGradebook({
 
   const save = async () => {
     if (
-      !courseConfigured ||
       readOnly ||
       !selected ||
       saving ||
@@ -323,8 +322,7 @@ export default function TeacherGradebook({
       importSource ||
       rosterLoading ||
       hasInvalid ||
-      !students.length ||
-      !policy
+      !students.length
     )
       return;
     setSaving(true);
@@ -505,14 +503,15 @@ export default function TeacherGradebook({
       const XLSX = await import("xlsx");
       const rows = students.map((s, i) => {
         const marks = values[s.maHocVien] || { process: "", exam: "" };
-        const grade = gradePreview(marks, policy);
+        const unchanged = numericMark(marks.process) === s.processScore && numericMark(marks.exam) === s.examScore;
+        const grade = !policy && unchanged ? {total:s.totalScore,letter:s.letterGrade || "—"} : gradePreview(marks, policy);
         return {
           STT: i + 1,
           "Mã học viên": safeCell(s.maHocVien),
           "Họ và tên": safeCell(s.hoTen),
           "Điểm quá trình": numericMark(marks.process),
           "Điểm thi kết thúc": numericMark(marks.exam),
-          "Điểm tổng kết (tạm tính)": grade.total ?? s.legacyScore ?? "",
+          "Điểm tổng kết (tạm tính)": grade.total ?? (unchanged ? s.legacyScore : null) ?? "",
           "Điểm chữ (tham khảo)": grade.total === null ? "" : grade.letter,
         };
       });
@@ -756,7 +755,8 @@ export default function TeacherGradebook({
                         process: "",
                         exam: "",
                       };
-                      const result = gradePreview(marks, policy);
+                      const unchanged = numericMark(marks.process) === student.processScore && numericMark(marks.exam) === student.examScore;
+                      const result = !policy && unchanged ? {total: student.totalScore, letter: student.letterGrade || "—"} : gradePreview(marks, policy);
                       return (
                         <tr key={student.maHocVien}>
                           <td>{index + 1}</td>
@@ -832,9 +832,9 @@ export default function TeacherGradebook({
                           </td>
                           <td className={styles.strongValue}>
                             {result.total === null
-                              ? (student.legacyScore ?? "—")
+                              ? (unchanged ? student.legacyScore ?? "—" : "—")
                               : result.total.toFixed(2)}
-                            {result.total === null &&
+                            {result.total === null && unchanged &&
                               student.legacyScore != null && (
                                 <small>Điểm cũ</small>
                               )}
@@ -861,8 +861,7 @@ export default function TeacherGradebook({
               )}
               {!courseConfigured && (
                 <p className={styles.error}>
-                  Môn học chưa được cấu hình trọng số. Liên hệ Phòng đào tạo để
-                  cấu hình trước khi lưu điểm.
+                  Chưa có dữ liệu trọng số từ hệ thống chương trình đào tạo. Bạn vẫn có thể lưu điểm thành phần; hệ thống không tự tính điểm tổng kết hoặc GPA.
                 </p>
               )}
               <p className={styles.notice}>
@@ -874,9 +873,7 @@ export default function TeacherGradebook({
                   <button
                     type="button"
                     disabled={
-                      !courseConfigured ||
-                      !policy ||
-                      !dirty ||
+                                      !dirty ||
                       saving ||
                       importing ||
                       Boolean(importSource) ||

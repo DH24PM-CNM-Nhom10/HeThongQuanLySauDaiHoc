@@ -1,6 +1,7 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');
-const {prepareSchedule}=require('../../shared/schedule-import.cjs');
-const {validatePolicy,validatePlan,calculateProgress}=require('../../shared/academic.cjs');
+const {prepareSchedule:rawPrepareSchedule}=require('../../shared/schedule-import.cjs');
+const terms=[{schoolYear:'2026-2027',semester:'1',startDate:'2026-08-01',endDate:'2027-01-31'}];
+const prepareSchedule=(rows,a,existing=[])=>rawPrepareSchedule(rows,a,existing,terms);
 const {applyWorkflow}=require('../../shared/thesis-workflow.cjs');
 const policy={id:'P1',name:'Quy chế thử kiểm thử',processWeight:.3,examWeight:.7,passScore:5,thresholds:[{min:8,letter:'A',gpa:4},{min:5,letter:'C',gpa:2},{min:0,letter:'F',gpa:0}]};
 function fixture(){return {students:[{maHocVien:'S1',lop:'L1',tenLuanVan:'Đề tài',gvHuongDan1:'Hướng dẫn'}],teachers:[{shcc:'T1',hoten:'Hướng dẫn'},{shcc:'T2',hoten:'Chủ tịch'},{shcc:'T3',hoten:'Phản biện'}],academicPolicies:[policy],academicPlans:[{classCode:'L1',policyId:'P1',requiredCredits:3,courses:[{code:'C1',name:'Môn 1',credits:3,required:true}]}],teachingAssignments:[{id:'A1',classCode:'L1',teacherId:'T1',schoolYear:'2026-2027',semester:'1',courseCode:'C1'}],gradebooks:[],thesisWorkflows:[],thesisHistory:[]};}
@@ -13,21 +14,8 @@ test('Excel timetable validates linked assignment, duplicates and teacher/class/
  assert.equal(prepareSchedule([{...row,'Ngày học':'31/02/2026'}],s.teachingAssignments).errors.length,1);
  assert.equal(prepareSchedule([{...row,'Tiết kết thúc':21}],s.teachingAssignments).errors.length,1);
 });
-test('Configured policy rejects invalid weights, GPA scales and duplicate plan courses',()=>{
- const s=fixture();assert.equal(validatePolicy(policy),null);assert.ok(validatePolicy({...policy,examWeight:.6}));assert.ok(validatePolicy({...policy,thresholds:[{min:1,letter:'F',gpa:0}]}));assert.ok(validatePolicy({...policy,thresholds:[{min:8,letter:'A',gpa:0},{min:0,letter:'F',gpa:4}]}));
- assert.equal(validatePlan(s.academicPlans[0],s),null);assert.ok(validatePlan({...s.academicPlans[0],requiredCredits:9},s));assert.ok(validatePlan({...s.academicPlans[0],courses:[...s.academicPlans[0].courses,...s.academicPlans[0].courses]},s));
-});
-test('GPA uses saved scores and each course weight, preserves zero and best retake',()=>{
- const s=fixture();s.courses=[{code:'C1',name:'Môn 1',credits:3,gpaWeight:1,policyId:'P1'},{code:'C2',name:'Môn 2',credits:2,gpaWeight:3,policyId:'P1'}];
- s.academicPlans[0].courses.push({code:'C2',name:'Môn 2',credits:2,required:true});s.academicPlans[0].requiredCredits=5;
- s.gradebooks=[{assignmentId:'A1',roster:[{maHocVien:'S1'}],scores:[{maHocVien:'S1',totalScore:9}],gradingPolicy:{...policy,id:'C1:1',scaleId:'P1'}}];
- assert.equal(calculateProgress(s,'S1').earnedCredits,3);assert.equal(calculateProgress(s,'S1').gpa,4);
- s.teachingAssignments.push({id:'A2',courseCode:'C2'});s.gradebooks.push({assignmentId:'A2',roster:[{maHocVien:'S1'}],scores:[{maHocVien:'S1',totalScore:5}],gradingPolicy:{...policy,id:'C2:1',scaleId:'P1'}});
- assert.equal(calculateProgress(s,'S1').gpa,2.5);assert.equal(calculateProgress(s,'S1').earnedCredits,5);
- s.gradebooks[1].scores[0].totalScore=0;assert.equal(calculateProgress(s,'S1').gpa,1);assert.equal(calculateProgress(s,'S1').earnedCredits,3);
- s.teachingAssignments.push({id:'A3',courseCode:'C2'});s.gradebooks.push({assignmentId:'A3',roster:[{maHocVien:'S1'}],scores:[{maHocVien:'S1',totalScore:9}],gradingPolicy:{...policy,id:'C2:1',scaleId:'P1'}});
- assert.equal(calculateProgress(s,'S1').gpa,4);assert.equal(calculateProgress(s,'S1').earnedCredits,5);
-});
+
+
 
 test('Thesis approval checks role, revision, pending request, council conflicts and stores history',()=>{
  const s=fixture(),student={manager:false,name:'S1'},manager={manager:true,name:'office'};
@@ -50,3 +38,16 @@ test('Approved extensions restore overdue enrollment status and retain student c
  assert.equal(s.students[0].ngayHetHan,'2099-01-01');assert.equal(s.students[0].trangThai,'Đang học');assert.equal(s.studentHistory[0].before.trangThai,'Quá hạn');
  const {councilConflict}=require('../../shared/thesis-workflow.cjs');s.thesisWorkflows[0].council={chair:'T2',reviewer:'T3'};assert.equal(councilConflict(s,'S1',['Chủ tịch']),true);assert.equal(councilConflict(s,'S1',['Hướng dẫn']),false);
 });
+
+test('Schedule rejects dates outside the configured term or missing academic calendar',()=>{
+ const s=fixture(),row={'Mã phân công':'A1','Ngày học':'2099-01-01','Tiết bắt đầu':1,'Tiết kết thúc':2,'Phòng':'P1'};
+ assert.ok(rawPrepareSchedule([row],s.teachingAssignments,[],terms).errors.length);
+ assert.ok(rawPrepareSchedule([{...row,'Ngày học':'2026-11-30'}],s.teachingAssignments,[],[]).errors.length);
+ assert.equal(rawPrepareSchedule([{...row,'Ngày học':'2026-11-30'}],s.teachingAssignments,[],terms).errors.length,0);
+});
+
+test('Program semesters support late-entry cohorts and doctoral duration beyond four terms',()=>{
+ const {programSemester}=require('../../shared/program-period.cjs');assert.equal(programSemester('2026-2027','1',2022,2,8),8);assert.equal(programSemester('2026-2027','2',2022,2,8),null);assert.equal(programSemester('2026-2027','1',2023),7);
+});
+
+test('Masters operations exclude doctoral learners while retaining original records',()=>{const {isMasterStudent,isMasterAssignment}=require('../../shared/masters-scope.cjs');const s=fixture();s.students.push({maHocVien:'NCS1',lop:'NCS01',trinhDo:'Tiến sĩ'});assert.equal(s.students.filter(isMasterStudent).length,1);assert.equal(isMasterAssignment(s,{classCode:'NCS01'}),false);assert.equal(s.students.length,2);});

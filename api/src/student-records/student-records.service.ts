@@ -1,3 +1,4 @@
+import { isMasterStudent } from '../../../shared/masters-scope.cjs';
 import { BadRequestException, Injectable, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
@@ -47,7 +48,7 @@ export class StudentRecordsService {
   }
 
   private students(): SourceStudent[] {
-    return readStore().students as SourceStudent[];
+    return readStore().students.filter(isMasterStudent) as SourceStudent[];
   }
 
   private findStudent(code: string): SourceStudent | null {

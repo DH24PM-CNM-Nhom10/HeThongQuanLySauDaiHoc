@@ -1,5 +1,5 @@
 const { dateISO } = require("./thesis-progress.cjs");
-function prepareSchedule(input, assignments, existing = []) {
+function prepareSchedule(input, assignments, existing = [], terms = []) {
   const text = (v) => String(v ?? "").trim();
   const norm = (row) => ({
     assignmentId: text(row.assignmentId || row["Mã phân công"]),
@@ -82,6 +82,9 @@ function prepareSchedule(input, assignments, existing = []) {
       );
       return;
     }
+    const term=terms.find(t=>t.schoolYear===a.schoolYear&&String(t.semester)===String(a.semester));
+    if(!term){errors.push(prefix+'Chưa cấu hình khoảng ngày học kỳ '+a.schoolYear+' HK'+a.semester+'.');return;}
+    if(row.date<term.startDate||row.date>term.endDate){errors.push(prefix+'Ngày học nằm ngoài khoảng ngày của học kỳ đã chọn.');return;}
     const entry = {
       ...row,
       ...Object.fromEntries(

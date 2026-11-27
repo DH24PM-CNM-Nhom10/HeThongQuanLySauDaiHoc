@@ -77,7 +77,7 @@ function readStore() {
   store.studentHistory ??= [];
   store.studentDocuments ??= [];
   store.documentHistory ??= [];
-  for (const key of ["courses", "assignmentHistory", "teacherHistory", "scheduleHistory", "academicPolicies", "academicPlans", "academicHistory", "thesisWorkflows", "thesisHistory", "noticeAttachments"]) store[key] ??= [];
+  for (const key of ["academicTerms", "courses", "assignmentHistory", "teacherHistory", "scheduleHistory", "academicPolicies", "academicPlans", "academicHistory", "thesisWorkflows", "thesisHistory", "noticeAttachments"]) store[key] ??= [];
   store.catalogs = catalogFromStudents(store.students, store.catalogs || []);
   versions.set(store, fingerprint(raw));
   return store;

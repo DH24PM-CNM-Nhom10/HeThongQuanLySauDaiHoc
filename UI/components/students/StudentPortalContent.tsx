@@ -6,7 +6,6 @@ import Link from "next/link";
 import { type StoredRecord } from "../../lib/db";
 import styles from "./StudentPortalContent.module.css";
 import ThesisWorkflow from '../thesis/ThesisWorkflow';
-import AcademicProgress from '../academic/AcademicProgress';
 import StudentDocuments from "./StudentDocuments";
 import StudentContactForm from "./StudentContactForm";
 import { studentCohort } from "../../../shared/student-profile.cjs";
@@ -256,7 +255,7 @@ export default function StudentPortalContent({ section }: { section: StudentSect
             <li><div><strong>Luận văn / Đề án</strong><p>{thesisName ? `${thesisName}${thesisStatus ? ` — ${thesisStatus}` : ""}` : "Chưa cập nhật đề tài hoặc kết quả nghiên cứu."}</p></div></li>
             <li><div><strong>Tốt nghiệp</strong><p>{graduated ? "Hồ sơ đã có thông tin tốt nghiệp." : "Chưa có thông tin công nhận tốt nghiệp."}</p></div></li>
           </ol>
-          <AcademicProgress /><ThesisWorkflow />
+          <p className={styles.infoBanner}>Quy chế GPA và kế hoạch chương trình đào tạo được quản lý trong hệ thống chương trình đào tạo riêng.</p><ThesisWorkflow />
           <div className={styles.links}><Link href="/grades">Xem bảng điểm</Link><Link href="/schedule">Xem thời khóa biểu</Link></div>
           <StudentDocuments key={code} studentCode={code} />
         </>}
